@@ -40,6 +40,49 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('예약 기능은 카카오톡으로 문의해주세요!');
         });
     });
+
+    // 비디오 재생 기능
+    const heroVideo = document.getElementById('hero-video');
+    const videoContainer = document.querySelector('.hero-video');
+    const videoOverlay = document.querySelector('.video-overlay');
+
+    if (heroVideo && videoContainer && videoOverlay) {
+        // 비디오 컨테이너 클릭 시 재생
+        videoContainer.addEventListener('click', function() {
+            if (heroVideo.paused) {
+                heroVideo.play();
+                videoContainer.classList.add('playing');
+            } else {
+                heroVideo.pause();
+                videoContainer.classList.remove('playing');
+            }
+        });
+
+        // 비디오 재생 상태 변경 감지
+        heroVideo.addEventListener('play', function() {
+            videoContainer.classList.add('playing');
+        });
+
+        heroVideo.addEventListener('pause', function() {
+            videoContainer.classList.remove('playing');
+        });
+
+        heroVideo.addEventListener('ended', function() {
+            videoContainer.classList.remove('playing');
+        });
+
+        // 모바일에서 터치 이벤트 처리
+        videoContainer.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            if (heroVideo.paused) {
+                heroVideo.play();
+                videoContainer.classList.add('playing');
+            } else {
+                heroVideo.pause();
+                videoContainer.classList.remove('playing');
+            }
+        });
+    }
 });
 
 // 스크롤 시 헤더 스타일 변경
