@@ -359,11 +359,34 @@ style.textContent = `
         background: white;
         box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         padding: 1rem;
+        border-radius: 0 0 8px 8px;
+        animation: slideDown 0.3s ease-out;
     }
     
     .nav.active .nav-list {
         flex-direction: column;
-        gap: 1rem;
+        gap: 0.8rem;
+    }
+    
+    .nav.active .nav-list a {
+        padding: 0.8rem 1rem;
+        border-radius: 4px;
+        transition: background-color 0.3s ease;
+    }
+    
+    .nav.active .nav-list a:hover {
+        background-color: #f5f5f5;
+    }
+    
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 `;
 document.head.appendChild(style); 

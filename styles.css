@@ -1478,79 +1478,324 @@ body {
 
 /* 반응형 디자인 */
 @media (max-width: 768px) {
+    /* 모바일 메뉴 */
     .mobile-menu-toggle {
-        display: none; /* 모바일 메뉴 숨김 */
+        display: block;
+        font-size: 1.2rem;
+        color: #333;
+        cursor: pointer;
+        padding: 0.5rem;
+        border-radius: 4px;
+        transition: background-color 0.3s ease;
+    }
+
+    .mobile-menu-toggle:hover {
+        background-color: #f5f5f5;
     }
     
     .nav {
-        display: flex; /* 네비게이션 표시 */
+        display: none;
+    }
+    
+    /* 컨테이너 패딩 조정 */
+    .container {
+        padding: 0 15px;
+    }
+    
+    /* 헤더 */
+    .header .container {
+        padding: 0.8rem 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .logo h1 {
+        font-size: 1.3rem;
+        margin: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    /* 히어로 섹션 */
+    .hero {
+        padding: 100px 0 60px;
+        min-height: 80vh;
     }
     
     .hero .container {
-        flex-direction: row; /* 가로 배치 유지 */
-        text-align: left;
-        gap: 1rem;
+        flex-direction: column;
+        text-align: center;
+        gap: 2rem;
     }
     
     .hero-title {
-        font-size: 1.6rem;
+        font-size: 2rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
     
     .hero-subtitle {
         font-size: 1.2rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
     
+    .hero-video {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+    }
+    
+    .hero-video video {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+    }
+    
+    /* 소셜 링크 */
     .social-links {
-        gap: 0.6rem;
-        margin-top: 0.8rem;
-        flex-direction: row; /* 가로 배치 */
+        flex-direction: column;
+        gap: 1rem;
+        margin-top: 1.5rem;
+        align-items: center;
     }
     
     .social-link {
-        padding: 0.5rem 0.8rem;
-        font-size: 0.7rem;
-    }
-    
-    .social-link span {
-        font-size: 0.7rem;
+        padding: 0.8rem 1.2rem;
+        font-size: 0.9rem;
+        white-space: nowrap;
     }
     
     .social-icon {
-        width: 25px;
-        height: 25px;
+        width: 35px;
+        height: 35px;
+        font-size: 1.3rem;
+    }
+    
+    /* 차량 쇼케이스 */
+    .vehicle-showcase h2 {
+        font-size: 2rem;
+    }
+    
+    .section-subtitle {
+        font-size: 1rem;
+        padding: 0 1rem;
+    }
+    
+    .vehicle-categories {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+    }
+    
+    .category-card {
+        padding: 1.5rem;
+    }
+    
+    .category-icon {
+        width: 70px;
+        height: 70px;
+        font-size: 1.8rem;
+    }
+    
+    /* 버튼 */
+    .btn-large {
+        padding: 1rem 2.5rem;
+        font-size: 1.1rem;
+        white-space: nowrap;
+    }
+    
+    /* 프로세스 단계 */
+    .process-steps {
+        flex-direction: column;
+        gap: 2rem;
+        align-items: center;
+    }
+    
+    .step {
+        width: 280px;
+    }
+    
+    .step:not(:last-child)::after {
+        content: '↓';
+        right: 50%;
+        top: auto;
+        bottom: -30px;
+        transform: translateX(50%);
+        font-size: 1.5rem;
+    }
+    
+    /* 서비스 특징 */
+    .features-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    /* 연락처 정보 */
+    .contact-info {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    /* 검색 폼 */
+    .search-row {
+        grid-template-columns: 1fr;
+        gap: 0.8rem;
+    }
+    
+    /* 차량 그리드 */
+    .vehicle-grid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+    }
+    
+    .vehicle-card {
+        padding: 1rem;
+    }
+    
+    /* 푸터 */
+    .footer-content {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        text-align: center;
+    }
+    
+    /* 카카오톡 문의 */
+    .kakao-text {
         font-size: 0.9rem;
     }
     
-    .simple-search-section h2 {
-        font-size: 1.6rem;
+    .kakao-inquiry a {
+        padding: 0.8rem 1.2rem;
+        font-size: 0.9rem;
     }
     
-    .search-subtitle {
+    /* 차량 슬라이드 */
+    .vehicle-slide {
+        min-width: 280px;
+    }
+    
+    .carousel-track {
+        gap: 1.5rem;
+    }
+    
+    .vehicle-slide .vehicle-info h3 {
+        font-size: 1.1rem;
+    }
+    
+    .vehicle-slide .vehicle-specs {
         font-size: 0.8rem;
     }
     
-    .quick-filters {
-        gap: 0.3rem;
+    .vehicle-slide .vehicle-specs span {
+        padding: 0.2rem 0.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    /* 컨테이너 패딩 조정 */
+    .container {
+        padding: 0 10px;
     }
     
-    .filter-btn {
-        padding: 6px 12px;
-        font-size: 0.7rem;
+    /* 헤더 */
+    .header .container {
+        padding: 0.6rem 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }
     
-    /* 차량보기 섹션 모바일 */
-    .vehicle-showcase h2 {
+    .logo h1 {
+        font-size: 1.1rem;
+        margin: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    /* 모바일 메뉴 토글 */
+    .mobile-menu-toggle {
+        font-size: 1rem;
+        padding: 0.4rem;
+    }
+    
+    /* 히어로 섹션 */
+    .hero {
+        padding: 80px 0 50px;
+        min-height: 70vh;
+    }
+    
+    .hero .container {
+        flex-direction: column;
+        text-align: center;
+        gap: 1.5rem;
+    }
+    
+    .hero-title {
         font-size: 1.6rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    .hero-subtitle {
+        font-size: 1rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    .hero-video {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+    }
+    
+    .hero-video video {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+    }
+    
+    /* 소셜 링크 */
+    .social-links {
+        flex-direction: column;
+        gap: 0.8rem;
+        margin-top: 1rem;
+        align-items: center;
+    }
+    
+    .social-link {
+        padding: 0.6rem 1rem;
+        font-size: 0.8rem;
+        white-space: nowrap;
+    }
+    
+    .social-icon {
+        width: 28px;
+        height: 28px;
+        font-size: 1rem;
+    }
+    
+    /* 차량 쇼케이스 */
+    .vehicle-showcase h2 {
+        font-size: 1.8rem;
     }
     
     .section-subtitle {
         font-size: 0.9rem;
-        padding: 0 0.6rem;
+        padding: 0 0.8rem;
     }
     
     .vehicle-categories {
-        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-        gap: 0.8rem;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
     }
     
     .category-card {
@@ -1563,22 +1808,22 @@ body {
         font-size: 1.3rem;
     }
     
+    /* 버튼 */
     .btn-large {
-        padding: 0.7rem 1.8rem;
+        padding: 0.8rem 2rem;
         font-size: 0.9rem;
+        white-space: nowrap;
     }
     
+    /* 프로세스 단계 */
     .process-steps {
-        flex-direction: row; /* 가로 배치 유지 */
-        gap: 1rem;
-        align-items: flex-start;
-        flex-wrap: wrap; /* 필요시 줄바꿈 */
+        flex-direction: column;
+        gap: 1.5rem;
+        align-items: center;
     }
     
     .step {
-        width: 200px;
-        flex: 1;
-        min-width: 180px;
+        width: 250px;
     }
     
     .step:not(:last-child)::after {
@@ -1590,70 +1835,54 @@ body {
         font-size: 1.5rem;
     }
     
-    @keyframes arrow-pulse {
-        0%, 100% { 
-            opacity: 0.7; 
-            transform: translateX(50%) scale(1);
-        }
-        50% { 
-            opacity: 1; 
-            transform: translateX(50%) scale(1.1);
-        }
-    }
-    
+    /* 서비스 특징 */
     .features-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 1rem;
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
     }
     
+    /* 연락처 정보 */
     .contact-info {
         grid-template-columns: 1fr;
+        gap: 1.5rem;
     }
     
+    /* 검색 폼 */
     .search-row {
         grid-template-columns: 1fr;
+        gap: 0.8rem;
     }
     
-    /* 차량 그리드 - 한 줄에 2-3개 보이도록 */
+    /* 차량 그리드 */
     .vehicle-grid {
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
         gap: 1rem;
-        justify-content: center;
     }
     
     .vehicle-card {
-        width: auto;
-        min-width: 200px;
-        max-width: 250px;
+        padding: 0.8rem;
     }
     
-    .vehicle-features {
-        flex-direction: column;
-        gap: 0.4rem;
-    }
-    
-    .category-grid {
-        grid-template-columns: 1fr;
-    }
-    
+    /* 푸터 */
     .footer-content {
         grid-template-columns: 1fr;
+        gap: 1.5rem;
         text-align: center;
     }
     
+    /* 카카오톡 문의 */
     .kakao-text {
-        display: none;
+        font-size: 0.8rem;
     }
     
     .kakao-inquiry a {
-        padding: 12px;
-        border-radius: 50%;
+        padding: 0.6rem 1rem;
+        font-size: 0.8rem;
     }
     
-    /* 인기차량 캐러셀 모바일 */
+    /* 차량 슬라이드 */
     .vehicle-slide {
-        min-width: 200px;
-        max-width: 250px;
+        min-width: 250px;
     }
     
     .carousel-track {
@@ -1661,148 +1890,63 @@ body {
     }
     
     .vehicle-slide .vehicle-info h3 {
-        font-size: 1.1rem;
+        font-size: 1rem;
     }
     
     .vehicle-slide .vehicle-specs {
-        font-size: 0.8rem;
+        font-size: 0.7rem;
     }
     
     .vehicle-slide .vehicle-specs span {
-        font-size: 0.8rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .container {
-        padding: 0 8px;
+        padding: 0.15rem 0.4rem;
     }
     
-    .hero {
-        padding: 70px 0 40px;
+    /* 네비게이션 */
+    .nav-list {
+        flex-direction: column;
+        gap: 0.5rem;
     }
     
-    .hero-content h2 {
-        font-size: 1.4rem;
+    .nav-list a {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
     }
     
+    /* 프로세스 제목 */
     .process h2,
     .features h2,
     .contact h2,
     .vehicle-showcase h2 {
-        font-size: 1.6rem;
+        font-size: 1.8rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
     
-    /* 차량보기 섹션 작은 화면 - 가로 배치 유지 */
-    .vehicle-categories {
-        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-        gap: 0.6rem;
-    }
-    
-    .category-card {
-        padding: 0.8rem;
-    }
-    
-    .btn-large {
-        padding: 0.7rem 1.6rem;
-        font-size: 0.8rem;
-    }
-    
-    .kakao-inquiry {
-        bottom: 12px;
-        right: 12px;
-    }
-    
+    /* 지도 */
     .map-container iframe {
-        height: 200px;
+        height: 300px;
     }
     
     .map-details h3 {
-        font-size: 1.1rem;
+        font-size: 1.2rem;
     }
     
     .map-details p {
-        font-size: 0.8rem;
-    }
-    
-    /* 작은 화면에서 차량 3개씩 보이도록 */
-    .vehicle-grid {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 0.6rem;
-        justify-content: center;
-    }
-    
-    .vehicle-card {
-        min-width: 120px;
-        max-width: 140px;
-    }
-    
-    .features-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 0.8rem;
-    }
-    
-    /* 인기차량 캐러셀 작은 화면 */
-    .vehicle-slide {
-        min-width: 120px;
-        max-width: 140px;
-    }
-    
-    .carousel-track {
-        gap: 0.6rem;
-    }
-    
-    .vehicle-slide .vehicle-info h3 {
         font-size: 0.9rem;
+    }
+    
+    /* 차량 슬라이드 가격 */
+    .vehicle-slide .vehicle-info h3 {
+        font-size: 1rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
     
     .vehicle-slide .vehicle-price .price {
         font-size: 1.1rem;
-    }
-    
-    /* 네비게이션 메뉴 축소 */
-    .nav-list {
-        gap: 0.8rem;
-    }
-    
-    .nav-list a {
-        font-size: 0.7rem;
-    }
-    
-    .logo h1 {
-        font-size: 1.2rem;
-    }
-    
-    /* 히어로 섹션 가로 배치 유지 */
-    .hero .container {
-        flex-direction: row;
-        gap: 0.8rem;
-    }
-    
-    .hero-title {
-        font-size: 1.3rem;
-    }
-    
-    .hero-subtitle {
-        font-size: 1rem;
-    }
-    
-    .social-links {
-        gap: 0.5rem;
-    }
-    
-    .social-link {
-        padding: 0.4rem 0.6rem;
-        font-size: 0.6rem;
-    }
-    
-    .social-icon {
-        width: 20px;
-        height: 20px;
-        font-size: 0.8rem;
-    }
-}
-        gap: 1rem;
+        white-space: nowrap;
     }
 }
 
