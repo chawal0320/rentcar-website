@@ -1809,6 +1809,11 @@ body {
         font-size: 0.8rem;
     }
     
+    /* 모바일에서 차량 이미지 크기 축소 */
+    .vehicle-card .vehicle-image img {
+        height: 120px;
+    }
+    
     /* 푸터 */
     .footer-content {
         grid-template-columns: 1fr;
@@ -2161,6 +2166,11 @@ body {
     .vehicle-card .reserve-button {
         padding: 0.3rem 0.6rem;
         font-size: 0.7rem;
+    }
+    
+    /* 모바일에서 차량 이미지 크기 축소 */
+    .vehicle-card .vehicle-image img {
+        height: 100px;
     }
     
     /* 푸터 */
