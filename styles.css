@@ -1638,7 +1638,39 @@ body {
     /* 연락처 정보 */
     .contact-info {
         grid-template-columns: 1fr;
-        gap: 1.5rem;
+        gap: 1rem;
+    }
+    
+    .contact-item {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        padding: 0.8rem;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        backdrop-filter: blur(10px);
+    }
+    
+    .contact-item i {
+        font-size: 1.2rem;
+        color: #ff9a9e;
+        min-width: 20px;
+    }
+    
+    .contact-item h3 {
+        font-size: 0.9rem;
+        margin: 0;
+        color: white;
+        white-space: nowrap;
+    }
+    
+    .contact-item p {
+        font-size: 0.85rem;
+        margin: 0;
+        color: rgba(255, 255, 255, 0.8);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
     
     /* 검색 폼 */
@@ -1844,7 +1876,39 @@ body {
     /* 연락처 정보 */
     .contact-info {
         grid-template-columns: 1fr;
-        gap: 1.5rem;
+        gap: 0.8rem;
+    }
+    
+    .contact-item {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        padding: 0.6rem;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 6px;
+        backdrop-filter: blur(10px);
+    }
+    
+    .contact-item i {
+        font-size: 1rem;
+        color: #ff9a9e;
+        min-width: 16px;
+    }
+    
+    .contact-item h3 {
+        font-size: 0.8rem;
+        margin: 0;
+        color: white;
+        white-space: nowrap;
+    }
+    
+    .contact-item p {
+        font-size: 0.75rem;
+        margin: 0;
+        color: rgba(255, 255, 255, 0.8);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
     
     /* 검색 폼 */
