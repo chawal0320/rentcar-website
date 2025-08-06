@@ -1814,7 +1814,7 @@ body {
     /* 차량 그리드 */
     .vehicle-grid {
         grid-template-columns: repeat(2, 1fr);
-        gap: 1rem;
+        gap: 0.5rem;
     }
     
     .vehicle-card {
@@ -1848,29 +1848,43 @@ body {
     
     /* 모바일에서 차량 카드 전체 크기 축소 */
     .vehicle-card {
-        transform: scale(0.85);
-        transform-origin: center;
+        width: 100%;
+        max-width: 280px;
+    }
+    
+    .vehicle-card .vehicle-image img {
+        height: 120px;
+        object-fit: cover;
     }
     
     /* 작은 화면에서 더 작은 크기로 조정 */
     @media (max-width: 600px) {
         .vehicle-card {
-            transform: scale(0.75);
-            transform-origin: center;
+            max-width: 250px;
+        }
+        
+        .vehicle-card .vehicle-image img {
+            height: 100px;
         }
     }
     
     @media (max-width: 480px) {
         .vehicle-card {
-            transform: scale(0.65);
-            transform-origin: center;
+            max-width: 220px;
+        }
+        
+        .vehicle-card .vehicle-image img {
+            height: 90px;
         }
     }
     
     @media (max-width: 400px) {
         .vehicle-card {
-            transform: scale(0.55);
-            transform-origin: center;
+            max-width: 200px;
+        }
+        
+        .vehicle-card .vehicle-image img {
+            height: 80px;
         }
     }
     
@@ -2196,7 +2210,7 @@ body {
     /* 차량 그리드 */
     .vehicle-grid {
         grid-template-columns: repeat(2, 1fr);
-        gap: 0.8rem;
+        gap: 0.4rem;
     }
     
     .vehicle-card {
@@ -2230,22 +2244,33 @@ body {
     
     /* 모바일에서 차량 카드 전체 크기 축소 */
     .vehicle-card {
-        transform: scale(0.75);
-        transform-origin: center;
+        width: 100%;
+        max-width: 220px;
+    }
+    
+    .vehicle-card .vehicle-image img {
+        height: 90px;
+        object-fit: cover;
     }
     
     /* 더 작은 화면에서 추가 축소 */
     @media (max-width: 400px) {
         .vehicle-card {
-            transform: scale(0.6);
-            transform-origin: center;
+            max-width: 200px;
+        }
+        
+        .vehicle-card .vehicle-image img {
+            height: 80px;
         }
     }
     
     @media (max-width: 360px) {
         .vehicle-card {
-            transform: scale(0.5);
-            transform-origin: center;
+            max-width: 180px;
+        }
+        
+        .vehicle-card .vehicle-image img {
+            height: 70px;
         }
     }
     
