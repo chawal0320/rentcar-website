@@ -1815,6 +1815,28 @@ body {
         transform-origin: center;
     }
     
+    /* 작은 화면에서 더 작은 크기로 조정 */
+    @media (max-width: 600px) {
+        .vehicle-card {
+            transform: scale(0.75);
+            transform-origin: center;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .vehicle-card {
+            transform: scale(0.65);
+            transform-origin: center;
+        }
+    }
+    
+    @media (max-width: 400px) {
+        .vehicle-card {
+            transform: scale(0.55);
+            transform-origin: center;
+        }
+    }
+    
     /* 푸터 */
     .footer-content {
         grid-template-columns: 1fr;
@@ -2173,6 +2195,21 @@ body {
     .vehicle-card {
         transform: scale(0.75);
         transform-origin: center;
+    }
+    
+    /* 더 작은 화면에서 추가 축소 */
+    @media (max-width: 400px) {
+        .vehicle-card {
+            transform: scale(0.6);
+            transform-origin: center;
+        }
+    }
+    
+    @media (max-width: 360px) {
+        .vehicle-card {
+            transform: scale(0.5);
+            transform-origin: center;
+        }
     }
     
     /* 푸터 */
