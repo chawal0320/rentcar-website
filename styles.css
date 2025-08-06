@@ -54,6 +54,10 @@ body {
     font-weight: 600;
     font-family: 'Inter', sans-serif;
     letter-spacing: -0.02em;
+    border: 2px solid #ff9a9e;
+    border-radius: 50px;
+    padding: 8px 16px;
+    display: inline-block;
 }
 
 .nav-list {
@@ -1516,6 +1520,10 @@ body {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        border: 1.5px solid #ff9a9e;
+        border-radius: 40px;
+        padding: 6px 12px;
+        display: inline-block;
     }
     
     /* 히어로 섹션 */
@@ -1860,6 +1868,10 @@ body {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        border: 1px solid #ff9a9e;
+        border-radius: 30px;
+        padding: 4px 10px;
+        display: inline-block;
     }
     
     /* 모바일 메뉴 토글 */
