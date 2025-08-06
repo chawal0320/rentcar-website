@@ -1769,11 +1769,36 @@ body {
     /* 차량 그리드 */
     .vehicle-grid {
         grid-template-columns: repeat(2, 1fr);
-        gap: 1.5rem;
+        gap: 1rem;
     }
     
     .vehicle-card {
-        padding: 1rem;
+        padding: 0.8rem;
+    }
+    
+    .vehicle-card .vehicle-info h3 {
+        font-size: 0.9rem;
+    }
+    
+    .vehicle-card .vehicle-specs {
+        font-size: 0.7rem;
+    }
+    
+    .vehicle-card .vehicle-specs span {
+        padding: 0.2rem 0.4rem;
+    }
+    
+    .vehicle-card .vehicle-price .price {
+        font-size: 0.9rem;
+    }
+    
+    .vehicle-card .vehicle-price .period {
+        font-size: 0.7rem;
+    }
+    
+    .vehicle-card .reserve-button {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.8rem;
     }
     
     /* 푸터 */
@@ -2094,11 +2119,36 @@ body {
     /* 차량 그리드 */
     .vehicle-grid {
         grid-template-columns: repeat(2, 1fr);
-        gap: 1rem;
+        gap: 0.8rem;
     }
     
     .vehicle-card {
-        padding: 0.8rem;
+        padding: 0.6rem;
+    }
+    
+    .vehicle-card .vehicle-info h3 {
+        font-size: 0.8rem;
+    }
+    
+    .vehicle-card .vehicle-specs {
+        font-size: 0.6rem;
+    }
+    
+    .vehicle-card .vehicle-specs span {
+        padding: 0.15rem 0.3rem;
+    }
+    
+    .vehicle-card .vehicle-price .price {
+        font-size: 0.8rem;
+    }
+    
+    .vehicle-card .vehicle-price .period {
+        font-size: 0.6rem;
+    }
+    
+    .vehicle-card .reserve-button {
+        padding: 0.3rem 0.6rem;
+        font-size: 0.7rem;
     }
     
     /* 푸터 */
