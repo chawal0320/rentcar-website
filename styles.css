@@ -1809,9 +1809,10 @@ body {
         font-size: 0.8rem;
     }
     
-    /* 모바일에서 차량 이미지 크기 축소 */
-    .vehicle-card .vehicle-image img {
-        height: 120px;
+    /* 모바일에서 차량 카드 전체 크기 축소 */
+    .vehicle-card {
+        transform: scale(0.85);
+        transform-origin: center;
     }
     
     /* 푸터 */
@@ -2168,9 +2169,10 @@ body {
         font-size: 0.7rem;
     }
     
-    /* 모바일에서 차량 이미지 크기 축소 */
-    .vehicle-card .vehicle-image img {
-        height: 100px;
+    /* 모바일에서 차량 카드 전체 크기 축소 */
+    .vehicle-card {
+        transform: scale(0.75);
+        transform-origin: center;
     }
     
     /* 푸터 */
