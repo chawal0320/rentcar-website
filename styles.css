@@ -1738,6 +1738,12 @@ body {
         display: none;
     }
     
+    /* 모바일에서 전화번호와 주소 숨기기 */
+    .contact-item:nth-child(1) p,
+    .contact-item:nth-child(2) {
+        display: none;
+    }
+    
     /* 검색 폼 */
     .search-row {
         grid-template-columns: 1fr;
@@ -2038,6 +2044,12 @@ body {
     
     /* 모바일에서 연락처 섹션 부제목 숨기기 */
     .contact .section-subtitle {
+        display: none;
+    }
+    
+    /* 모바일에서 전화번호와 주소 숨기기 */
+    .contact-item:nth-child(1) p,
+    .contact-item:nth-child(2) {
         display: none;
     }
     
