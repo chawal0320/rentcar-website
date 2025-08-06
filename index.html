@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>렌트카 서비스 - 안전하고 편리한 차량 대여</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- 헤더 -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <a href="index.html">
+                    <h1>에스엔엠 렌트카</h1>
+                </a>
+            </div>
+            <nav class="nav">
+                <ul class="nav-list">
+                    <li><a href="index.html" class="active">홈</a></li>
+                    <li><a href="vehicles.html">차량 보기</a></li>
+                    <li><a href="accident-replacement.html">사고대차</a></li>
+                    <li><a href="insurance-info.html">보험안내</a></li>
+                    <li><a href="#process">이용방법</a></li>
+                    <li><a href="#contact">문의</a></li>
+                </ul>
+            </nav>
+            <div class="mobile-menu-toggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- 메인 비디오 섹션 -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h2 class="hero-title">행복한 드라이빙, 안전한 여행</h2>
+                <p class="hero-subtitle"><span class="company-name">에스엔엠 렌트카</span>와 함께하세요!</p>
+                <a href="vehicles.html" class="btn btn-primary hero-btn">차량 보기</a>
+            </div>
+            <div class="hero-video">
+                <video controls>
+                    <source src="aiavatar_user_instant_model_MwE9y94Y4sTTzsPnvFos_822bdd5bd1824234b31f7e1ddcbf1f2b_result_7e1a8201a24748e593e1e45b4ac118b1.mp4" type="video/mp4">
+                    브라우저가 비디오를 지원하지 않습니다.
+                </video>
+            </div>
+            <div class="social-links">
+                <a href="https://map.naver.com/p/search/%ED%8F%89%ED%83%9D%EB%A0%8C%ED%8A%B8%EC%B9%B4/place/1889534992?placePath=/review?entry=pll&from=map&fromNxList=true&fromPanelNum=2&locale=ko&searchText=%ED%8F%89%ED%83%9D%EB%A0%8C%ED%8A%B8%EC%B9%B4&svcName=map_pcv5&timestamp=202508051645&searchType=place&c=16.19,0,0,0,dh" target="_blank" class="social-link naver-link">
+                    <div class="social-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <span>네이버 리뷰보기</span>
+                </a>
+                <a href="http://pf.kakao.com/_ctKfn/chat" target="_blank" class="social-link kakao-link">
+                    <div class="social-icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <span>카카오톡 실시간 문의</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 차량 보기 섹션 -->
+    <section class="vehicle-showcase">
+        <div class="container">
+            <h2>다양한 차량을 만나보세요</h2>
+            <p class="section-subtitle">경제형부터 럭셔리까지, 여행 목적에 맞는 완벽한 차량을 선택하세요</p>
+            <div class="vehicle-preview">
+                <div class="vehicle-categories">
+                    <div class="category-card" onclick="location.href='vehicles.html'">
+                        <div class="category-icon">
+                            <i class="fas fa-car"></i>
+                        </div>
+                        <h3>경제형</h3>
+                        <p>합리적인 가격의 실용적인 차량</p>
+                    </div>
+                    <div class="category-card" onclick="location.href='vehicles.html'">
+                        <div class="category-icon">
+                            <i class="fas fa-car-side"></i>
+                        </div>
+                        <h3>중형/대형</h3>
+                        <p>편안함과 안전성을 겸비한 차량</p>
+                    </div>
+                    <div class="category-card" onclick="location.href='vehicles.html'">
+                        <div class="category-icon">
+                            <i class="fas fa-truck-pickup"></i>
+                        </div>
+                        <h3>SUV/RV</h3>
+                        <p>넓은 공간과 높은 시야의 차량</p>
+                    </div>
+                    <div class="category-card" onclick="location.href='vehicles.html'">
+                        <div class="category-icon">
+                            <i class="fas fa-gem"></i>
+                        </div>
+                        <h3>럭셔리</h3>
+                        <p>프리미엄 브랜드의 고급 차량</p>
+                    </div>
+                </div>
+                <div class="vehicle-cta">
+                    <a href="vehicles.html" class="btn btn-large btn-gradient">
+                        <i class="fas fa-search"></i>
+                        차량 둘러보기
+                    </a>
+                    <p class="cta-description">50여 종의 다양한 차량을 확인해보세요</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 인기차량 섹션 -->
+    <section class="popular-vehicles">
+        <div class="container">
+            <h2>🔥 인기차량</h2>
+            <p class="section-subtitle">고객들이 가장 많이 선택하는 베스트 차량들</p>
+            <div class="vehicle-carousel">
+                <div class="carousel-track">
+                    <div class="vehicle-slide">
+                        <div class="vehicle-image">
+                            <img src="images/기아 모닝 어반.png" alt="모닝">
+                            <div class="vehicle-badge">경제형</div>
+                        </div>
+                        <div class="vehicle-info">
+                            <h3>모닝</h3>
+                            <div class="vehicle-specs">
+                                <span><i class="fas fa-gas-pump"></i> 가솔린</span>
+                                <span><i class="fas fa-users"></i> 5인승</span>
+                                <span><i class="fas fa-cog"></i> 자동</span>
+                            </div>
+                            <div class="vehicle-price">
+                                <span class="price">₩50,000</span>
+                                <span class="period">/일</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="vehicle-slide">
+                        <div class="vehicle-image">
+                            <img src="images/기아 THE NEW K5.png" alt="K5">
+                            <div class="vehicle-badge">중형</div>
+                        </div>
+                        <div class="vehicle-info">
+                            <h3>K5</h3>
+                            <div class="vehicle-specs">
+                                <span><i class="fas fa-gas-pump"></i> 가솔린</span>
+                                <span><i class="fas fa-users"></i> 5인승</span>
+                                <span><i class="fas fa-cog"></i> 자동</span>
+                            </div>
+                            <div class="vehicle-price">
+                                <span class="price">₩80,000</span>
+                                <span class="period">/일</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="vehicle-slide">
+                        <div class="vehicle-image">
+                            <img src="images/펠리세이드.png" alt="펠리세이드">
+                            <div class="vehicle-badge">SUV</div>
+                        </div>
+                        <div class="vehicle-info">
+                            <h3>펠리세이드</h3>
+                            <div class="vehicle-specs">
+                                <span><i class="fas fa-gas-pump"></i> HEV</span>
+                                <span><i class="fas fa-users"></i> 8인승</span>
+                                <span><i class="fas fa-cog"></i> 자동</span>
+                            </div>
+                            <div class="vehicle-price">
+                                <span class="price">₩200,000</span>
+                                <span class="period">/일</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="vehicle-slide">
+                        <div class="vehicle-image">
+                            <img src="images/소나타 디엣지.png" alt="쏘나타">
+                            <div class="vehicle-badge">중형</div>
+                        </div>
+                        <div class="vehicle-info">
+                            <h3>쏘나타</h3>
+                            <div class="vehicle-specs">
+                                <span><i class="fas fa-gas-pump"></i> 가솔린</span>
+                                <span><i class="fas fa-users"></i> 5인승</span>
+                                <span><i class="fas fa-cog"></i> 자동</span>
+                            </div>
+                            <div class="vehicle-price">
+                                <span class="price">₩90,000</span>
+                                <span class="period">/일</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="carousel-controls">
+                <button class="carousel-btn prev-btn">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="carousel-btn next-btn">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 렌트카 이용 과정 -->
+    <section id="process" class="process">
+        <div class="container">
+            <h2>렌트카 이용 과정</h2>
+            <p class="section-subtitle">간단한 4단계로 완성되는 스마트한 렌트카 서비스</p>
+            <div class="process-steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>차량 선택</h3>
+                    <p>원하는 차량을 선택하고 대여 기간을 설정합니다</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>예약 확인</h3>
+                    <p>예약 정보를 확인하고 결제를 진행합니다</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>차량 수령</h3>
+                    <p>지정된 장소에서 차량을 수령합니다</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h3>반납</h3>
+                    <p>사용 후 지정된 장소에 차량을 반납합니다</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 서비스 특징 -->
+    <section class="features">
+        <div class="container">
+            <h2>서비스 특징</h2>
+            <p class="section-subtitle">고객 만족을 위한 차별화된 렌트카 서비스</p>
+            <div class="features-grid">
+                <div class="feature">
+                    <div class="feature-icon">
+                        <i class="fas fa-ban"></i>
+                        <i class="fas fa-smoking"></i>
+                    </div>
+                    <h3>금연</h3>
+                    <p>모든 차량은 금연 정책을 적용하여 깨끗한 환경을 제공합니다</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">
+                        <i class="fas fa-truck"></i>
+                    </div>
+                    <h3>딜리버리</h3>
+                    <p>원하는 장소로 차량을 배송해드리는 편리한 서비스</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">
+                        <i class="fas fa-credit-card"></i>
+                    </div>
+                    <h3>간편 결제</h3>
+                    <p>다양한 결제 방법으로 편리하게 이용하세요</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">
+                        <i class="fas fa-car-crash"></i>
+                    </div>
+                    <h3>사고대차</h3>
+                    <p>교통사고 피해자를 위한 원스톱 대차 서비스</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+    <!-- 문의 정보 -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2>문의 및 연락처</h2>
+            <p class="section-subtitle">언제든지 편리하게 연락주세요. 최고의 서비스로 답변드리겠습니다</p>
+            <div class="contact-info">
+                <div class="contact-item">
+                    <a href="tel:0507-1337-3679" class="icon-link">
+                        <i class="fas fa-phone"></i>
+                    </a>
+                    <h3>전화 문의</h3>
+                    <p>0507-1337-3679</p>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <h3>주소</h3>
+                    <p>경기도 평택시 용이동 129</p>
+                </div>
+                <div class="contact-item">
+                    <a href="http://pf.kakao.com/_ctKfn/chat" target="_blank" class="icon-link kakao-icon-link">
+                        <i class="fas fa-comments"></i>
+                    </a>
+                    <h3>카카오톡 문의</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 구글 지도 -->
+    <section class="map-section">
+        <div class="container">
+            <h2>찾아오시는 길</h2>
+            <div class="map-container">
+                <iframe 
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1593.196304519241!2d127.13604434919836!3d37.000429041642775!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x357b30bd4dcd0b3d%3A0x742fd9e5ba5dd085!2z6rK96riw64-EIO2Pie2DneyLnCDsmqnsnbTrj5kgMTI5!5e0!3m2!1sko!2skr!4v1754381033038!5m2!1sko!2skr"
+                    width="100%" 
+                    height="450" 
+                    style="border:0;" 
+                    allowfullscreen="" 
+                    loading="lazy" 
+                    referrerpolicy="no-referrer-when-downgrade">
+                </iframe>
+                <div class="map-overlay">
+                    <div class="location-pin">
+                        <div class="pin-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div class="pin-label">
+                            <span>에스카렌트카</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="map-link">
+                <a href="https://maps.app.goo.gl/wcjdstgp4daJ1g4P8" target="_blank" class="btn btn-primary">
+                    <i class="fas fa-map-marked-alt"></i> 구글 지도에서 보기
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 푸터 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>에스엔엠 렌트카</h3>
+                    <p>안전하고 편리한 차량 대여 서비스를 제공합니다</p>
+                </div>
+                <div class="footer-section">
+                    <h3>빠른 링크</h3>
+                    <ul>
+                        <li><a href="index.html">홈</a></li>
+                        <li><a href="vehicles.html">차량 보기</a></li>
+                        <li><a href="#process">이용방법</a></li>
+                        <li><a href="#contact">문의</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>연락처</h3>
+                    <p>전화: <a href="tel:0507-1337-3679" class="phone-link">0507-1337-3679</a></p>
+                    <p>카카오톡: <a href="http://pf.kakao.com/_ctKfn/chat" target="_blank" class="kakao-link">문의하기</a></p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 에스엔엠 렌트카. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 카카오톡 문의 아이콘 -->
+    <div class="kakao-inquiry">
+        <a href="http://pf.kakao.com/_ctKfn/chat" target="_blank">
+            <i class="fas fa-comments"></i>
+            <span class="kakao-text">카카오톡 문의</span>
+        </a>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html> 

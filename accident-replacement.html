@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>사고대차 서비스 - 에스엔엠 렌트카</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* 사고대차 페이지 전용 스타일 */
+        .accident-hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 120px 0 80px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .accident-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><polygon fill="rgba(255,255,255,0.05)" points="0,0 1000,300 1000,1000 0,700"/></svg>');
+            background-size: cover;
+        }
+
+        .accident-hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 2;
+        }
+
+        .accident-hero .subtitle {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-top: 3rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #ffecd2;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+
+        /* 보험사 파트너 섹션 */
+        .insurance-partners {
+            margin-top: 4rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .insurance-partners h3 {
+            color: white;
+            font-size: 1.3rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .partners-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1.5rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .partner-logo {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .logo-placeholder {
+            width: 110px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+            color: #2d3748;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            padding: 0.2rem;
+            line-height: 1;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .logo-placeholder:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            background: rgba(255, 255, 255, 1);
+        }
+
+        /* 보험사별 브랜드 컬러 */
+        .samsung {
+            border-left: 4px solid #1f4e79;
+        }
+
+        .hyundai {
+            border-left: 4px solid #003d71;
+        }
+
+        .kb {
+            border-left: 4px solid #ffb400;
+        }
+
+        .meritz {
+            border-left: 4px solid #e60012;
+        }
+
+
+
+        .axa {
+            border-left: 4px solid #00008f;
+        }
+
+        .db {
+            border-left: 4px solid #0066cc;
+        }
+
+        .lotte {
+            border-left: 4px solid #e60012;
+        }
+
+        .hanwha {
+            border-left: 4px solid #ff6b35;
+        }
+
+        .carrot {
+            border-left: 4px solid #ff8c00;
+        }
+
+        /* 보험대차 정보 섹션 */
+        .insurance-info {
+            padding: 80px 0;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            position: relative;
+        }
+
+        .insurance-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            margin-top: 3rem;
+        }
+
+        .insurance-text {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .info-box, .benefit-box {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border-left: 5px solid #667eea;
+        }
+
+        .info-box h3 {
+            color: #1a202c;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            font-weight: bold;
+        }
+
+        .info-box p {
+            color: #4a5568;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .benefit-box {
+            border-left-color: #48bb78;
+            background: linear-gradient(135deg, rgba(72, 187, 120, 0.05) 0%, rgba(56, 178, 172, 0.05) 100%);
+        }
+
+        .benefit-box h4 {
+            color: #2d3748;
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+        }
+
+        .benefit-box .highlight {
+            color: #e53e3e;
+            font-size: 1.2rem;
+            background: linear-gradient(90deg, #fc8181, #f687b3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* 시각적 요소 */
+        .visual-container {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 25px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .car-accident-scene {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+            border-radius: 15px;
+        }
+
+        .car {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            padding: 1rem;
+        }
+
+        .car i {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .damaged-car i {
+            color: #e53e3e;
+        }
+
+        .replacement-car i {
+            color: #48bb78;
+        }
+
+        .damage-icon, .new-icon {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            font-size: 1.5rem;
+        }
+
+        .arrow {
+            font-size: 2rem;
+            color: #667eea;
+            font-weight: bold;
+            animation: arrow-pulse 2s infinite;
+        }
+
+        @keyframes arrow-pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        .car p {
+            font-size: 0.9rem;
+            color: #4a5568;
+            margin: 0;
+            font-weight: bold;
+        }
+
+        .process-info {
+            display: flex;
+            justify-content: space-around;
+            gap: 1rem;
+        }
+
+        .step-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1rem;
+            background: #f7fafc;
+            border-radius: 12px;
+            flex: 1;
+        }
+
+        .step-info i {
+            font-size: 1.5rem;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        .step-info span {
+            font-size: 0.9rem;
+            color: #2d3748;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        /* 보험대차 반응형 */
+        @media (max-width: 768px) {
+            .insurance-content {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+            
+            .car-accident-scene {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .arrow {
+                transform: rotate(90deg);
+            }
+            
+            .process-info {
+                flex-direction: column;
+            }
+        }
+
+        /* 서비스 개요 */
+        .service-overview {
+            padding: 80px 0;
+            background: #f8fafc;
+        }
+
+        .service-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .service-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: all 0.4s ease;
+            border: 2px solid transparent;
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            border-color: #667eea;
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.2);
+        }
+
+        .service-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 2rem;
+            color: white;
+        }
+
+        /* 프로세스 플로우 */
+        .process-flow {
+            padding: 80px 0;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+        }
+
+        .flow-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            margin-top: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .flow-step {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            text-align: center;
+            min-width: 200px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .flow-step::after {
+            content: '→';
+            position: absolute;
+            right: -2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 2rem;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .flow-step:last-child::after {
+            display: none;
+        }
+
+        .step-number {
+            width: 40px;
+            height: 40px;
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin: 0 auto 1rem;
+        }
+
+        /* A/S 보장 섹션 */
+        .warranty-section {
+            padding: 80px 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+        }
+
+        .warranty-highlight {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 25px;
+            padding: 3rem;
+            margin: 3rem auto;
+            max-width: 600px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .warranty-icon {
+            font-size: 4rem;
+            color: #ffecd2;
+            margin-bottom: 1.5rem;
+        }
+
+        /* CTA 섹션 */
+        .accident-cta {
+            padding: 80px 0;
+            background: #1a202c;
+            color: white;
+            text-align: center;
+        }
+
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .cta-button {
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .cta-primary {
+            background: linear-gradient(135deg, #ff9a9e, #fecfef);
+            color: #1a202c;
+        }
+
+        .cta-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid #667eea;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        /* 카카오톡 플로팅 버튼 */
+        .kakao-floating {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+        }
+
+        .kakao-floating .kakao-link {
+            background: linear-gradient(135deg, #fecfef, #ffecd2);
+            color: #2c1e0e;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5);
+            box-shadow: 0 4px 15px rgba(254, 207, 239, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .kakao-floating .kakao-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(254, 207, 239, 0.6);
+        }
+
+        .kakao-floating .kakao-link i {
+            font-size: 1.1rem;
+            color: #2c1e0e;
+        }
+
+        /* 반응형 */
+        @media (max-width: 768px) {
+            .accident-hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero-stats {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+            
+            .insurance-partners {
+                margin-top: 3rem;
+            }
+            
+            .partners-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+                max-width: 300px;
+            }
+            
+            .logo-placeholder {
+                width: 90px;
+                height: 50px;
+                font-size: 0.6rem;
+                padding: 0.2rem;
+            }
+            
+
+            
+            .flow-container {
+                flex-direction: column;
+            }
+            
+            .flow-step::after {
+                content: '↓';
+                right: 50%;
+                top: 100%;
+                transform: translateX(50%);
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .kakao-floating {
+                bottom: 20px;
+                right: 15px;
+            }
+            
+            .kakao-floating .kakao-link {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.8rem;
+            }
+            
+            .kakao-floating .kakao-link span {
+                display: none;
+            }
+            
+            .kakao-floating .kakao-link i {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 헤더 -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <a href="index.html">
+                    <h1>에스엔엠 렌트카</h1>
+                </a>
+            </div>
+            <nav class="nav">
+                <ul class="nav-list">
+                    <li><a href="index.html">홈</a></li>
+                    <li><a href="vehicles.html">차량 보기</a></li>
+                    <li><a href="accident-replacement.html" class="active">사고대차</a></li>
+                    <li><a href="index.html#process">이용방법</a></li>
+                    <li><a href="index.html#contact">문의</a></li>
+                </ul>
+            </nav>
+            <div class="mobile-menu-toggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </header>
+    
+    <!-- 카카오톡 링크 -->
+    <div class="kakao-floating">
+        <a href="tel:0507-1337-3679" class="kakao-link">
+            <i class="fas fa-comments"></i>
+            <span>카카오톡 실시간 문의</span>
+        </a>
+    </div>
+
+    <!-- 히어로 섹션 -->
+    <section class="accident-hero">
+        <div class="container">
+            <h1>🚗 사고대차 원스톱 서비스</h1>
+            <p class="subtitle">교통사고 피해자를 위한 걱정 없는 토털 케어 솔루션</p>
+            <p>사고차량 수리부터 대차 서비스까지 한 번에 해결해드립니다</p>
+            
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <span class="stat-number">보험</span>
+                    <span class="stat-label">보험사 협력</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">1년</span>
+                    <span class="stat-label">A/S 보장</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">24시간</span>
+                    <span class="stat-label">신속 대응</span>
+                </div>
+            </div>
+            
+            <!-- 보험사 로고 섹션 -->
+            <div class="insurance-partners">
+                <h3>협력 보험사</h3>
+                <div class="partners-grid">
+                    <div class="partner-logo">
+                        <div class="logo-placeholder samsung">
+                            <span>삼성화재</span>
+                        </div>
+                    </div>
+                    <div class="partner-logo">
+                        <div class="logo-placeholder hyundai">
+                            <span>현대해상</span>
+                        </div>
+                    </div>
+                    <div class="partner-logo">
+                        <div class="logo-placeholder kb">
+                            <span>KB손해보험</span>
+                        </div>
+                    </div>
+                    <div class="partner-logo">
+                        <div class="logo-placeholder meritz">
+                            <span>메리츠화재</span>
+                        </div>
+                    </div>
+                    <div class="partner-logo">
+                        <div class="logo-placeholder axa">
+                            <span>AXA손해보험</span>
+                        </div>
+                    </div>
+                                         <div class="partner-logo">
+                         <div class="logo-placeholder db">
+                             <span>DB손해보험</span>
+                         </div>
+                     </div>
+                     <div class="partner-logo">
+                         <div class="logo-placeholder lotte">
+                             <span>롯데손해보험</span>
+                         </div>
+                     </div>
+                     <div class="partner-logo">
+                         <div class="logo-placeholder hanwha">
+                             <span>한화손해보험</span>
+                         </div>
+                     </div>
+                     <div class="partner-logo">
+                         <div class="logo-placeholder carrot">
+                             <span>캐롯손해보험</span>
+                         </div>
+                     </div>
+                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 보험대차란? -->
+    <section class="insurance-info">
+        <div class="container">
+            <h2 style="text-align: center; font-size: 2.5rem; margin-bottom: 1rem;">🛡️ 보험대차란?</h2>
+            <div class="insurance-content">
+                <div class="insurance-text">
+                    <div class="info-box">
+                        <h3>교통사고 피해차량 대차 서비스</h3>
+                        <p>교통사고로 차량에 피해를 입으신 고객에게<br>
+                        가해차량의 보험회사로부터 파손된 차량을<br>
+                        수리받는 기간동안 차량을 대여해주는 서비스입니다.</p>
+                    </div>
+                    
+                    <div class="benefit-box">
+                        <h4>🎯 특별 혜택</h4>
+                        <p>100% 피해가 아닌 <strong>8:2 정도의 과실비율</strong>이<br>
+                        나오더라도 과실부분을 지원해드리므로<br>
+                        <strong class="highlight">렌트 비용은 전혀 없습니다!</strong></p>
+                    </div>
+                    
+                    <div class="info-box" style="border-left-color: #ffa726;">
+                        <h3>🚗 방어운전! 의지와 관계없는 사고!</h3>
+                        <p>사고피해시 접수번호 받으시고<br>
+                        차량입고 날짜 정하셔서 연락주시면<br>
+                        <strong>최고의 서비스로 모시겠습니다.</strong></p>
+                    </div>
+                </div>
+                
+                <div class="insurance-visual">
+                    <div class="visual-container">
+                        <div class="car-accident-scene">
+                            <div class="car damaged-car">
+                                <i class="fas fa-car"></i>
+                                <span class="damage-icon">💥</span>
+                                <p>사고차량</p>
+                            </div>
+                            <div class="arrow">→</div>
+                            <div class="car replacement-car">
+                                <i class="fas fa-car"></i>
+                                <span class="new-icon">✨</span>
+                                <p>대차차량</p>
+                            </div>
+                        </div>
+                        <div class="process-info">
+                            <div class="step-info">
+                                <i class="fas fa-phone"></i>
+                                <span>1. 사고 접수</span>
+                            </div>
+                            <div class="step-info">
+                                <i class="fas fa-calendar-alt"></i>
+                                <span>2. 입고일 예약</span>
+                            </div>
+                            <div class="step-info">
+                                <i class="fas fa-car-side"></i>
+                                <span>3. 즉시 대차</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 서비스 개요 -->
+    <section class="service-overview">
+        <div class="container">
+            <h2 style="text-align: center; font-size: 2.5rem; margin-bottom: 1rem;">🔧 원스톱 서비스</h2>
+            <p style="text-align: center; color: #666; font-size: 1.2rem;">모든 과정을 한 곳에서 편리하게</p>
+            
+            <div class="service-grid">
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-car-crash"></i>
+                    </div>
+                    <h3>사고대차 서비스</h3>
+                    <p>사고로 인한 차량 파손 시<br>즉시 대체 차량을 제공합니다.</p>
+                    <ul style="text-align: left; margin-top: 1rem; color: #666;">
+                        <li>• 다양한 차종 보유</li>
+                        <li>• 즉시 차량 배정</li>
+                        <li>• 보험사 직접 정산</li>
+                    </ul>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-truck-loading"></i>
+                    </div>
+                    <h3>입고·출고 서비스</h3>
+                    <p>사고차량의 입고부터 수리 완료 후<br>출고까지 전 과정을 대행해드립니다.</p>
+                    <ul style="text-align: left; margin-top: 1rem; color: #666;">
+                        <li>• 무료 딜리버리 서비스</li>
+                        <li>• 입고 과정 대행</li>
+                        <li>• 출고 시 배송</li>
+                    </ul>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-tools"></i>
+                    </div>
+                    <h3>사고수리 토털케어</h3>
+                    <p>전문 정비소와 협력하여<br>완벽한 수리 서비스를 제공합니다.</p>
+                    <ul style="text-align: left; margin-top: 1rem; color: #666;">
+                        <li>• 공식 정비소 협력</li>
+                        <li>• 정품 부품 사용</li>
+                        <li>• 품질 보증 수리</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 프로세스 플로우 -->
+    <section class="process-flow">
+        <div class="container">
+            <h2 style="text-align: center; font-size: 2.5rem; margin-bottom: 1rem;">📋 서비스 진행 과정</h2>
+            <p style="text-align: center; color: #666; font-size: 1.2rem;">간단한 4단계로 모든 것이 해결됩니다</p>
+            
+            <div class="flow-container">
+                <div class="flow-step">
+                    <div class="step-number">1</div>
+                    <h4>사고 접수</h4>
+                    <p>전화 또는 카카오톡으로<br>사고 신고 및 상담</p>
+                </div>
+                
+                <div class="flow-step">
+                    <div class="step-number">2</div>
+                    <h4>대차 제공</h4>
+                    <p>즉시 대체 차량 배정<br>및 배송 서비스</p>
+                </div>
+                
+                <div class="flow-step">
+                    <div class="step-number">3</div>
+                    <h4>수리 진행</h4>
+                    <p>전문 정비소에서<br>완벽한 수리 작업</p>
+                </div>
+                
+                <div class="flow-step">
+                    <div class="step-number">4</div>
+                    <h4>차량 인도</h4>
+                    <p>수리 완료 후<br>깨끗한 차량 인도</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- A/S 보장 섹션 -->
+    <section class="warranty-section">
+        <div class="container">
+            <h2 style="font-size: 2.5rem; margin-bottom: 1rem;">🛡️ 안심 A/S 보장</h2>
+            <p style="font-size: 1.2rem; opacity: 0.9;">수리 품질에 대한 확실한 약속</p>
+            
+            <div class="warranty-highlight">
+                <div class="warranty-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3 style="font-size: 2rem; margin-bottom: 1rem;">1년 품질보증</h3>
+                <p style="font-size: 1.1rem; line-height: 1.6;">
+                    수리한 모든 부위에 대해<br><strong>1년간 무상 A/S</strong>를 보장합니다.<br>
+                    수리 부위에 문제가 발생할 경우<br>언제든지 무료로 재수리해드립니다.
+                </p>
+                <div style="display: flex; justify-content: center; gap: 2rem; margin-top: 2rem; flex-wrap: wrap;">
+                    <div>
+                        <i class="fas fa-check-circle" style="color: #ffecd2; margin-right: 0.5rem;"></i>
+                        무상 재수리
+                    </div>
+                    <div>
+                        <i class="fas fa-check-circle" style="color: #ffecd2; margin-right: 0.5rem;"></i>
+                        정품 부품 보장
+                    </div>
+                    <div>
+                        <i class="fas fa-check-circle" style="color: #ffecd2; margin-right: 0.5rem;"></i>
+                        품질 인증서 발급
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA 섹션 -->
+    <section class="accident-cta">
+        <div class="container">
+            <h2 style="font-size: 2.5rem; margin-bottom: 1rem;">📞 지금 바로 상담받으세요</h2>
+            <p style="font-size: 1.2rem; opacity: 0.8; margin-bottom: 2rem;">
+                24시간 언제든지 전문 상담사가 도와드립니다<br>
+                사고 접수부터 차량 인도까지<br>모든 과정을 책임집니다
+            </p>
+            
+            <div class="cta-buttons">
+                <a href="tel:0507-1337-3679" class="cta-button cta-primary">
+                    <i class="fas fa-phone"></i>
+                    긴급 상담 전화
+                </a>
+                <a href="http://pf.kakao.com/_ctKfn/chat" target="_blank" class="cta-button cta-secondary">
+                    <i class="fas fa-comments"></i>
+                    카카오톡 상담
+                </a>
+            </div>
+            
+            <div style="margin-top: 3rem; padding: 2rem; background: rgba(255,255,255,0.1); border-radius: 15px; backdrop-filter: blur(10px);">
+                <h4 style="margin-bottom: 1.5rem;">📍 서비스 지역</h4>
+                <div style="margin-bottom: 1.5rem;">
+                    <h5 style="color: #ffecd2; margin-bottom: 0.5rem; font-size: 1.1rem;">🎯 주요 서비스 지역</h5>
+                    <p style="margin-bottom: 0;">경기 오산, 평택, 안성, 천안</p>
+                </div>
+                <div>
+                    <h5 style="color: #ffecd2; margin-bottom: 0.5rem; font-size: 1.1rem;">⏰ 기타 지역</h5>
+                    <p style="margin-bottom: 0;">차량 수리 기간이 <strong>7일 이상</strong>인 경우<br>
+                    전국 어디든 서비스 제공 가능합니다</p>
+                </div>
+                <div style="margin-top: 1.5rem; padding: 1rem; background: rgba(255,255,255,0.1); border-radius: 10px; border-left: 4px solid #ffecd2;">
+                    <p style="font-size: 0.9rem; margin: 0; opacity: 0.9;">
+                        💡 <strong>서비스 가능 여부</strong>는 수리 기간과 지역에 따라 달라질 수 있습니다.<br>
+                        정확한 상담을 위해 먼저 연락주시기 바랍니다.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 푸터 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>에스엔엠 렌트카</h3>
+                    <p>고객 만족을 최우선으로 하는 렌터카 서비스</p>
+                </div>
+                <div class="footer-section">
+                    <h4>빠른 링크</h4>
+                    <ul>
+                        <li><a href="index.html">홈</a></li>
+                        <li><a href="vehicles.html">차량보기</a></li>
+                        <li><a href="accident-replacement.html">사고대차</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>연락처</h4>
+                    <p><i class="fas fa-phone"></i> <a href="tel:0507-1337-3679">0507-1337-3679</a></p>
+                    <p><i class="fas fa-map-marker-alt"></i> 서울시 강남구</p>
+                    <p><i class="fas fa-comments"></i> <a href="http://pf.kakao.com/_ctKfn/chat" target="_blank">카카오톡 문의</a></p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 에스엔엠 렌트카. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 모바일 메뉴 토글
+        const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+        const navList = document.querySelector('.nav-list');
+
+        mobileMenuToggle.addEventListener('click', () => {
+            navList.classList.toggle('active');
+            mobileMenuToggle.classList.toggle('active');
+        });
+
+        // 스크롤 애니메이션
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // 애니메이션 대상 요소들
+        document.querySelectorAll('.service-card, .flow-step, .warranty-highlight').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'all 0.6s ease';
+            observer.observe(el);
+        });
+
+        // 부드러운 스크롤
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

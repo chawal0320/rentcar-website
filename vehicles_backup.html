@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>차량 보기 - 에스엔엠 렌트카</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- 헤더 -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <a href="index.html">
+                    <h1>에스엔엠 렌트카</h1>
+                </a>
+            </div>
+            <nav class="nav">
+                <ul class="nav-list">
+                    <li><a href="index.html">홈</a></li>
+                    <li><a href="vehicles.html" class="active">차량 보기</a></li>
+                    <li><a href="index.html#process">이용방법</a></li>
+                    <li><a href="index.html#contact">문의</a></li>
+                </ul>
+            </nav>
+            <div class="mobile-menu-toggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- 간단한 검색 섹션 -->
+    <section class="simple-search-section">
+        <div class="container">
+            <h2>차량 선택</h2>
+            <p class="search-subtitle">원하시는 차량을 선택해주세요</p>
+            
+            <!-- 빠른 필터 -->
+            <div class="quick-filters">
+                <button class="filter-btn active" data-filter="all">전체</button>
+                <button class="filter-btn" data-filter="compact">소형/준중형</button>
+                <button class="filter-btn" data-filter="midsize">중형/준대형</button>
+                <button class="filter-btn" data-filter="large">대형/프리미엄</button>
+                <button class="filter-btn" data-filter="suv">SUV/RV</button>
+                <button class="filter-btn" data-filter="import">수입차</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 차량 목록 -->
+    <section class="vehicles-section">
+        <div class="container">
+            <div class="vehicle-grid">
+                <!-- 소형/준중형 차량 -->
+                <div class="vehicle-card" data-type="compact">
+                    <div class="vehicle-image">
+                        <img src="images/기아 모닝 어반.png" alt="기아 모닝 어반">
+                        <div class="vehicle-badge">소형차</div>
+                    </div>
+                    <div class="vehicle-info">
+                        <h3>기아 모닝 어반</h3>
+                        <div class="vehicle-specs">
+                            <span><i class="fas fa-gas-pump"></i> 휘발유</span>
+                            <span><i class="fas fa-users"></i> 4인승</span>
+                            <span><i class="fas fa-cog"></i> 자동</span>
+                        </div>
+                        <div class="vehicle-price">
+                            <span class="price">₩70,000</span>
+                            <span class="period">/일</span>
+                        </div>
+                        <div class="discount-info">3일이상 할인</div>
+                        <button class="reserve-button">예약하기</button>
+                    </div>
+                </div>
+
+                <div class="vehicle-card" data-type="compact">
+                    <div class="vehicle-image">
+                        <img src="images/더뉴 아반떼.png" alt="더 뉴 아반떼 AD">
+                        <div class="vehicle-badge">소형차</div>
+                    </div>
+                    <div class="vehicle-info">
+                        <h3>더 뉴 아반떼 AD</h3>
+                        <div class="vehicle-specs">
+                            <span><i class="fas fa-gas-pump"></i> 휘발유</span>
+                            <span><i class="fas fa-users"></i> 5인승</span>
+                            <span><i class="fas fa-cog"></i> 자동</span>
+                        </div>
+                        <div class="vehicle-price">
+                            <span class="price">₩80,000</span>
+                            <span class="period">/일</span>
+                        </div>
+                        <div class="discount-info">3일이상 할인</div>
+                        <button class="reserve-button">예약하기</button>
+                    </div>
+                </div>
+
+                <!-- 중형/준대형 차량 -->
+                <div class="vehicle-card" data-type="midsize">
+                    <div class="vehicle-image">
+                        <img src="images/소나타 디엣지.png" alt="쏘나타 디 엣지">
+                        <div class="vehicle-badge">중형차</div>
+                    </div>
+                    <div class="vehicle-info">
+                        <h3>쏘나타 디 엣지</h3>
+                        <div class="vehicle-specs">
+                            <span><i class="fas fa-gas-pump"></i> LPG</span>
+                            <span><i class="fas fa-users"></i> 5인승</span>
+                            <span><i class="fas fa-cog"></i> 자동</span>
+                        </div>
+                        <div class="vehicle-price">
+                            <span class="price">₩100,000</span>
+                            <span class="period">/일</span>
+                        </div>
+                        <div class="discount-info">3일이상 할인</div>
+                        <button class="reserve-button">예약하기</button>
+                    </div>
+                </div>
+
+                <div class="vehicle-card" data-type="midsize">
+                    <div class="vehicle-image">
+                        <img src="images/기아 THE NEW K5.png" alt="The New K5">
+                        <div class="vehicle-badge">중형차</div>
+                    </div>
+                    <div class="vehicle-info">
+                        <h3>The New K5</h3>
+                        <div class="vehicle-specs">
+                            <span><i class="fas fa-gas-pump"></i> LPG</span>
+                            <span><i class="fas fa-users"></i> 5인승</span>
+                            <span><i class="fas fa-cog"></i> 자동</span>
+                        </div>
+                        <div class="vehicle-price">
+                            <span class="price">₩100,000</span>
+                            <span class="period">/일</span>
+                        </div>
+                        <div class="discount-info">3일이상 할인</div>
+                        <button class="reserve-button">예약하기</button>
+                    </div>
+                </div>
+
+                <div class="vehicle-card" data-type="midsize">
+                    <div class="vehicle-image">
+                        <img src="images/k5디젤.png" alt="K5 디젤">
+                        <div class="vehicle-badge">중형차</div>
+                    </div>
+                    <div class="vehicle-info">
+                        <h3>K5 디젤</h3>
+                        <div class="vehicle-specs">
+                            <span><i class="fas fa-gas-pump"></i> 경유</span>
+                            <span><i class="fas fa-users"></i> 5인승</span>
+                            <span><i class="fas fa-cog"></i> 자동</span>
+                        </div>
+                        <div class="vehicle-price">
+                            <span class="price">₩80,000</span>
+                            <span class="period">/일</span>
+                        </div>
+                        <div class="discount-info">3일이상 할인</div>
+                        <button class="reserve-button">예약하기</button>
+                    </div>
+                </div>
+
+                <!-- 대형/프리미엄 차량 -->
+                <div class="vehicle-card" data-type="large">
+                    <div class="vehicle-image">
+                        <img src="images/그랜저 gn7.png" alt="디올뉴그랜저GN7">
+                        <div class="vehicle-badge">중대형차</div>
+                    </div>
+                    <div class="vehicle-info">
+                        <h3>디올뉴그랜저GN7</h3>
+                        <div class="vehicle-specs">
+                            <span><i class="fas fa-gas-pump"></i> 휘발유</span>
+                            <span><i class="fas fa-users"></i> 7인승</span>
+                            <span><i class="fas fa-cog"></i> 자동</span>
+                        </div>
+                        <div class="vehicle-price">
+                            <span class="price">₩130,000</span>
+                            <span class="period">/일</span>
+                        </div>
+                        <div class="discount-info">3일이상 할인</div>
+                        <button class="reserve-button">예약하기</button>
+                    </div>
+                </div>
+
+                <div class="vehicle-card" data-type="large">
+                    <div class="vehicle-image">
+                        <img src="images/제네시스 g80.png" alt="제네시스 G80">
+                        <div class="vehicle-badge">대형차</div>
+                    </div>
+                    <div class="vehicle-info">
+                        <h3>제네시스 G80</h3>
+                        <div class="vehicle-specs">
+                            <span><i class="fas fa-gas-pump"></i> 휘발유</span>
+                            <span><i class="fas fa-users"></i> 5인승</span>
+                            <span><i class="fas fa-cog"></i> 자동</span>
+                        </div>
+                        <div class="vehicle-price">
+                            <span class="price">₩250,000</span>
+                            <span class="period">/일</span>
+                        </div>
+                        <div class="discount-info">3일이상 할인</div>
+                        <button class="reserve-button">예약하기</button>
+                    </div>
+                </div>
+
+                <div class="vehicle-card" data-type="large">
+                    <div class="vehicle-image">
+                        <img src="images/g90.png" alt="제네시스 G90">
+                        <div class="vehicle-badge">대형차</div>
+                    </div>
+                    <div class="vehicle-info">
+                        <h3>제네시스 G90</h3>
+                        <div class="vehicle-specs">
+                            <span><i class="fas fa-gas-pump"></i> 휘발유</span>
+                            <span><i class="fas fa-users"></i> 5인승</span>
+                            <span><i class="fas fa-cog"></i> 자동</span>
+                        </div>
+                        <div class="vehicle-price">
+                            <span class="price">₩300,000</span>
+                            <span class="period">/일</span>
+                        </div>
+                        <div class="discount-info">3일이상 할인</div>
+                        <button class="reserve-button">예약하기</button>
+                    </div>
+                </div>
+
+                <!-- SUV/RV 차량 -->
+                <div class="vehicle-card" data-type="suv">
+                    <div class="vehicle-image">
+                        <img src="images/셀토스.png" alt="셀토스">
+                        <div class="vehicle-badge">소형SUV</div>
+                    </div>
+                    <div class="vehicle-info">
+                        <h3>셀토스</h3>
+                        <div class="vehicle-specs">
+                            <span><i class="fas fa-gas-pump"></i> 휘발유</span>
+                            <span><i class="fas fa-users"></i> 5인승</span>
+                            <span><i class="fas fa-cog"></i> 자동</span>
+                        </div>
+                        <div class="vehicle-price">
+                            <span class="price">₩100,000</span>
+                            <span class="period">/일</span>
+                        </div>
+                        <div class="discount-info">3일이상 할인</div>
+                        <button class="reserve-button">예약하기</button>
+                    </div>
+                </div>
+
+                <div class="vehicle-card" data-type="suv">
+                    <div class="vehicle-image">
+                        <img src="images/기아 니로.png" alt="니로 HEV">
+                        <div class="vehicle-badge">소형SUV</div>
+                    </div>
+                    <div class="vehicle-info">
+                        <h3>니로 HEV</h3>
+                        <div class="vehicle-specs">
+                            <span><i class="fas fa-gas-pump"></i> 휘발유</span>
+                            <span><i class="fas fa-users"></i> 5인승</span>
+                            <span><i class="fas fa-cog"></i> 자동</span>
+                        </div>
+                        <div class="vehicle-price">
+                            <span class="price">₩110,000</span>
+                            <span class="period">/일</span>
+                        </div>
+                        <div class="discount-info">3일이상 할인</div>
+                        <button class="reserve-button">예약하기</button>
+                    </div>
+                </div>
+
+                <div class="vehicle-card" data-type="suv">
+                    <div class="vehicle-image">
+                        <img src="images/스포티지.png" alt="스포티지NQ5">
+                        <div class="vehicle-badge">SUV</div>
+                    </div>
+                    <div class="vehicle-info">
+                        <h3>스포티지NQ5</h3>
+                        <div class="vehicle-specs">
+                            <span><i class="fas fa-gas-pump"></i> 경유</span>
+                            <span><i class="fas fa-users"></i> 5인승</span>
+                            <span><i class="fas fa-cog"></i> 자동</span>
+                        </div>
+                        <div class="vehicle-price">
+                            <span class="price">₩120,000</span>
+                            <span class="period">/일</span>
+                        </div>
+                        <div class="discount-info">3일이상 할인</div>
+                        <button class="reserve-button">예약하기</button>
+                    </div>
+                </div>
+
+                <div class="vehicle-card" data-type="suv">
+                    <div class="vehicle-image">
+                        <img src="images/더뉴쏘렌토.png" alt="더뉴쏘렌토 MQ4">
+                        <div class="vehicle-badge">SUV</div>
+                    </div>
+                    <div class="vehicle-info">
+                        <h3>더뉴쏘렌토 MQ4 신형</h3>
+                        <div class="vehicle-specs">
+                            <span><i class="fas fa-gas-pump"></i> 경유</span>
+                            <span><i class="fas fa-users"></i> 7인승</span>
+                            <span><i class="fas fa-cog"></i> 자동</span>
+                        </div>
+                        <div class="vehicle-price">
+                            <span class="price">₩150,000</span>
+                            <span class="period">/일</span>
+                        </div>
+                        <div class="discount-info">3일이상 할인</div>
+                        <button class="reserve-button">예약하기</button>
+                    </div>
+                </div>
+
+                <div class="vehicle-card" data-type="suv">
+                    <div class="vehicle-image">
+                        <img src="images/펠리세이드.png" alt="펠리세이드 3세대">
+                        <div class="vehicle-badge">SUV</div>
+                    </div>
+                    <div class="vehicle-info">
+                        <h3>펠리세이드 3세대</h3>
+                        <div class="vehicle-specs">
+                            <span><i class="fas fa-gas-pump"></i> HEV</span>
+                            <span><i class="fas fa-users"></i> 8인승</span>
+                            <span><i class="fas fa-cog"></i> 자동</span>
+                        </div>
+                        <div class="vehicle-price">
+                            <span class="price">₩180,000</span>
+                            <span class="period">/일</span>
+                        </div>
+                        <div class="discount-info">3일이상 할인</div>
+                        <button class="reserve-button">예약하기</button>
+                    </div>
+                </div>
+
+                <div class="vehicle-card" data-type="suv">
+                    <div class="vehicle-image">
+                        <img src="images/카니발.png" alt="더 뉴 카니발">
+                        <div class="vehicle-badge">RV</div>
+                    </div>
+                    <div class="vehicle-info">
+                        <h3>더 뉴 카니발 신형</h3>
+                        <div class="vehicle-specs">
+                            <span><i class="fas fa-gas-pump"></i> 경유&휘발유</span>
+                            <span><i class="fas fa-users"></i> 9인승</span>
+                            <span><i class="fas fa-cog"></i> 자동</span>
+                        </div>
+                        <div class="vehicle-price">
+                            <span class="price">₩160,000</span>
+                            <span class="period">/일</span>
+                        </div>
+                        <div class="discount-info">3일이상 할인</div>
+                        <button class="reserve-button">예약하기</button>
+                    </div>
+                </div>
+
+                <div class="vehicle-card" data-type="suv">
+                    <div class="vehicle-image">
+                        <img src="images/스타리아.png" alt="스타리아">
+                        <div class="vehicle-badge">RV</div>
+                    </div>
+                    <div class="vehicle-info">
+                        <h3>스타리아</h3>
+                        <div class="vehicle-specs">
+                            <span><i class="fas fa-gas-pump"></i> 경유</span>
+                            <span><i class="fas fa-users"></i> 9인승</span>
+                            <span><i class="fas fa-cog"></i> 자동</span>
+                        </div>
+                        <div class="vehicle-price">
+                            <span class="price">₩200,000</span>
+                            <span class="period">/일</span>
+                        </div>
+                        <div class="discount-info">3일이상 할인</div>
+                        <button class="reserve-button">예약하기</button>
+                    </div>
+                </div>
+
+                <div class="vehicle-card" data-type="suv">
+                    <div class="vehicle-image">
+                        <img src="images/싼타페.png" alt="싼타페 신형">
+                        <div class="vehicle-badge">SUV</div>
+                    </div>
+                    <div class="vehicle-info">
+                        <h3>싼타페 신형</h3>
+                        <div class="vehicle-specs">
+                            <span><i class="fas fa-gas-pump"></i> 경유&가솔린</span>
+                            <span><i class="fas fa-users"></i> 7인승</span>
+                            <span><i class="fas fa-cog"></i> 자동</span>
+                        </div>
+                        <div class="vehicle-price">
+                            <span class="price">₩160,000</span>
+                            <span class="period">/일</span>
+                        </div>
+                        <div class="discount-info">3일이상 할인</div>
+                        <button class="reserve-button">예약하기</button>
+                    </div>
+                </div>
+
+                <!-- 수입차 -->
+                <div class="vehicle-card" data-type="import">
+                    <div class="vehicle-image">
+                        <img src="images/아우디A6.png" alt="아우디 A6 2.0">
+                        <div class="vehicle-badge">수입차</div>
+                    </div>
+                    <div class="vehicle-info">
+                        <h3>아우디 A6 2.0</h3>
+                        <div class="vehicle-specs">
+                            <span><i class="fas fa-gas-pump"></i> 경유</span>
+                            <span><i class="fas fa-users"></i> 5인승</span>
+                            <span><i class="fas fa-cog"></i> 자동</span>
+                        </div>
+                        <div class="vehicle-price">
+                            <span class="price">₩230,000</span>
+                            <span class="period">/일</span>
+                        </div>
+                        <div class="discount-info">3일이상 문의</div>
+                        <button class="reserve-button">예약하기</button>
+                    </div>
+                </div>
+
+                <div class="vehicle-card" data-type="import">
+                    <div class="vehicle-image">
+                        <img src="images/bmw 530E.png" alt="BMW 530E">
+                        <div class="vehicle-badge">수입차</div>
+                    </div>
+                    <div class="vehicle-info">
+                        <h3>BMW 530E</h3>
+                        <div class="vehicle-specs">
+                            <span><i class="fas fa-gas-pump"></i> 휘발유</span>
+                            <span><i class="fas fa-users"></i> 5인승</span>
+                            <span><i class="fas fa-cog"></i> 자동</span>
+                        </div>
+                        <div class="vehicle-price">
+                            <span class="price">₩230,000</span>
+                            <span class="period">/일</span>
+                        </div>
+                        <div class="discount-info">3일이상 문의</div>
+                        <button class="reserve-button">예약하기</button>
+                    </div>
+                </div>
+
+                <div class="vehicle-card" data-type="import">
+                    <div class="vehicle-image">
+                        <img src="images/bmw 520 신형.png" alt="BMW 520I 신형">
+                        <div class="vehicle-badge">수입차</div>
+                    </div>
+                    <div class="vehicle-info">
+                        <h3>BMW 520I 신형</h3>
+                        <div class="vehicle-specs">
+                            <span><i class="fas fa-gas-pump"></i> 휘발유</span>
+                            <span><i class="fas fa-users"></i> 5인승</span>
+                            <span><i class="fas fa-cog"></i> 자동</span>
+                        </div>
+                        <div class="vehicle-price">
+                            <span class="price">₩250,000</span>
+                            <span class="period">/일</span>
+                        </div>
+                        <div class="discount-info">3일이상 문의</div>
+                        <button class="reserve-button">예약하기</button>
+                    </div>
+                </div>
+
+
+
+                <div class="vehicle-card" data-type="import">
+                    <div class="vehicle-image">
+                        <img src="images/bmw ix3.png" alt="BMW IX3">
+                        <div class="vehicle-badge">수입차</div>
+                    </div>
+                    <div class="vehicle-info">
+                        <h3>BMW IX3</h3>
+                        <div class="vehicle-specs">
+                            <span><i class="fas fa-gas-pump"></i> 전기차</span>
+                            <span><i class="fas fa-users"></i> 5인승</span>
+                            <span><i class="fas fa-cog"></i> 자동</span>
+                        </div>
+                        <div class="vehicle-price">
+                            <span class="price">₩250,000</span>
+                            <span class="period">/일</span>
+                        </div>
+                        <button class="reserve-button">예약하기</button>
+                    </div>
+                </div>
+
+                <div class="vehicle-card" data-type="import">
+                    <div class="vehicle-image">
+                        <img src="images/x7.png" alt="BMW X7 M60i">
+                        <div class="vehicle-badge">수입차</div>
+                    </div>
+                    <div class="vehicle-info">
+                        <h3>BMW X7 M60i</h3>
+                        <div class="vehicle-specs">
+                            <span><i class="fas fa-gas-pump"></i> 휘발유</span>
+                            <span><i class="fas fa-users"></i> 7인승</span>
+                            <span><i class="fas fa-cog"></i> 자동</span>
+                        </div>
+                        <div class="vehicle-price">
+                            <span class="price">₩550,000</span>
+                            <span class="period">/일</span>
+                        </div>
+                        <button class="reserve-button">예약하기</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 푸터 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>에스엔엠 렌트카</h3>
+                    <p>안전하고 편리한 차량 대여 서비스를 제공합니다</p>
+                </div>
+                <div class="footer-section">
+                    <h3>빠른 링크</h3>
+                    <ul>
+                        <li><a href="index.html">홈</a></li>
+                        <li><a href="vehicles.html">차량 보기</a></li>
+                        <li><a href="index.html#process">이용방법</a></li>
+                        <li><a href="index.html#contact">문의</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>연락처</h3>
+                    <p>전화: 1588-0000</p>
+                    <p>이메일: info@rentcar.com</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 에스엔엠 렌트카. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 카카오톡 문의 아이콘 -->
+    <div class="kakao-inquiry">
+        <a href="http://pf.kakao.com/_ctKfn/chat" target="_blank">
+            <i class="fas fa-comments"></i>
+            <span class="kakao-text">카카오톡 문의</span>
+        </a>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html> 
