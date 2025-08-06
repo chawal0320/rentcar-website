@@ -1611,22 +1611,55 @@ body {
     
     /* 프로세스 단계 */
     .process-steps {
-        flex-direction: column;
-        gap: 2rem;
-        align-items: center;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+        align-items: start;
     }
     
     .step {
-        width: 280px;
+        width: auto;
+        min-height: 140px;
+        padding: 1rem;
     }
     
     .step:not(:last-child)::after {
+        display: none;
+    }
+    
+    /* 시계방향 화살표 추가 */
+    .step:nth-child(1)::after {
+        content: '→';
+        position: absolute;
+        right: -15px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 1.2rem;
+        color: #ff9a9e;
+        z-index: 3;
+    }
+    
+    .step:nth-child(2)::after {
         content: '↓';
+        position: absolute;
         right: 50%;
         top: auto;
-        bottom: -30px;
+        bottom: -20px;
         transform: translateX(50%);
-        font-size: 1.5rem;
+        font-size: 1.2rem;
+        color: #ff9a9e;
+        z-index: 3;
+    }
+    
+    .step:nth-child(3)::after {
+        content: '←';
+        position: absolute;
+        left: -15px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 1.2rem;
+        color: #ff9a9e;
+        z-index: 3;
     }
     
     /* 서비스 특징 */
@@ -1871,22 +1904,55 @@ body {
     
     /* 프로세스 단계 */
     .process-steps {
-        flex-direction: column;
-        gap: 1.5rem;
-        align-items: center;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.8rem;
+        align-items: start;
     }
     
     .step {
-        width: 250px;
+        width: auto;
+        min-height: 120px;
+        padding: 0.8rem;
     }
     
     .step:not(:last-child)::after {
+        display: none;
+    }
+    
+    /* 시계방향 화살표 추가 */
+    .step:nth-child(1)::after {
+        content: '→';
+        position: absolute;
+        right: -12px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 1rem;
+        color: #ff9a9e;
+        z-index: 3;
+    }
+    
+    .step:nth-child(2)::after {
         content: '↓';
+        position: absolute;
         right: 50%;
         top: auto;
-        bottom: -30px;
+        bottom: -15px;
         transform: translateX(50%);
-        font-size: 1.5rem;
+        font-size: 1rem;
+        color: #ff9a9e;
+        z-index: 3;
+    }
+    
+    .step:nth-child(3)::after {
+        content: '←';
+        position: absolute;
+        left: -12px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 1rem;
+        color: #ff9a9e;
+        z-index: 3;
     }
     
     /* 서비스 특징 */
