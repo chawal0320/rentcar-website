@@ -4175,6 +4175,53 @@
                     { ip: '114.114.114.114', count: 22, name: '중국 DNS 중복 IP' },
                     { ip: '208.67.222.222', count: 16, name: 'OpenDNS 중복 IP' }
                 ];
+
+                // 동시 접속 데이터 생성 (같은 시간대에 여러 IP가 동시 접속)
+                const simultaneousAccessData = [];
+                const simultaneousIPs = [
+                    { ip: '192.168.200.1', count: 5, name: '동시접속 IP 1' },
+                    { ip: '192.168.200.2', count: 4, name: '동시접속 IP 2' },
+                    { ip: '192.168.200.3', count: 3, name: '동시접속 IP 3' }
+                ];
+
+                // 동시 접속 시뮬레이션 (같은 시간대에 여러 IP가 동시에 접속)
+                const simultaneousTime = new Date(now.getTime() - Math.random() * 24 * 60 * 60 * 1000);
+                simultaneousIPs.forEach(ipConfig => {
+                    const { ip, count, name } = ipConfig;
+                    
+                    for (let k = 0; k < count; k++) {
+                        // 동일한 시간대에 약간의 차이를 두고 접속
+                        const accessTime = new Date(simultaneousTime.getTime() + Math.random() * 60000); // 1분 내
+                        
+                        simultaneousAccessData.push({
+                            timestamp: accessTime.toISOString(),
+                            type: 'simultaneous_access',
+                            ipAddress: ip,
+                            url: 'https://example.com',
+                            data: {
+                                clickCount: Math.floor(Math.random() * 10) + 2,
+                                repeatCount: count,
+                                interval: Math.floor(Math.random() * 300) + 30
+                            },
+                            accessDuration: Math.floor(Math.random() * 1200) + 60,
+                            page: ['홈페이지', '차량검색', '예약페이지', '고객센터', '이벤트'][Math.floor(Math.random() * 5)],
+                            keyword: ['렌트카', '자동차', '예약', '할인', '서울', '부산'][Math.floor(Math.random() * 6)],
+                            userSearchTerm: ['렌트카 추천', '저렴한 렌트카', 'SUV 렌트', '경제형 차량'][Math.floor(Math.random() * 4)],
+                            media: ['구글', '네이버', '카카오', '페이스북', '인스타그램'][Math.floor(Math.random() * 5)],
+                            adType: ['구글광고', '네이버광고', '카카오광고', '페이스북광고'][Math.floor(Math.random() * 4)],
+                            adClickRank: Math.floor(Math.random() * 10) + 1,
+                            userActivity: ['페이지 탐색', '차량 비교', '예약 문의', '가격 조회'][Math.floor(Math.random() * 4)],
+                            location: ['서울', '부산', '대구', '인천', '광주', '대전'][Math.floor(Math.random() * 6)],
+                            deviceType: ['PC', '모바일', '태블릿'][Math.floor(Math.random() * 3)],
+                            alertCount: Math.floor(Math.random() * 3),
+                            clicks: count,
+                            notificationCount: Math.floor(Math.random() * 2),
+                            ipInfo: ['서울 강남구', '부산 해운대구', '대구 수성구', '인천 연수구', '광주 서구'][Math.floor(Math.random() * 5)],
+                            timePattern: '동시접속',
+                            ipName: name
+                        });
+                    }
+                });
                 
                 duplicateIPs.forEach(ipConfig => {
                     const { ip, count, name } = ipConfig;
