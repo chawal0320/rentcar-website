@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>부정클릭 방지 시스템 - 관리자 대시보드</title>
+    
+    <!-- 네이버 광고 부정클릭 방지 시스템 -->
+    <script src="click-protection.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 30px;
+            background: #f8f9fa;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            text-align: center;
+            border-left: 4px solid #3498db;
+        }
+
+        .stat-card.danger {
+            border-left-color: #e74c3c;
+        }
+
+        .stat-card.warning {
+            border-left-color: #f39c12;
+        }
+
+        .stat-card.success {
+            border-left-color: #27ae60;
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: #7f8c8d;
+            font-size: 1.1em;
+        }
+
+        .main-content {
+            padding: 30px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 1.5em;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #ecf0f1;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 500;
+        }
+
+        .status-suspicious {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-normal {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-blocked {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+
+        .btn-warning {
+            background: #f39c12;
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: #e67e22;
+        }
+
+        .btn-success {
+            background: #27ae60;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #229954;
+        }
+
+        .chart-container {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+        }
+
+        .chart {
+            width: 100%;
+            height: 300px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #7f8c8d;
+            font-size: 1.1em;
+        }
+
+        .refresh-btn {
+            background: #3498db;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .refresh-btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            border-left-color: #17a2b8;
+            color: #0c5460;
+        }
+
+        .alert-warning {
+            background: #fff3cd;
+            border-left-color: #ffc107;
+            color: #856404;
+        }
+
+        .alert-danger {
+            background: #f8d7da;
+            border-left-color: #dc3545;
+            color: #721c24;
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                margin: 10px;
+                border-radius: 10px;
+            }
+            
+            .header {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🛡️ 부정클릭 방지 시스템</h1>
+            <p>에스엔엠렌트카 홈페이지 보안 모니터링 대시보드</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number" id="totalClicks">0</div>
+                <div class="stat-label">총 클릭 수</div>
+            </div>
+            <div class="stat-card warning" id="suspiciousCard">
+                <div class="stat-number" id="suspiciousActivities">0</div>
+                <div class="stat-label">의심스러운 활동</div>
+            </div>
+            <div class="stat-card danger" id="blockedCard">
+                <div class="stat-number" id="blockedSessions">0</div>
+                <div class="stat-label">차단된 세션</div>
+            </div>
+            <div class="stat-card success">
+                <div class="stat-number" id="activeSessions">0</div>
+                <div class="stat-label">활성 세션</div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <button class="refresh-btn" onclick="refreshData()">🔄 데이터 새로고침</button>
+
+            <div class="alert alert-info">
+                <strong>💡 안내:</strong> 이 대시보드는 네이버 광고 부정클릭 방지를 위한 모니터링 시스템입니다. 
+                의심스러운 활동이 감지되면 즉시 알림을 받을 수 있습니다.
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">📊 실시간 활동 현황</h2>
+                <div class="chart-container">
+                    <div class="chart" id="activityChart">
+                        차트를 로드하는 중...
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">🚨 의심스러운 활동 목록</h2>
+                <div class="table-container">
+                    <table id="suspiciousTable">
+                        <thead>
+                            <tr>
+                                <th>시간</th>
+                                <th>활동 유형</th>
+                                <th>세션 ID</th>
+                                <th>상세 정보</th>
+                                <th>상태</th>
+                                <th>조치</th>
+                            </tr>
+                        </thead>
+                        <tbody id="suspiciousTableBody">
+                            <!-- 동적으로 생성됨 -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">📈 클릭 통계</h2>
+                <div class="table-container">
+                    <table id="clickTable">
+                        <thead>
+                            <tr>
+                                <th>시간</th>
+                                <th>위치 (X, Y)</th>
+                                <th>클릭 대상</th>
+                                <th>세션 ID</th>
+                                <th>리퍼러</th>
+                            </tr>
+                        </thead>
+                        <tbody id="clickTableBody">
+                            <!-- 동적으로 생성됨 -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">⚙️ 시스템 설정</h2>
+                <div class="chart-container">
+                    <h3>자동 차단 설정</h3>
+                    <p>의심스러운 활동이 감지되면 자동으로 세션을 차단합니다.</p>
+                    <button class="btn btn-warning" onclick="exportData()">📥 데이터 내보내기</button>
+                    <button class="btn btn-danger" onclick="clearData()">🗑️ 데이터 초기화</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 대시보드 기능
+        class DashboardManager {
+            constructor() {
+                this.updateInterval = null;
+                this.init();
+            }
+
+            init() {
+                this.startAutoUpdate();
+                this.updateDashboard();
+            }
+
+            startAutoUpdate() {
+                // 10초마다 자동 업데이트
+                this.updateInterval = setInterval(() => {
+                    this.updateDashboard();
+                }, 10000);
+            }
+
+            updateDashboard() {
+                if (window.clickProtection) {
+                    const stats = window.clickProtection.getStatistics();
+                    this.updateStats(stats);
+                    this.updateTables(stats);
+                } else {
+                    this.showError('클릭 보호 시스템이 로드되지 않았습니다.');
+                }
+            }
+
+            updateStats(stats) {
+                document.getElementById('totalClicks').textContent = stats.totalClicks;
+                document.getElementById('suspiciousActivities').textContent = stats.suspiciousActivities;
+                document.getElementById('blockedSessions').textContent = stats.blockedSessions || 0;
+                document.getElementById('activeSessions').textContent = 1; // 현재 세션
+
+                // 의심스러운 활동이 있으면 경고 표시
+                if (stats.suspiciousActivities > 0) {
+                    document.getElementById('suspiciousCard').classList.add('warning');
+                } else {
+                    document.getElementById('suspiciousCard').classList.remove('warning');
+                }
+            }
+
+            updateTables(stats) {
+                this.updateSuspiciousTable(stats.recentSuspicious);
+                this.updateClickTable(stats.recentClicks);
+            }
+
+            updateSuspiciousTable(suspiciousActivities) {
+                const tbody = document.getElementById('suspiciousTableBody');
+                tbody.innerHTML = '';
+
+                if (suspiciousActivities.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #7f8c8d;">의심스러운 활동이 없습니다.</td></tr>';
+                    return;
+                }
+
+                suspiciousActivities.forEach(activity => {
+                    const row = document.createElement('tr');
+                    const time = new Date(activity.timestamp).toLocaleString('ko-KR');
+                    
+                    row.innerHTML = `
+                        <td>${time}</td>
+                        <td>${this.getActivityTypeName(activity.type)}</td>
+                        <td>${activity.sessionId.substring(0, 20)}...</td>
+                        <td>${this.getActivityDescription(activity)}</td>
+                        <td><span class="status-badge status-suspicious">의심</span></td>
+                        <td>
+                            <button class="btn btn-danger" onclick="blockSession('${activity.sessionId}')">차단</button>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            }
+
+            updateClickTable(clicks) {
+                const tbody = document.getElementById('clickTableBody');
+                tbody.innerHTML = '';
+
+                if (clicks.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #7f8c8d;">클릭 데이터가 없습니다.</td></tr>';
+                    return;
+                }
+
+                clicks.forEach(click => {
+                    const row = document.createElement('tr');
+                    const time = new Date(click.timestamp).toLocaleString('ko-KR');
+                    const referrer = click.referrer || '직접 접속';
+                    
+                    row.innerHTML = `
+                        <td>${time}</td>
+                        <td>(${click.x}, ${click.y})</td>
+                        <td>${click.target} - ${click.targetText}</td>
+                        <td>${click.sessionId.substring(0, 20)}...</td>
+                        <td>${referrer.substring(0, 50)}</td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            }
+
+            getActivityTypeName(type) {
+                const typeNames = {
+                    'EXCESSIVE_CLICKS': '과도한 클릭',
+                    'REPEATED_LOCATION_CLICKS': '동일 위치 반복 클릭',
+                    'UNNATURAL_CLICK_INTERVAL': '비정상 클릭 간격',
+                    'NO_MOUSE_MOVEMENT': '마우스 움직임 없음',
+                    'NO_KEYBOARD_ACTIVITY': '키보드 활동 없음'
+                };
+                return typeNames[type] || type;
+            }
+
+            getActivityDescription(activity) {
+                switch (activity.type) {
+                    case 'EXCESSIVE_CLICKS':
+                        return `${activity.data.count}회 클릭 (${activity.data.timeWindow} 내)`;
+                    case 'REPEATED_LOCATION_CLICKS':
+                        return `위치 (${activity.data.location.x}, ${activity.data.location.y})에서 ${activity.data.count}회 반복`;
+                    case 'UNNATURAL_CLICK_INTERVAL':
+                        return `${activity.data.interval}ms 간격 (비정상)`;
+                    default:
+                        return '의심스러운 패턴 감지';
+                }
+            }
+
+            showError(message) {
+                const alertDiv = document.createElement('div');
+                alertDiv.className = 'alert alert-danger';
+                alertDiv.innerHTML = `<strong>❌ 오류:</strong> ${message}`;
+                
+                const mainContent = document.querySelector('.main-content');
+                mainContent.insertBefore(alertDiv, mainContent.firstChild);
+                
+                setTimeout(() => alertDiv.remove(), 5000);
+            }
+        }
+
+        // 전역 함수들
+        function refreshData() {
+            if (window.dashboardManager) {
+                window.dashboardManager.updateDashboard();
+            }
+        }
+
+        function blockSession(sessionId) {
+            if (window.clickProtection) {
+                window.clickProtection.blockSession(sessionId);
+                alert(`세션 ${sessionId.substring(0, 20)}... 이 차단되었습니다.`);
+                refreshData();
+            }
+        }
+
+        function exportData() {
+            if (window.clickProtection) {
+                const stats = window.clickProtection.getStatistics();
+                const dataStr = JSON.stringify(stats, null, 2);
+                const dataBlob = new Blob([dataStr], {type: 'application/json'});
+                
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(dataBlob);
+                link.download = `click-protection-data-${new Date().toISOString().split('T')[0]}.json`;
+                link.click();
+            }
+        }
+
+        function clearData() {
+            if (confirm('모든 데이터를 초기화하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) {
+                localStorage.removeItem('clickData');
+                localStorage.removeItem('suspiciousActivities');
+                localStorage.removeItem('blockedIPs');
+                alert('데이터가 초기화되었습니다. 페이지를 새로고침하세요.');
+            }
+        }
+
+        // 대시보드 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            // 클릭 보호 시스템이 로드될 때까지 대기
+            const checkSystem = setInterval(() => {
+                if (window.clickProtection) {
+                    clearInterval(checkSystem);
+                    window.dashboardManager = new DashboardManager();
+                }
+            }, 1000);
+
+            // 10초 후에도 시스템이 로드되지 않으면 오류 표시
+            setTimeout(() => {
+                if (!window.clickProtection) {
+                    clearInterval(checkSystem);
+                    const mainContent = document.querySelector('.main-content');
+                    const errorDiv = document.createElement('div');
+                    errorDiv.className = 'alert alert-danger';
+                    errorDiv.innerHTML = `
+                        <strong>❌ 시스템 오류:</strong> 클릭 보호 시스템을 로드할 수 없습니다. 
+                        홈페이지에서 이 대시보드를 열어주세요.
+                    `;
+                    mainContent.insertBefore(errorDiv, mainContent.firstChild);
+                }
+            }, 10000);
+        });
+    </script>
+</body>
+</html>
