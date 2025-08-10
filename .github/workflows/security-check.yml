@@ -1,0 +1,65 @@
+name: Security & Quality Check
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  schedule:
+    - cron: '0 2 * * 1' # 매주 월요일 새벽 2시
+
+jobs:
+  security-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          
+      - name: Run security audit
+        run: |
+          if [ -f "package.json" ]; then
+            npm audit --audit-level moderate
+          else
+            echo "No package.json found, skipping npm audit"
+          fi
+          
+      - name: Check for secrets in code
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: .
+          base: ${{ github.event.pull_request.base.sha || github.sha }}
+          
+      - name: Check file permissions
+        run: |
+          echo "Checking file permissions..."
+          find . -type f -executable -not -path "./.git/*" -not -path "./node_modules/*" | head -20
+          
+  code-quality:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Check file sizes
+        run: |
+          echo "Large files (>5MB):"
+          find . -type f -size +5M -not -path "./.git/*" -not -path "./node_modules/*" | head -10
+          
+      - name: Check for sensitive data
+        run: |
+          echo "Checking for potential sensitive data..."
+          grep -r -i "password\|secret\|key\|token" . --exclude-dir=.git --exclude-dir=node_modules | head -20 || true
+          
+      - name: Validate HTML
+        run: |
+          echo "HTML validation check..."
+          if command -v html5validator &> /dev/null; then
+            html5validator --root . --format text --ignore "*.css,*.js,*.png,*.jpg,*.gif,*.svg"
+          else
+            echo "html5validator not available, skipping HTML validation"
+          fi
