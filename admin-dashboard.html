@@ -306,6 +306,27 @@
             color: #2c3e50;
         }
 
+        .duplicate-count {
+            font-weight: bold;
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+
+        .duplicate-count.low {
+            background-color: #e0f2f7;
+            color: #17a2b8;
+        }
+
+        .duplicate-count.medium {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .duplicate-count.high {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
         @media (max-width: 768px) {
             .stats-grid {
                 grid-template-columns: 1fr;
@@ -396,24 +417,46 @@
                 </div>
             </div>
 
-            <div class="section">
-                <h2 class="section-title">🚨 의심스러운 활동 목록</h2>
+            <div class="dashboard-section">
+                <h3>🚨 의심스러운 활동 목록</h3>
+                <div class="filter-controls">
+                    <div class="date-range-picker">
+                        <label for="startDate">시작일:</label>
+                        <input type="date" id="startDate" onchange="filterSuspiciousActivities()">
+                        <label for="endDate">종료일:</label>
+                        <input type="date" id="endDate" onchange="filterSuspiciousActivities()">
+                    </div>
+                    <div class="display-controls">
+                        <label for="itemsPerPage">표시 개수:</label>
+                        <select id="itemsPerPage" onchange="filterSuspiciousActivities()">
+                            <option value="10">10개</option>
+                            <option value="30">30개</option>
+                            <option value="50">50개</option>
+                            <option value="100">100개</option>
+                        </select>
+                    </div>
+                </div>
                 <div class="table-container">
-                    <table id="suspiciousTable">
+                    <table id="suspiciousTable" class="dashboard-table">
                         <thead>
                             <tr>
-                                <th>시간</th>
-                                <th>활동 유형</th>
                                 <th>접속자 IP</th>
-                                <th>상세 정보</th>
-                                <th>상태</th>
-                                <th>조치</th>
+                                <th>중복접속 횟수</th>
+                                <th>활동 유형</th>
+                                <th>세부 정보</th>
+                                <th>발생 시간</th>
+                                <th>URL</th>
                             </tr>
                         </thead>
                         <tbody id="suspiciousTableBody">
-                            <!-- 동적으로 생성됨 -->
+                            <!-- 데이터가 여기에 동적으로 추가됩니다 -->
                         </tbody>
                     </table>
+                </div>
+                <div class="pagination-controls">
+                    <button id="prevPage" class="btn btn-secondary" onclick="changePage(-1)" disabled>이전</button>
+                    <span id="pageInfo">페이지 1 / 1</span>
+                    <button id="nextPage" class="btn btn-secondary" onclick="changePage(1)" disabled>다음</button>
                 </div>
             </div>
 
@@ -450,258 +493,231 @@
     </div>
 
     <script>
-        // 대시보드 기능
-        class DashboardManager {
-            constructor() {
-                this.updateInterval = null;
-                this.init();
+        let clickProtection;
+        let currentPage = 1;
+        let itemsPerPage = 10;
+        let filteredSuspiciousActivities = [];
+        
+        // 페이지 로드 시 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            // 오늘 날짜를 기본값으로 설정
+            const today = new Date();
+            const oneWeekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+            
+            document.getElementById('startDate').value = oneWeekAgo.toISOString().split('T')[0];
+            document.getElementById('endDate').value = today.toISOString().split('T')[0];
+            
+            // 초기 데이터 로드
+            filterSuspiciousActivities();
+            
+            // 실시간 업데이트 시작
+            startRealTimeUpdates();
+        });
+        
+        // 의심스러운 활동 필터링 및 표시
+        function filterSuspiciousActivities() {
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            itemsPerPage = parseInt(document.getElementById('itemsPerPage').value);
+            
+            if (!startDate || !endDate) {
+                alert('시작일과 종료일을 모두 선택해주세요.');
+                return;
             }
-
-            init() {
-                this.startAutoUpdate();
-                this.updateDashboard();
+            
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            end.setHours(23, 59, 59, 999); // 종료일의 마지막 시간으로 설정
+            
+            // 로컬 스토리지에서 의심스러운 활동 데이터 가져오기
+            const suspiciousActivities = JSON.parse(localStorage.getItem('suspiciousActivities') || '[]');
+            
+            // 날짜 범위에 맞는 활동 필터링
+            filteredSuspiciousActivities = suspiciousActivities.filter(activity => {
+                const activityDate = new Date(activity.timestamp);
+                return activityDate >= start && activityDate <= end;
+            });
+            
+            // IP별로 중복접속 횟수 계산
+            const ipCounts = {};
+            filteredSuspiciousActivities.forEach(activity => {
+                const ip = activity.ipAddress || '알 수 없음';
+                ipCounts[ip] = (ipCounts[ip] || 0) + 1;
+            });
+            
+            // 중복접속 횟수 정보를 활동 데이터에 추가
+            filteredSuspiciousActivities.forEach(activity => {
+                const ip = activity.ipAddress || '알 수 없음';
+                activity.duplicateCount = ipCounts[ip];
+            });
+            
+            // 시간순으로 정렬 (최신순)
+            filteredSuspiciousActivities.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+            
+            // 페이지네이션 초기화
+            currentPage = 1;
+            updatePagination();
+            
+            // 테이블 업데이트
+            updateSuspiciousTable();
+        }
+        
+        // 의심스러운 활동 테이블 업데이트
+        function updateSuspiciousTable() {
+            const tbody = document.getElementById('suspiciousTableBody');
+            tbody.innerHTML = '';
+            
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const pageData = filteredSuspiciousActivities.slice(startIndex, endIndex);
+            
+            if (pageData.length === 0) {
+                const row = document.createElement('tr');
+                row.innerHTML = '<td colspan="6" style="text-align: center; padding: 40px; color: #6c757d;">선택한 날짜 범위에 데이터가 없습니다.</td>';
+                tbody.appendChild(row);
+                return;
             }
-
-            startAutoUpdate() {
-                // 10초마다 자동 업데이트
-                this.updateInterval = setInterval(() => {
-                    this.updateDashboard();
-                }, 10000);
-            }
-
-            updateDashboard() {
-                if (window.clickProtection) {
-                    const stats = window.clickProtection.getStatistics();
-                    this.updateStats(stats);
-                    this.updateTables(stats);
-                } else {
-                    this.showError('클릭 보호 시스템이 로드되지 않았습니다.');
-                }
-            }
-
-            updateStats(stats) {
-                document.getElementById('totalClicks').textContent = stats.totalClicks;
-                document.getElementById('suspiciousActivities').textContent = stats.suspiciousActivities;
-                document.getElementById('blockedSessions').textContent = stats.blockedSessions || 0;
-                document.getElementById('activeSessions').textContent = 1; // 현재 세션
-
-                // 의심스러운 활동이 있으면 경고 표시
-                if (stats.suspiciousActivities > 0) {
-                    document.getElementById('suspiciousCard').classList.add('warning');
-                } else {
-                    document.getElementById('suspiciousCard').classList.remove('warning');
-                }
-            }
-
-            updateTables(stats) {
-                this.updateSuspiciousTable(stats.recentSuspicious);
-                this.updateClickTable(stats.recentClicks);
-            }
-
-            updateSuspiciousTable(suspiciousActivities) {
-                const tbody = document.getElementById('suspiciousTableBody');
-                tbody.innerHTML = '';
-
-                if (suspiciousActivities.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #7f8c8d;">의심스러운 활동이 없습니다.</td></tr>';
-                    return;
-                }
-
-                suspiciousActivities.forEach(activity => {
-                    const row = document.createElement('tr');
-                    const time = new Date(activity.timestamp).toLocaleString('ko-KR');
-                    
-                    row.innerHTML = `
-                        <td>${time}</td>
-                        <td>${this.getActivityTypeName(activity.type)}</td>
-                        <td>${activity.ipAddress || '알 수 없음'}</td>
-                        <td>${this.getActivityDescription(activity)}</td>
-                        <td><span class="status-badge status-suspicious">의심</span></td>
-                        <td>
-                            <button class="btn btn-danger" onclick="blockSession('${activity.sessionId}')">차단</button>
-                        </td>
-                    `;
-                    tbody.appendChild(row);
-                });
-            }
-
-            updateClickTable(clicks) {
-                const tbody = document.getElementById('clickTableBody');
-                tbody.innerHTML = '';
-
-                if (clicks.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #7f8c8d;">클릭 데이터가 없습니다.</td></tr>';
-                    return;
-                }
-
-                clicks.forEach(click => {
-                    const row = document.createElement('tr');
-                    const time = new Date(click.timestamp).toLocaleString('ko-KR');
-                    const referrer = click.referrer || '직접 접속';
-                    
-                    row.innerHTML = `
-                        <td>${time}</td>
-                        <td>(${click.x}, ${click.y})</td>
-                        <td>${click.target} - ${click.targetText}</td>
-                        <td>${click.ipAddress || '알 수 없음'}</td>
-                        <td>${referrer.substring(0, 50)}</td>
-                    `;
-                    tbody.appendChild(row);
-                });
-            }
-
-            getActivityTypeName(type) {
-                const typeNames = {
-                    'EXCESSIVE_CLICKS': '과도한 클릭',
-                    'REPEATED_LOCATION_CLICKS': '동일 위치 반복 클릭',
-                    'UNNATURAL_CLICK_INTERVAL': '비정상 클릭 간격',
-                    'NO_MOUSE_MOVEMENT': '마우스 움직임 없음',
-                    'NO_KEYBOARD_ACTIVITY': '키보드 활동 없음'
-                };
-                return typeNames[type] || type;
-            }
-
-            getActivityDescription(activity) {
-                switch (activity.type) {
-                    case 'EXCESSIVE_CLICKS':
-                        return `${activity.data.count}회 클릭 (${activity.data.timeWindow} 내)`;
-                    case 'REPEATED_LOCATION_CLICKS':
-                        return `위치 (${activity.data.location.x}, ${activity.data.location.y})에서 ${activity.data.count}회 반복`;
-                    case 'UNNATURAL_CLICK_INTERVAL':
-                        return `${activity.data.interval}ms 간격 (비정상)`;
-                    default:
-                        return '의심스러운 패턴 감지';
-                }
-            }
-
-            showError(message) {
-                const alertDiv = document.createElement('div');
-                alertDiv.className = 'alert alert-danger';
-                alertDiv.innerHTML = `<strong>❌ 오류:</strong> ${message}`;
+            
+            pageData.forEach(activity => {
+                const row = document.createElement('tr');
+                const time = new Date(activity.timestamp).toLocaleString('ko-KR');
                 
-                const mainContent = document.querySelector('.main-content');
-                mainContent.insertBefore(alertDiv, mainContent.firstChild);
+                // 중복접속 횟수에 따른 CSS 클래스 결정
+                let duplicateClass = 'low';
+                if (activity.duplicateCount >= 10) duplicateClass = 'high';
+                else if (activity.duplicateCount >= 5) duplicateClass = 'medium';
                 
-                setTimeout(() => alertDiv.remove(), 5000);
+                row.innerHTML = `
+                    <td>${activity.ipAddress || '알 수 없음'}</td>
+                    <td><span class="duplicate-count ${duplicateClass}">${activity.duplicateCount}</span></td>
+                    <td>${getActivityTypeName(activity.type)}</td>
+                    <td>${getActivityDescription(activity)}</td>
+                    <td>${time}</td>
+                    <td>${activity.url || '알 수 없음'}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+        
+        // 페이지 변경
+        function changePage(direction) {
+            const newPage = currentPage + direction;
+            const maxPage = Math.ceil(filteredSuspiciousActivities.length / itemsPerPage);
+            
+            if (newPage >= 1 && newPage <= maxPage) {
+                currentPage = newPage;
+                updatePagination();
+                updateSuspiciousTable();
             }
         }
-
-        // 전역 함수들
-        function refreshData() {
-            if (window.dashboardManager) {
-                window.dashboardManager.updateDashboard();
+        
+        // 페이지네이션 정보 업데이트
+        function updatePagination() {
+            const maxPage = Math.ceil(filteredSuspiciousActivities.length / itemsPerPage);
+            const pageInfo = document.getElementById('pageInfo');
+            const prevBtn = document.getElementById('prevPage');
+            const nextBtn = document.getElementById('nextPage');
+            
+            pageInfo.textContent = `페이지 ${currentPage} / ${maxPage}`;
+            prevBtn.disabled = currentPage <= 1;
+            nextBtn.disabled = currentPage >= maxPage;
+        }
+        
+        // 활동 유형 이름 반환
+        function getActivityTypeName(type) {
+            const typeNames = {
+                'excessive_clicks': '과도한 클릭',
+                'repeated_location': '반복 위치 클릭',
+                'unnatural_interval': '비자연적 간격',
+                'bot_behavior': '봇 행동 패턴',
+                'suspicious_pattern': '의심스러운 패턴'
+            };
+            return typeNames[type] || type;
+        }
+        
+        // 활동 상세 설명 반환
+        function getActivityDescription(activity) {
+            switch (activity.type) {
+                case 'excessive_clicks':
+                    return `단시간 내 ${activity.data?.clickCount || 0}회 클릭`;
+                case 'repeated_location':
+                    return `동일 위치 ${activity.data?.repeatCount || 0}회 클릭`;
+                case 'unnatural_interval':
+                    return `비정상적 클릭 간격: ${activity.data?.interval || 0}ms`;
+                case 'bot_behavior':
+                    return '마우스/키보드 활동 없음';
+                case 'suspicious_pattern':
+                    return '복합적 의심 패턴';
+                default:
+                    return '알 수 없는 활동';
             }
         }
-
-        function blockSession(sessionId) {
-            if (window.clickProtection) {
-                window.clickProtection.blockSession(sessionId);
-                alert(`세션 ${sessionId.substring(0, 20)}... 이 차단되었습니다.`);
-                refreshData();
-            }
+        
+        // 실시간 업데이트 시작
+        function startRealTimeUpdates() {
+            setInterval(() => {
+                if (filteredSuspiciousActivities.length > 0) {
+                    filterSuspiciousActivities();
+                }
+            }, 30000); // 30초마다 업데이트
         }
-
-        // 관리자 전용 함수들
+        
+        // 전체 데이터 내보내기
         function exportAllData() {
-            try {
-                const allData = {
-                    statistics: window.clickProtection ? window.clickProtection.getStatistics() : {},
-                    blockedIPs: JSON.parse(localStorage.getItem('blockedIPs') || '[]'),
-                    suspiciousActivities: JSON.parse(localStorage.getItem('suspiciousActivities') || '[]'),
-                    clickData: JSON.parse(localStorage.getItem('clickData') || '[]'),
-                    blockedSessions: JSON.parse(localStorage.getItem('blockedSessions') || '[]'),
-                    exportTime: new Date().toISOString()
-                };
-
-                const dataStr = JSON.stringify(allData, null, 2);
-                const dataBlob = new Blob([dataStr], {type: 'application/json'});
-                const url = URL.createObjectURL(dataBlob);
-                
-                const link = document.createElement('a');
-                link.href = url;
-                link.download = `click-protection-data-${new Date().toISOString().split('T')[0]}.json`;
-                link.click();
-                
-                URL.revokeObjectURL(url);
-                alert('✅ 모든 데이터가 성공적으로 내보내졌습니다!');
-            } catch (error) {
-                alert('❌ 데이터 내보내기 중 오류가 발생했습니다: ' + error.message);
-            }
+            const data = {
+                suspiciousActivities: JSON.parse(localStorage.getItem('suspiciousActivities') || '[]'),
+                clickData: JSON.parse(localStorage.getItem('clickData') || '[]'),
+                blockedIPs: JSON.parse(localStorage.getItem('blockedIPs') || '[]'),
+                exportTime: new Date().toISOString()
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `click-protection-data-${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
         }
-
+        
+        // 모든 데이터 초기화
         function clearAllData() {
-            if (confirm('⚠️ 정말로 모든 데이터를 초기화하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) {
-                try {
-                    localStorage.removeItem('blockedIPs');
-                    localStorage.removeItem('blockedSessions');
-                    localStorage.removeItem('suspiciousActivities');
-                    localStorage.removeItem('clickData');
-                    localStorage.removeItem('clickProtectionData');
-                    
-                    // 페이지 새로고침
-                    location.reload();
-                } catch (error) {
-                    alert('❌ 데이터 초기화 중 오류가 발생했습니다: ' + error.message);
-                }
-            }
-        }
-
-        // 페이지 로드 시 관리자 모드 확인
-        document.addEventListener('DOMContentLoaded', function() {
-            if (window.clickProtection && window.clickProtection.isAdminMode) {
-                console.log('👑 관리자 모드가 활성화되었습니다. 경고 팝업이 비활성화되었습니다.');
-                document.getElementById('systemStatus').textContent = '관리자 모드';
-                document.getElementById('lastUpdate').textContent = new Date().toLocaleString('ko-KR');
-            }
-        });
-
-        function exportData() {
-            if (window.clickProtection) {
-                const stats = window.clickProtection.getStatistics();
-                const dataStr = JSON.stringify(stats, null, 2);
-                const dataBlob = new Blob([dataStr], {type: 'application/json'});
-                
-                const link = document.createElement('a');
-                link.href = URL.createObjectURL(dataBlob);
-                link.download = `click-protection-data-${new Date().toISOString().split('T')[0]}.json`;
-                link.click();
-            }
-        }
-
-        function clearData() {
-            if (confirm('모든 데이터를 초기화하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) {
-                localStorage.removeItem('clickData');
+            if (confirm('정말로 모든 데이터를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) {
                 localStorage.removeItem('suspiciousActivities');
+                localStorage.removeItem('clickData');
                 localStorage.removeItem('blockedIPs');
-                alert('데이터가 초기화되었습니다. 페이지를 새로고침하세요.');
+                localStorage.removeItem('suspiciousPatterns');
+                
+                alert('모든 데이터가 삭제되었습니다.');
+                filterSuspiciousActivities();
             }
         }
-
-        // 대시보드 초기화
-        document.addEventListener('DOMContentLoaded', function() {
-            // 클릭 보호 시스템이 로드될 때까지 대기
-            const checkSystem = setInterval(() => {
-                if (window.clickProtection) {
-                    clearInterval(checkSystem);
-                    window.dashboardManager = new DashboardManager();
-                }
-            }, 1000);
-
-            // 10초 후에도 시스템이 로드되지 않으면 오류 표시
-            setTimeout(() => {
-                if (!window.clickProtection) {
-                    clearInterval(checkSystem);
-                    const mainContent = document.querySelector('.main-content');
-                    const errorDiv = document.createElement('div');
-                    errorDiv.className = 'alert alert-danger';
-                    errorDiv.innerHTML = `
-                        <strong>❌ 시스템 오류:</strong> 클릭 보호 시스템을 로드할 수 없습니다. 
-                        홈페이지에서 이 대시보드를 열어주세요.
-                    `;
-                    mainContent.insertBefore(errorDiv, mainContent.firstChild);
-                }
-            }, 10000);
-        });
+        
+        // 시스템 상태 업데이트
+        function updateSystemStatus() {
+            const suspiciousCount = JSON.parse(localStorage.getItem('suspiciousActivities') || '[]').length;
+            const clickCount = JSON.parse(localStorage.getItem('clickData') || '[]').length;
+            const blockedCount = JSON.parse(localStorage.getItem('blockedIPs') || '[]').length;
+            
+            const statusElement = document.getElementById('systemStatus');
+            const lastUpdateElement = document.getElementById('lastUpdate');
+            
+            if (suspiciousCount > 100) {
+                statusElement.textContent = '⚠️ 주의 필요';
+                statusElement.style.color = '#e74c3c';
+            } else if (suspiciousCount > 50) {
+                statusElement.textContent = '🔶 모니터링 필요';
+                statusElement.style.color = '#f39c12';
+            } else {
+                statusElement.textContent = '✅ 정상';
+                statusElement.style.color = '#27ae60';
+            }
+            
+            lastUpdateElement.textContent = new Date().toLocaleString('ko-KR');
+        }
+        
+        // 시스템 상태 주기적 업데이트
+        setInterval(updateSystemStatus, 10000); // 10초마다 업데이트
     </script>
 </body>
 </html>
