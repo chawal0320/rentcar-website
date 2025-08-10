@@ -1296,21 +1296,224 @@ class ClickProtectionSystem {
         }
     }
     
-    // API 서명 생성
+    // API 서명 생성 (보안 강화)
     generateSignature(endpoint, method, timestamp) {
         const message = `${method}${endpoint}${timestamp}`;
         const encoder = new TextEncoder();
         const data = encoder.encode(message);
         
-        // 간단한 해시 생성 (실제로는 더 안전한 방법 사용 권장)
+        // HMAC-SHA256 서명 생성 (실제 네이버 API 요구사항에 맞춤)
+        return this.hmacSHA256(data, this.naverApiConfig.secretKey);
+    }
+    
+    // HMAC-SHA256 해시 생성
+    hmacSHA256(data, key) {
+        // Web Crypto API를 사용한 안전한 해시 생성
+        if (window.crypto && window.crypto.subtle) {
+            return this.generateHMAC(data, key);
+        } else {
+            // 폴백: 간단한 해시 (개발 환경용)
+            return this.simpleHash(data, key);
+        }
+    }
+    
+    // Web Crypto API를 사용한 HMAC 생성
+    async generateHMAC(data, key) {
+        try {
+            const keyBuffer = new TextEncoder().encode(key);
+            const dataBuffer = new TextEncoder().encode(data);
+            
+            const cryptoKey = await window.crypto.subtle.importKey(
+                'raw',
+                keyBuffer,
+                { name: 'HMAC', hash: 'SHA-256' },
+                false,
+                ['sign']
+            );
+            
+            const signature = await window.crypto.subtle.sign('HMAC', cryptoKey, dataBuffer);
+            return Array.from(new Uint8Array(signature))
+                .map(b => b.toString(16).padStart(2, '0'))
+                .join('');
+        } catch (error) {
+            console.error('HMAC 생성 실패, 폴백 해시 사용:', error);
+            return this.simpleHash(data, key);
+        }
+    }
+    
+    // 폴백 해시 함수
+    simpleHash(data, key) {
         let hash = 0;
-        for (let i = 0; i < data.length; i++) {
-            const char = data[i];
+        const combined = data + key;
+        for (let i = 0; i < combined.length; i++) {
+            const char = combined.charCodeAt(i);
             hash = ((hash << 5) - hash) + char;
-            hash = hash & hash; // 32비트 정수로 변환
+            hash = hash & hash;
+        }
+        return Math.abs(hash).toString(16);
+    }
+
+    // 네이버 광고 API 실제 연동 테스트
+    async testNaverAdAPIConnection() {
+        try {
+            console.log('🧪 네이버 광고 API 연결 테스트 시작...');
+            
+            // 1. 고객 ID 조회 테스트
+            console.log('1️⃣ 고객 ID 조회 테스트...');
+            const customerResponse = await this.callNaverAdAPI('/ads/v1/customers', 'GET');
+            console.log('고객 ID 조회 결과:', customerResponse);
+            
+            if (customerResponse && customerResponse.customers && customerResponse.customers.length > 0) {
+                this.naverApiConfig.customerId = customerResponse.customers[0].customerId;
+                console.log('✅ 고객 ID 설정 완료:', this.naverApiConfig.customerId);
+                
+                // 2. 캠페인 정보 조회 테스트
+                console.log('2️⃣ 캠페인 정보 조회 테스트...');
+                const campaignResponse = await this.callNaverAdAPI('/ads/v1/campaigns', 'GET');
+                console.log('캠페인 조회 결과:', campaignResponse);
+                
+                // 3. 광고 그룹 정보 조회 테스트
+                console.log('3️⃣ 광고 그룹 정보 조회 테스트...');
+                const adGroupResponse = await this.callNaverAdAPI('/ads/v1/adgroups', 'GET');
+                console.log('광고 그룹 조회 결과:', adGroupResponse);
+                
+                // 4. 키워드 정보 조회 테스트
+                console.log('4️⃣ 키워드 정보 조회 테스트...');
+                const keywordResponse = await this.callNaverAdAPI('/ads/v1/keywords', 'GET');
+                console.log('키워드 조회 결과:', keywordResponse);
+                
+                console.log('🎉 모든 API 테스트 완료!');
+                return {
+                    success: true,
+                    customerId: this.naverApiConfig.customerId,
+                    campaigns: campaignResponse,
+                    adGroups: adGroupResponse,
+                    keywords: keywordResponse
+                };
+                
+            } else {
+                console.error('❌ 고객 ID 조회 실패');
+                return { success: false, error: '고객 ID를 찾을 수 없습니다.' };
+            }
+            
+        } catch (error) {
+            console.error('❌ API 연결 테스트 실패:', error);
+            return { success: false, error: error.message };
+        }
+    }
+    
+    // 실시간 광고 클릭 데이터 동기화
+    async syncAdClickData() {
+        try {
+            console.log('🔄 실시간 광고 클릭 데이터 동기화 시작...');
+            
+            // 최근 24시간 내 클릭 데이터 조회
+            const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000);
+            const timestamp = yesterday.getTime();
+            
+            // 네이버 광고 API에서 클릭 데이터 조회
+            const clickDataResponse = await this.callNaverAdAPI(
+                `/ads/v1/statistics?startDate=${timestamp}&endDate=${Date.now()}&timeUnit=HOUR`,
+                'GET'
+            );
+            
+            if (clickDataResponse && clickDataResponse.statistics) {
+                console.log('📊 실시간 클릭 데이터 동기화 완료:', clickDataResponse.statistics);
+                
+                // 로컬 저장소에 동기화된 데이터 저장
+                localStorage.setItem('syncedAdClickData', JSON.stringify({
+                    lastSync: Date.now(),
+                    data: clickDataResponse.statistics
+                }));
+                
+                return clickDataResponse.statistics;
+            }
+            
+            return null;
+            
+        } catch (error) {
+            console.error('❌ 광고 클릭 데이터 동기화 실패:', error);
+            return null;
+        }
+    }
+    
+    // API 에러 처리 및 로깅
+    handleAPIError(error, context) {
+        const errorLog = {
+            timestamp: Date.now(),
+            context: context,
+            error: error.message,
+            stack: error.stack,
+            userAgent: navigator.userAgent,
+            url: window.location.href
+        };
+        
+        // 에러 로그 저장
+        const existingErrors = JSON.parse(localStorage.getItem('apiErrors') || '[]');
+        existingErrors.push(errorLog);
+        localStorage.setItem('apiErrors', JSON.stringify(existingErrors));
+        
+        // 관리자 대시보드에 에러 표시
+        if (this.isAdminMode) {
+            this.displayAPIError(errorLog);
         }
         
-        return hash.toString(16);
+        console.error(`API 에러 (${context}):`, error);
+    }
+    
+    // 관리자 대시보드에 API 에러 표시
+    displayAPIError(errorLog) {
+        const errorContainer = document.getElementById('apiErrorContainer');
+        if (errorContainer) {
+            const errorElement = document.createElement('div');
+            errorElement.className = 'api-error-item';
+            errorElement.innerHTML = `
+                <div class="error-header">
+                    <span class="error-time">${new Date(errorLog.timestamp).toLocaleString()}</span>
+                    <span class="error-context">${errorLog.context}</span>
+                </div>
+                <div class="error-message">${errorLog.error}</div>
+            `;
+            errorContainer.appendChild(errorElement);
+        }
+    }
+    
+    // API 상태 모니터링
+    async checkAPIHealth() {
+        try {
+            const startTime = Date.now();
+            const response = await this.callNaverAdAPI('/ads/v1/customers', 'GET');
+            const responseTime = Date.now() - startTime;
+            
+            const healthStatus = {
+                timestamp: Date.now(),
+                status: 'healthy',
+                responseTime: responseTime,
+                lastCheck: new Date().toISOString()
+            };
+            
+            // 응답 시간이 5초를 초과하면 경고
+            if (responseTime > 5000) {
+                healthStatus.status = 'warning';
+                healthStatus.message = '응답 시간이 느립니다';
+            }
+            
+            // 상태 저장
+            localStorage.setItem('apiHealthStatus', JSON.stringify(healthStatus));
+            
+            return healthStatus;
+            
+        } catch (error) {
+            const healthStatus = {
+                timestamp: Date.now(),
+                status: 'error',
+                error: error.message,
+                lastCheck: new Date().toISOString()
+            };
+            
+            localStorage.setItem('apiHealthStatus', JSON.stringify(healthStatus));
+            return healthStatus;
+        }
     }
     
     // 실제 네이버 광고 클릭인지 API로 확인
