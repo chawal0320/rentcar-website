@@ -375,53 +375,50 @@ class ClickProtectionSystem {
         }
     }
 
-    // 경고 레벨 결정
+    // 경고 단계 결정 (클릭 횟수에 따라)
     getWarningLevel(clickCount) {
-        if (clickCount >= 6) return 3;      // 심각 경고
-        if (clickCount >= 4) return 2;      // 주의 경고
-        if (clickCount >= 2) return 1;      // 기본 경고
+        if (clickCount >= 4) return 3;      // 3단계: 4회 이상
+        if (clickCount >= 3) return 2;      // 2단계: 3회 이상
+        if (clickCount >= 2) return 1;      // 1단계: 2회 이상
         return 0;                           // 경고 없음
     }
 
-    // 경고 팝업 생성
-    createWarningPopup(level, clickCount) {
-        // 이미 팝업이 있다면 제거
-        this.removeExistingPopup();
-
-        const popup = document.createElement('div');
-        popup.id = 'warning-popup';
-        
-        const config = this.getWarningConfig(level, clickCount);
-        
-        popup.innerHTML = `
-            <div class="warning-header ${config.headerClass}">
-                <span class="warning-title">${config.title}</span>
-                <span class="warning-close" onclick="clickProtection.closeWarningPopup()">×</span>
-            </div>
-            <div class="warning-content ${config.contentClass}">
-                <div class="warning-icon">${config.icon}</div>
-                <div class="warning-text">
-                    <p>${config.message}</p>
-                    ${config.detail ? `<p class="warning-detail">${config.detail}</p>` : ''}
+            // 경고 팝업 생성
+        createWarningPopup(level, clickCount) {
+            this.removeExistingPopup();
+            
+            // 스타일 적용
+            this.applyWarningStyles();
+            
+            const popup = document.createElement('div');
+            popup.id = 'warning-popup';
+            popup.className = `warning-popup warning-level-${level}`;
+            
+            const config = this.getWarningConfig(level, clickCount);
+            
+            popup.innerHTML = `
+                <div class="warning-header">
+                    <span class="warning-icon">${config.icon}</span>
+                    <span class="warning-title">${config.title}</span>
+                    <button class="close-btn" onclick="clickProtection.closeWarningPopup()">×</button>
                 </div>
-            </div>
-            <div class="warning-footer">
-                <button class="warning-button" onclick="clickProtection.addToFavorites()">
-                    + 즐겨찾기 바로추가
-                </button>
-            </div>
-        `;
-
-        // 스타일 적용
-        this.applyWarningStyles();
-        
-        document.body.appendChild(popup);
-        
-        // 5초 후 자동으로 닫기
-        setTimeout(() => {
-            this.closeWarningPopup();
-        }, 5000);
-    }
+                <div class="warning-content">
+                    <p>${config.message}</p>
+                    <div class="warning-actions">
+                        <button class="favorites-btn" onclick="clickProtection.addToFavorites()">
+                            ⭐ 즐겨찾기 추가
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(popup);
+            
+            // 5초 후 자동으로 닫기
+            setTimeout(() => {
+                this.closeWarningPopup();
+            }, 5000);
+        }
 
     // 경고 설정 가져오기
     getWarningConfig(level, clickCount) {
@@ -487,114 +484,178 @@ class ClickProtectionSystem {
     // 경고 팝업 스타일 적용
     applyWarningStyles() {
         if (document.getElementById('warning-styles')) return;
-
+        
         const style = document.createElement('style');
         style.id = 'warning-styles';
         style.textContent = `
-            #warning-popup {
+            .warning-popup {
                 position: fixed;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                width: 400px;
-                max-width: 90vw;
+                top: 20px;
+                left: 20px;
+                max-width: 350px;
                 background: white;
                 border-radius: 12px;
-                box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
                 z-index: 10000;
-                font-family: 'Malgun Gothic', sans-serif;
-                overflow: hidden;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                animation: slideInLeft 0.3s ease-out;
+                border: 2px solid;
             }
-
+            
+            .warning-level-1 {
+                border-color: #ffc107;
+                background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            }
+            
+            .warning-level-2 {
+                border-color: #fd7e14;
+                background: linear-gradient(135deg, #ffe8d6, #ffd8a8);
+            }
+            
+            .warning-level-3 {
+                border-color: #dc3545;
+                background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+            }
+            
             .warning-header {
-                padding: 15px 20px;
                 display: flex;
-                justify-content: space-between;
                 align-items: center;
-                color: white;
-                font-weight: bold;
+                padding: 15px 20px 10px;
+                border-bottom: 1px solid rgba(0, 0, 0, 0.1);
             }
-
-            .warning-blue { background: #3498db; }
-            .warning-orange { background: #e67e22; }
-            .warning-red { background: #e74c3c; }
-
-            .warning-title {
-                font-size: 18px;
-            }
-
-            .warning-close {
-                cursor: pointer;
-                font-size: 24px;
-                line-height: 1;
-            }
-
-            .warning-content {
-                padding: 20px;
-                display: flex;
-                align-items: flex-start;
-                gap: 15px;
-            }
-
-            .warning-blue-content { background: #f8f9fa; }
-            .warning-orange-content { background: #fff3e0; }
-            .warning-red-content { background: #ffebee; }
-
+            
             .warning-icon {
-                font-size: 32px;
-                flex-shrink: 0;
+                font-size: 24px;
+                margin-right: 12px;
             }
-
-            .warning-text {
+            
+            .warning-title {
+                font-weight: 600;
+                font-size: 16px;
+                color: #2c3e50;
                 flex: 1;
-                line-height: 1.6;
             }
-
-            .warning-text p {
-                margin: 0 0 10px 0;
+            
+            .close-btn {
+                background: none;
+                border: none;
+                font-size: 20px;
+                color: #6c757d;
+                cursor: pointer;
+                padding: 0;
+                width: 24px;
+                height: 24px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 50%;
+                transition: all 0.2s;
+            }
+            
+            .close-btn:hover {
+                background: rgba(0, 0, 0, 0.1);
+                color: #495057;
+            }
+            
+            .warning-content {
+                padding: 15px 20px 20px;
+            }
+            
+            .warning-content p {
+                margin: 0 0 15px 0;
+                color: #495057;
+                line-height: 1.5;
                 font-size: 14px;
             }
-
-            .warning-detail {
-                font-weight: bold;
-                color: #e74c3c;
-                background: white;
-                padding: 8px 12px;
-                border-radius: 6px;
-                border: 1px solid #ddd;
+            
+            .warning-actions {
+                display: flex;
+                gap: 10px;
             }
-
-            .warning-footer {
-                padding: 15px 20px;
-                background: #f8f9fa;
-                text-align: center;
-            }
-
-            .warning-button {
-                background: #27ae60;
+            
+            .favorites-btn {
+                background: #007bff;
                 color: white;
                 border: none;
-                padding: 12px 24px;
+                padding: 8px 16px;
                 border-radius: 6px;
+                font-size: 13px;
                 cursor: pointer;
-                font-size: 14px;
-                font-weight: bold;
-                transition: background 0.3s;
+                transition: all 0.2s;
+                flex: 1;
             }
-
-            .warning-button:hover {
-                background: #229954;
+            
+            .favorites-btn:hover {
+                background: #0056b3;
+                transform: translateY(-1px);
             }
-
-            @media (max-width: 480px) {
-                #warning-popup {
-                    width: 95vw;
-                    margin: 10px;
+            
+            @keyframes slideInLeft {
+                from {
+                    transform: translateX(-100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+            
+            /* 모바일 반응형 */
+            @media (max-width: 768px) {
+                .warning-popup {
+                    top: 15px;
+                    left: 15px;
+                    right: 15px;
+                    max-width: none;
+                    width: auto;
+                }
+                
+                .warning-header {
+                    padding: 12px 15px 8px;
                 }
                 
                 .warning-content {
-                    flex-direction: column;
-                    text-align: center;
+                    padding: 12px 15px 15px;
+                }
+                
+                .warning-title {
+                    font-size: 15px;
+                }
+                
+                .warning-content p {
+                    font-size: 13px;
+                }
+                
+                .favorites-btn {
+                    padding: 10px 16px;
+                    font-size: 14px;
+                }
+            }
+            
+            /* 작은 모바일 화면 */
+            @media (max-width: 480px) {
+                .warning-popup {
+                    top: 10px;
+                    left: 10px;
+                    right: 10px;
+                }
+                
+                .warning-header {
+                    padding: 10px 12px 6px;
+                }
+                
+                .warning-content {
+                    padding: 10px 12px 12px;
+                }
+                
+                .warning-icon {
+                    font-size: 20px;
+                    margin-right: 8px;
+                }
+                
+                .warning-title {
+                    font-size: 14px;
                 }
             }
         `;
