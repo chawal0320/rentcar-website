@@ -621,8 +621,9 @@ class ClickProtectionSystem {
         const utmCampaign = urlParams.get('utm_campaign');
         const utmTerm = urlParams.get('utm_term');
         
-        if (utmSource === 'naver' || utmSource === 'naver_ads') {
-            console.log('🔄 UTM 파라미터로 네이버 광고 클릭 감지됨:', {
+        // 네이버 파워링크 광고를 통해서만 경고 팝업 표시
+        if (utmSource === 'naver' && utmMedium === 'powerlink') {
+            console.log('🔄 UTM 파라미터로 네이버 파워링크 광고 클릭 감지됨:', {
                 utmSource,
                 utmMedium,
                 utmCampaign,
@@ -686,35 +687,34 @@ class ClickProtectionSystem {
     // 네이버 파워링크 URL 패턴 확인
     isNaverPowerLinkUrl(url) {
         const powerLinkPatterns = [
-            /naver\.com\/search\.query/,
-            /search\.naver\.com\/search\.naver/,
-            /ad\.naver\.com/,
-            /ads\.naver\.com/,
             /powerlink\.naver\.com/,
-            /cafe\.naver\.com\/.*\?query=/,
-            /blog\.naver\.com\/.*\?query=/,
-            /news\.naver\.com\/.*\?query=/
+            /ad\.naver\.com\/powerlink/,
+            /ads\.naver\.com\/powerlink/,
+            /search\.naver\.com\/search\.naver\?.*query=.*&where=powerlink/,
+            /cafe\.naver\.com\/.*\?query=.*&where=powerlink/,
+            /blog\.naver\.com\/.*\?query=.*&where=powerlink/,
+            /news\.naver\.com\/.*\?query=.*&where=powerlink/
         ];
         
         return powerLinkPatterns.some(pattern => pattern.test(url));
     }
     
-    // 네이버 리퍼러 확인
+    // 네이버 파워링크 리퍼러 확인
     isNaverReferrer(referrer) {
         if (!referrer) return false;
         
-        const naverDomains = [
-            'naver.com',
-            'search.naver.com',
-            'ad.naver.com',
-            'ads.naver.com',
-            'powerlink.naver.com',
-            'cafe.naver.com',
-            'blog.naver.com',
-            'news.naver.com'
+        // 파워링크 관련 도메인과 경로만 확인
+        const powerLinkPatterns = [
+            /powerlink\.naver\.com/,
+            /ad\.naver\.com\/powerlink/,
+            /ads\.naver\.com\/powerlink/,
+            /search\.naver\.com\/search\.naver\?.*where=powerlink/,
+            /cafe\.naver\.com\/.*\?.*where=powerlink/,
+            /blog\.naver\.com\/.*\?.*where=powerlink/,
+            /news\.naver\.com\/.*\?.*where=powerlink/
         ];
         
-        return naverDomains.some(domain => referrer.includes(domain));
+        return powerLinkPatterns.some(pattern => pattern.test(referrer));
     }
     
     // 파워링크 광고 요소 특성 확인
@@ -727,40 +727,27 @@ class ClickProtectionSystem {
             const href = element.href || '';
             const textContent = element.textContent || '';
             
-            // 파워링크 광고 관련 패턴 확인
+            // 파워링크 광고만 감지하도록 더 정확한 패턴 확인
             if (
-                // 파워링크 광고 클래스 패턴
-                className.includes('ad') || 
-                className.includes('advertisement') ||
-                className.includes('naver') ||
-                className.includes('광고') ||
-                className.includes('sponsored') ||
+                // 파워링크 전용 클래스 패턴
                 className.includes('powerlink') ||
                 className.includes('power-link') ||
+                className.includes('naver-powerlink') ||
+                className.includes('sponsored-powerlink') ||
                 
-                // 파워링크 광고 ID 패턴
-                id.includes('ad') ||
-                id.includes('advertisement') ||
-                id.includes('naver') ||
-                id.includes('sponsored') ||
+                // 파워링크 전용 ID 패턴
                 id.includes('powerlink') ||
+                id.includes('naver-powerlink') ||
                 
-                // 파워링크 광고 링크 패턴
-                href.includes('naver.com') ||
-                href.includes('search.naver.com') ||
-                href.includes('ad.naver.com') ||
-                href.includes('ads.naver.com') ||
+                // 파워링크 전용 링크 패턴
                 href.includes('powerlink.naver.com') ||
+                href.includes('ad.naver.com/powerlink') ||
+                href.includes('ads.naver.com/powerlink') ||
                 
-                // 파워링크 광고 텍스트 패턴
-                textContent.includes('광고') ||
-                textContent.includes('네이버') ||
-                textContent.includes('sponsored') ||
-                textContent.includes('ad') ||
-                textContent.includes('Ad') ||
-                textContent.includes('AD') ||
+                // 파워링크 전용 텍스트 패턴
                 textContent.includes('파워링크') ||
-                textContent.includes('powerlink')
+                textContent.includes('powerlink') ||
+                textContent.includes('PowerLink')
             ) {
                 return true;
             }
@@ -1348,29 +1335,34 @@ class ClickProtectionSystem {
         }
     }
     
-    // UTM 파라미터 확인
+    // UTM 파라미터 확인 (파워링크만)
     hasUTMParameters() {
         const urlParams = new URLSearchParams(window.location.search);
-        return urlParams.has('utm_source') && urlParams.get('utm_source') === 'naver';
+        return urlParams.has('utm_source') && 
+               urlParams.get('utm_source') === 'naver' && 
+               urlParams.has('utm_medium') && 
+               urlParams.get('utm_medium') === 'powerlink';
     }
     
-    // 광고 클릭 데이터 분석
+    // 파워링크 광고 클릭 데이터 분석
     analyzeAdClickData(clickData, adData) {
-        // 광고 데이터와 클릭 데이터를 비교하여 실제 광고 클릭인지 판단
-        // 여기서는 간단한 패턴 매칭을 사용하지만, 실제로는 더 정교한 분석 필요
+        // 파워링크 광고 데이터와 클릭 데이터를 비교하여 실제 파워링크 클릭인지 판단
         
         const referrer = clickData.referrer;
         const timestamp = clickData.timestamp;
         
-        // 네이버 도메인에서의 접근 확인
+        // 파워링크 도메인에서의 접근 확인
         if (this.isNaverReferrer(referrer)) {
             return true;
         }
         
-        // 시간대별 광고 노출 패턴 확인
+        // 파워링크 캠페인만 확인
         if (adData.campaigns) {
             for (const campaign of adData.campaigns) {
-                if (campaign.status === 'ACTIVE' && this.isWithinAdSchedule(timestamp, campaign)) {
+                // 파워링크 캠페인인지 확인
+                if (campaign.status === 'ACTIVE' && 
+                    campaign.type === 'POWERLINK' && 
+                    this.isWithinAdSchedule(timestamp, campaign)) {
                     return true;
                 }
             }
