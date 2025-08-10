@@ -5564,3 +5564,588 @@ body {
         padding: 8px 4px;
     }
 }
+
+/* ===== 차단관리 탭 스타일 ===== */
+
+/* 차단관리 콘텐츠 스타일 */
+.blocking-content {
+    padding: 20px;
+}
+
+.blocking-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.info-section {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid #e9ecef;
+}
+
+.info-section h3 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.info-section ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.info-section li {
+    padding: 8px 0;
+    border-bottom: 1px solid #e9ecef;
+    color: #6c757d;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.info-section li:last-child {
+    border-bottom: none;
+}
+
+.info-section li strong {
+    color: #495057;
+    font-weight: 600;
+}
+
+/* 차단관리 액션 버튼 */
+.blocking-actions {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+}
+
+.blocking-actions .btn {
+    padding: 12px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.blocking-actions .btn-danger {
+    background: linear-gradient(135deg, #dc3545, #c82333);
+    color: white;
+}
+
+.blocking-actions .btn-danger:hover {
+    background: linear-gradient(135deg, #c82333, #a71e2a);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+}
+
+.blocking-actions .btn-info {
+    background: linear-gradient(135deg, #17a2b8, #138496);
+    color: white;
+}
+
+.blocking-actions .btn-info:hover {
+    background: linear-gradient(135deg, #138496, #117a8b);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(23, 162, 184, 0.3);
+}
+
+.blocking-actions .btn-warning {
+    background: linear-gradient(135deg, #ffc107, #e0a800);
+    color: #212529;
+}
+
+.blocking-actions .btn-warning:hover {
+    background: linear-gradient(135deg, #e0a800, #d39e00);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
+}
+
+/* 차단관리 컨트롤 */
+.blocking-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.account-selector {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.account-selector select {
+    padding: 8px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    font-size: 14px;
+    background: white;
+}
+
+.blocking-summary {
+    background: #e3f2fd;
+    padding: 8px 16px;
+    border-radius: 20px;
+    color: #1976d2;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.search-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.search-controls select {
+    padding: 8px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    font-size: 14px;
+    background: white;
+}
+
+/* 차단IP 테이블 스타일 */
+#blockedIPsTable {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+#blockedIPsTable th {
+    background: #f8f9fa;
+    padding: 12px 8px;
+    text-align: center;
+    font-weight: 600;
+    color: #495057;
+    border-bottom: 2px solid #dee2e6;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+#blockedIPsTable th:hover {
+    background: #e9ecef;
+}
+
+#blockedIPsTable td {
+    padding: 12px 8px;
+    text-align: center;
+    border-bottom: 1px solid #f1f3f4;
+    color: #6c757d;
+    font-size: 13px;
+}
+
+#blockedIPsTable tbody tr:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
+#blockedIPsTable tbody tr:hover {
+    background-color: #e3f2fd;
+    transform: scale(1.01);
+    transition: all 0.2s ease;
+}
+
+/* IP 정보 스타일 */
+.ip-info {
+    text-align: left;
+}
+
+.ip-info strong {
+    color: #495057;
+    font-weight: 600;
+}
+
+.ip-info small {
+    color: #6c757d;
+    font-size: 12px;
+    display: block;
+    margin-top: 4px;
+}
+
+/* 잠금 토글 스타일 */
+.lock-toggle {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+    cursor: pointer;
+}
+
+.lock-toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.lock-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 24px;
+}
+
+.lock-slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+}
+
+.lock-toggle input:checked + .lock-slider {
+    background-color: #28a745;
+}
+
+.lock-toggle input:checked + .lock-slider:before {
+    transform: translateX(26px);
+}
+
+/* 상태 배지 스타일 */
+.status-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.status-blocked {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.status-unblocked {
+    background: #d4edda;
+    color: #155724;
+}
+
+/* 액션 버튼 스타일 */
+.action-buttons {
+    display: flex;
+    gap: 5px;
+    justify-content: center;
+}
+
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 12px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-sm:hover {
+    transform: translateY(-1px);
+}
+
+/* 페이지네이션 스타일 */
+.pagination-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+    padding: 20px 0;
+}
+
+.page-number {
+    padding: 8px 12px;
+    border: 1px solid #dee2e6;
+    background: white;
+    color: #495057;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    font-size: 14px;
+}
+
+.page-number:hover {
+    background: #e9ecef;
+    border-color: #adb5bd;
+}
+
+.page-number.active {
+    background: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+/* 모달 팝업 스타일 */
+.modal-popup {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.modal-popup.show {
+    display: flex;
+    opacity: 1;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    width: 90%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+}
+
+.modal-popup.show .modal-content {
+    transform: scale(1);
+}
+
+.modal-header {
+    padding: 20px;
+    border-bottom: 1px solid #e9ecef;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h3 {
+    margin: 0;
+    color: #2c3e50;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #6c757d;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.modal-close:hover {
+    background: #f8f9fa;
+    color: #495057;
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+.modal-footer {
+    padding: 20px;
+    border-top: 1px solid #e9ecef;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+/* 폼 그룹 스타일 */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #495057;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border-color 0.2s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+/* 자동해제 기록 테이블 스타일 */
+.auto-unblock-history-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    margin-top: 15px;
+}
+
+.auto-unblock-history-table th {
+    background: #f8f9fa;
+    padding: 12px 8px;
+    text-align: center;
+    font-weight: 600;
+    color: #495057;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.auto-unblock-history-table td {
+    padding: 10px 8px;
+    text-align: center;
+    border-bottom: 1px solid #f1f3f4;
+    color: #6c757d;
+}
+
+.auto-unblock-history-table tbody tr:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
+.auto-unblock-history-table tbody tr:hover {
+    background-color: #e3f2fd;
+}
+
+.no-data {
+    text-align: center;
+    color: #6c757d;
+    font-style: italic;
+    padding: 40px 20px;
+}
+
+/* 알림 스타일 */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 20px;
+    border-radius: 8px;
+    color: white;
+    font-weight: 600;
+    z-index: 1001;
+    animation: slideInRight 0.3s ease;
+    max-width: 300px;
+}
+
+.notification-success {
+    background: #28a745;
+}
+
+.notification-warning {
+    background: #ffc107;
+    color: #212529;
+}
+
+.notification-error {
+    background: #dc3545;
+}
+
+.notification-info {
+    background: #17a2b8;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    .blocking-info {
+        grid-template-columns: 1fr;
+    }
+    
+    .blocking-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .search-controls {
+        justify-content: center;
+    }
+    
+    .blocking-actions {
+        justify-content: center;
+    }
+    
+    .modal-content {
+        width: 95%;
+        margin: 20px;
+    }
+    
+    #blockedIPsTable {
+        font-size: 12px;
+    }
+    
+    #blockedIPsTable th,
+    #blockedIPsTable td {
+        padding: 8px 4px;
+    }
+}
+
+@media (max-width: 480px) {
+    .blocking-actions .btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .modal-header,
+    .modal-body,
+    .modal-footer {
+        padding: 15px;
+    }
+    
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        font-size: 16px; /* 모바일에서 자동 확대 방지 */
+    }
+}
