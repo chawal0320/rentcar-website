@@ -177,24 +177,151 @@ class ClickProtectionSystem {
     // 의심스러운 활동 플래그
     flagSuspiciousActivity(type, data) {
         const suspiciousActivity = {
-            type,
-            data,
-            timestamp: Date.now(),
+            type: type,
+            data: data,
+            timestamp: new Date().toISOString(),
             sessionId: this.sessionData.sessionId,
             ipAddress: this.getCurrentIP(),
             url: window.location.href
         };
 
-        this.suspiciousPatterns.push(suspiciousActivity);
+        // 로컬 스토리지에 저장
+        const existingActivities = JSON.parse(localStorage.getItem('suspiciousActivities') || '[]');
+        existingActivities.push(suspiciousActivity);
+        localStorage.setItem('suspiciousActivities', JSON.stringify(existingActivities));
+
+        // IP별 일일 접속 횟수 확인 및 자동 차단
+        this.checkAndBlockIP(suspiciousActivity.ipAddress);
+
+        console.log('🚨 의심스러운 활동 감지:', suspiciousActivity);
+    }
+
+    // IP별 일일 접속 횟수 확인 및 자동 차단
+    checkAndBlockIP(ipAddress) {
+        if (!ipAddress || ipAddress === '알 수 없음') return;
+
+        const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD 형식
+        const clickData = JSON.parse(localStorage.getItem('clickData') || '[]');
         
-        // 로그 출력
-        console.warn('🚨 의심스러운 활동 감지:', suspiciousActivity);
+        // 오늘 해당 IP의 클릭 횟수 계산
+        const todayClicks = clickData.filter(click => {
+            const clickDate = new Date(click.timestamp).toISOString().split('T')[0];
+            return click.ipAddress === ipAddress && clickDate === today;
+        });
+
+        // 10회 이상이면 자동 차단
+        if (todayClicks.length >= 10) {
+            this.blockIP(ipAddress, todayClicks.length, today);
+        }
+    }
+
+    // IP 차단
+    blockIP(ipAddress, clickCount, date) {
+        // 이미 차단된 IP인지 확인
+        const blockedIPs = JSON.parse(localStorage.getItem('blockedIPs') || '[]');
+        const isAlreadyBlocked = blockedIPs.some(blocked => blocked.ipAddress === ipAddress);
         
-        // 서버로 전송
-        this.reportSuspiciousActivity(suspiciousActivity);
+        if (isAlreadyBlocked) return; // 이미 차단된 IP는 무시
+
+        const blockedIP = {
+            ipAddress: ipAddress,
+            blockedAt: new Date().toISOString(),
+            blockedDate: date,
+            clickCount: clickCount,
+            reason: '일일 접속 횟수 초과 (10회 이상)',
+            sessionId: this.sessionData.sessionId,
+            url: window.location.href
+        };
+
+        // 차단된 IP 목록에 추가
+        blockedIPs.push(blockedIP);
+        localStorage.setItem('blockedIPs', JSON.stringify(blockedIPs));
+
+        // 차단 이벤트 로그에 기록
+        const blockLog = {
+            type: 'IP_AUTO_BLOCKED',
+            data: blockedIP,
+            timestamp: new Date().toISOString()
+        };
+
+        const existingActivities = JSON.parse(localStorage.getItem('suspiciousActivities') || '[]');
+        existingActivities.push(blockLog);
+        localStorage.setItem('suspiciousActivities', JSON.stringify(existingActivities));
+
+        console.log(`🚫 IP ${ipAddress} 자동 차단됨 (${date} 기준 ${clickCount}회 접속)`);
         
-        // 로컬에 저장
-        this.saveSuspiciousActivity(suspiciousActivity);
+        // 차단된 IP에 대한 경고 팝업 표시
+        this.showBlockedIPWarning(ipAddress, clickCount, date);
+    }
+
+    // 차단된 IP 경고 팝업 표시
+    showBlockedIPWarning(ipAddress, clickCount, date) {
+        const popup = document.createElement('div');
+        popup.className = 'blocked-ip-warning';
+        popup.innerHTML = `
+            <div class="warning-header blocked">
+                <h3>🚫 IP 자동 차단됨</h3>
+                <button class="close-btn" onclick="this.parentElement.parentElement.remove()">×</button>
+            </div>
+            <div class="warning-content">
+                <p><strong>차단된 IP:</strong> ${ipAddress}</p>
+                <p><strong>차단 사유:</strong> ${date} 기준 ${clickCount}회 접속 (한도: 10회)</p>
+                <p><strong>차단 시간:</strong> ${new Date().toLocaleString('ko-KR')}</p>
+                <div class="warning-actions">
+                    <button class="btn btn-danger" onclick="clickProtection.unblockIP('${ipAddress}')">차단 해제</button>
+                    <button class="btn btn-secondary" onclick="this.parentElement.parentElement.remove()">닫기</button>
+                </div>
+            </div>
+        `;
+
+        // 기존 차단 경고 팝업 제거
+        this.removeExistingBlockedIPWarnings();
+        
+        // 페이지에 추가
+        document.body.appendChild(popup);
+        
+        // 10초 후 자동 제거 (관리자가 닫지 않은 경우)
+        setTimeout(() => {
+            if (popup.parentElement) {
+                popup.remove();
+            }
+        }, 10000);
+    }
+
+    // 기존 차단 IP 경고 팝업 제거
+    removeExistingBlockedIPWarnings() {
+        const existingWarnings = document.querySelectorAll('.blocked-ip-warning');
+        existingWarnings.forEach(warning => warning.remove());
+    }
+
+    // IP 차단 해제
+    unblockIP(ipAddress) {
+        const blockedIPs = JSON.parse(localStorage.getItem('blockedIPs') || '[]');
+        const updatedBlockedIPs = blockedIPs.filter(blocked => blocked.ipAddress !== ipAddress);
+        localStorage.setItem('blockedIPs', JSON.stringify(updatedBlockedIPs));
+
+        // 차단 해제 이벤트 로그에 기록
+        const unblockLog = {
+            type: 'IP_UNBLOCKED',
+            data: { ipAddress, unblockedAt: new Date().toISOString() },
+            timestamp: new Date().toISOString()
+        };
+
+        const existingActivities = JSON.parse(localStorage.getItem('suspiciousActivities') || '[]');
+        existingActivities.push(unblockLog);
+        localStorage.setItem('suspiciousActivities', JSON.stringify(existingActivities));
+
+        console.log(`✅ IP ${ipAddress} 차단 해제됨`);
+        
+        // 차단 해제 성공 메시지
+        alert(`IP ${ipAddress}의 차단이 해제되었습니다.`);
+        
+        // 관리자 대시보드가 열려있다면 테이블 새로고침
+        if (window.location.pathname.includes('admin-dashboard.html')) {
+            if (typeof filterSuspiciousActivities === 'function') {
+                filterSuspiciousActivities();
+            }
+        }
     }
 
     // 페이지뷰 추적
