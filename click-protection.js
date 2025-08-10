@@ -94,6 +94,9 @@ class ClickProtectionSystem {
         // 부정클릭 패턴 분석
         this.analyzeClickPattern(clickData);
 
+        // 단계별 경고 팝업 표시
+        this.showWarningPopup();
+
         // 클릭 데이터 전송 (서버로)
         this.sendClickData(clickData);
 
@@ -345,19 +348,258 @@ class ClickProtectionSystem {
 
     // 세션 차단 해제
     unblockSession(sessionId) {
-        this.blockedIPs.delete(sessionId);
-        try {
-            localStorage.setItem('blockedIPs', JSON.stringify([...this.blockedIPs]));
-        } catch (e) {
-            console.warn('차단 해제 저장 실패:', e);
+        if (this.blockedIPs.has(sessionId)) {
+            this.blockedIPs.delete(sessionId);
+            this.saveBlockedIPs();
+            console.log('세션이 차단 해제되었습니다:', sessionId);
         }
+    }
+
+    // 단계별 경고 팝업 표시
+    showWarningPopup() {
+        const clickCount = this.sessionData.clickCount;
+        const warningLevel = this.getWarningLevel(clickCount);
+        
+        if (warningLevel > 0) {
+            this.createWarningPopup(warningLevel, clickCount);
+        }
+    }
+
+    // 경고 레벨 결정
+    getWarningLevel(clickCount) {
+        if (clickCount >= 6) return 3;      // 심각 경고
+        if (clickCount >= 4) return 2;      // 주의 경고
+        if (clickCount >= 2) return 1;      // 기본 경고
+        return 0;                           // 경고 없음
+    }
+
+    // 경고 팝업 생성
+    createWarningPopup(level, clickCount) {
+        // 이미 팝업이 있다면 제거
+        this.removeExistingPopup();
+
+        const popup = document.createElement('div');
+        popup.id = 'warning-popup';
+        
+        const config = this.getWarningConfig(level, clickCount);
+        
+        popup.innerHTML = `
+            <div class="warning-header ${config.headerClass}">
+                <span class="warning-title">${config.title}</span>
+                <span class="warning-close" onclick="clickProtection.closeWarningPopup()">×</span>
+            </div>
+            <div class="warning-content ${config.contentClass}">
+                <div class="warning-icon">${config.icon}</div>
+                <div class="warning-text">
+                    <p>${config.message}</p>
+                    ${config.detail ? `<p class="warning-detail">${config.detail}</p>` : ''}
+                </div>
+            </div>
+            <div class="warning-footer">
+                <button class="warning-button" onclick="clickProtection.addToFavorites()">
+                    + 즐겨찾기 바로추가
+                </button>
+            </div>
+        `;
+
+        // 스타일 적용
+        this.applyWarningStyles();
+        
+        document.body.appendChild(popup);
+        
+        // 5초 후 자동으로 닫기
+        setTimeout(() => {
+            this.closeWarningPopup();
+        }, 5000);
+    }
+
+    // 경고 설정 가져오기
+    getWarningConfig(level, clickCount) {
+        const configs = {
+            1: {
+                title: '1단계',
+                headerClass: 'warning-blue',
+                contentClass: 'warning-blue-content',
+                icon: '💻',
+                message: '저희 사이트에 방문해 주셔서 감사합니다. 지금 클릭하신 링크는 저희 광고비가 지출되는 광고상품입니다. 즐겨찾기를 통한 방문으로 광고비가 절감되면, 더 좋은 서비스를 제공할 수 있습니다.',
+                detail: null
+            },
+            2: {
+                title: '2단계',
+                headerClass: 'warning-orange',
+                contentClass: 'warning-orange-content',
+                icon: '🛡️',
+                message: '광고클릭을 통해 여러 번 방문하셨습니다. 지금 클릭하신 링크는 저희 광고비가 지출되는 광고상품입니다. 많은 광고비가 지출됩니다. 즐겨찾기를 통한 방문으로 광고비가 절감되면, 더 좋은 서비스를 제공할 수 있습니다.',
+                detail: `방문횟수: ${clickCount}회`
+            },
+            3: {
+                title: '3단계',
+                headerClass: 'warning-red',
+                contentClass: 'warning-red-content',
+                icon: '🚫',
+                message: '광고클릭을 중지해주십시오. 접속자는 지속적인 광고클릭으로 당사 광고비를 과도하게 지출하게 하였습니다. 모든 IP는 추적관리되며, 이를 근거로 하여 영업 방해에 대한 법적조치를 취할 수 있습니다.',
+                detail: `방문횟수: ${clickCount}회`
+            }
+        };
+        
+        return configs[level];
+    }
+
+    // 기존 팝업 제거
+    removeExistingPopup() {
+        const existingPopup = document.getElementById('warning-popup');
+        if (existingPopup) {
+            existingPopup.remove();
+        }
+    }
+
+    // 경고 팝업 닫기
+    closeWarningPopup() {
+        this.removeExistingPopup();
+    }
+
+    // 즐겨찾기 추가
+    addToFavorites() {
+        try {
+            if (window.sidebar && window.sidebar.addPanel) { // Mozilla
+                window.sidebar.addPanel(document.title, window.location.href, '');
+            } else if (window.external && ('AddFavorite' in window.external)) { // IE
+                window.external.AddFavorite(window.location.href, document.title);
+            } else { // Webkit, Safari, Chrome
+                alert('Ctrl+D를 눌러서 즐겨찾기에 추가하세요.');
+            }
+            this.closeWarningPopup();
+        } catch (e) {
+            alert('즐겨찾기 추가에 실패했습니다. Ctrl+D를 눌러서 수동으로 추가해주세요.');
+        }
+    }
+
+    // 경고 팝업 스타일 적용
+    applyWarningStyles() {
+        if (document.getElementById('warning-styles')) return;
+
+        const style = document.createElement('style');
+        style.id = 'warning-styles';
+        style.textContent = `
+            #warning-popup {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 400px;
+                max-width: 90vw;
+                background: white;
+                border-radius: 12px;
+                box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+                z-index: 10000;
+                font-family: 'Malgun Gothic', sans-serif;
+                overflow: hidden;
+            }
+
+            .warning-header {
+                padding: 15px 20px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                color: white;
+                font-weight: bold;
+            }
+
+            .warning-blue { background: #3498db; }
+            .warning-orange { background: #e67e22; }
+            .warning-red { background: #e74c3c; }
+
+            .warning-title {
+                font-size: 18px;
+            }
+
+            .warning-close {
+                cursor: pointer;
+                font-size: 24px;
+                line-height: 1;
+            }
+
+            .warning-content {
+                padding: 20px;
+                display: flex;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .warning-blue-content { background: #f8f9fa; }
+            .warning-orange-content { background: #fff3e0; }
+            .warning-red-content { background: #ffebee; }
+
+            .warning-icon {
+                font-size: 32px;
+                flex-shrink: 0;
+            }
+
+            .warning-text {
+                flex: 1;
+                line-height: 1.6;
+            }
+
+            .warning-text p {
+                margin: 0 0 10px 0;
+                font-size: 14px;
+            }
+
+            .warning-detail {
+                font-weight: bold;
+                color: #e74c3c;
+                background: white;
+                padding: 8px 12px;
+                border-radius: 6px;
+                border: 1px solid #ddd;
+            }
+
+            .warning-footer {
+                padding: 15px 20px;
+                background: #f8f9fa;
+                text-align: center;
+            }
+
+            .warning-button {
+                background: #27ae60;
+                color: white;
+                border: none;
+                padding: 12px 24px;
+                border-radius: 6px;
+                cursor: pointer;
+                font-size: 14px;
+                font-weight: bold;
+                transition: background 0.3s;
+            }
+
+            .warning-button:hover {
+                background: #229954;
+            }
+
+            @media (max-width: 480px) {
+                #warning-popup {
+                    width: 95vw;
+                    margin: 10px;
+                }
+                
+                .warning-content {
+                    flex-direction: column;
+                    text-align: center;
+                }
+            }
+        `;
+        
+        document.head.appendChild(style);
+    }
+
+    // 테스트용: 수동으로 경고 팝업 표시
+    showTestWarning(level = 1) {
+        this.createWarningPopup(level, level === 1 ? 2 : level === 2 ? 5 : 8);
     }
 }
 
-// 시스템 초기화
+// 시스템 초기화 및 전역 접근
 const clickProtection = new ClickProtectionSystem();
-
-// 전역에서 접근 가능하도록 설정
 window.clickProtection = clickProtection;
 
 // 개발자 도구에서 확인 가능
