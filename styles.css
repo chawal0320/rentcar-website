@@ -80,6 +80,23 @@ body {
     color: #ff9a9e;
 }
 
+.admin-link {
+    background: #333;
+    color: white !important;
+    padding: 8px 16px;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+    border: 2px solid #333;
+}
+
+.admin-link:hover {
+    background: #ff9a9e;
+    border-color: #ff9a9e;
+    color: white !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 154, 158, 0.3);
+}
+
 .mobile-menu-toggle {
     display: none;
     font-size: 1.5rem;
