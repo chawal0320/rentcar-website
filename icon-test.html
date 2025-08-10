@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>접속기록 아이콘 테스트 - SM렌트카</title>
+    
+    <!-- Font Awesome 아이콘 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- CSS 파일 연결 -->
+    <link rel="stylesheet" href="styles.css">
+    
+    <style>
+        .test-container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .test-section {
+            margin: 30px 0;
+            padding: 20px;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+        }
+        
+        .test-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #2d3748;
+        }
+        
+        .icon-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+        
+        .icon-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .icon-item:hover {
+            border-color: #3b82f6;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+        }
+        
+        .icon-item i {
+            font-size: 24px;
+            margin-bottom: 8px;
+            color: #3b82f6;
+        }
+        
+        .icon-item span {
+            font-size: 12px;
+            text-align: center;
+            color: #64748b;
+        }
+        
+        .test-button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .test-button:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+        }
+        
+        .status-display {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 14px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .error {
+            background: #fef2f2;
+            border-color: #fecaca;
+            color: #dc2626;
+        }
+        
+        .success {
+            background: #f0fdf4;
+            border-color: #bbf7d0;
+            color: #16a34a;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>접속기록 아이콘 테스트 페이지</h1>
+        <p>이 페이지는 접속기록 관리 시스템의 아이콘들이 제대로 작동하는지 테스트합니다.</p>
+        
+        <div class="test-section">
+            <div class="test-title">Font Awesome 로딩 상태 확인</div>
+            <button class="test-button" onclick="checkFontAwesomeStatus()">아이콘 상태 확인</button>
+            <div id="fa-status" class="status-display">아이콘 상태를 확인하려면 버튼을 클릭하세요.</div>
+        </div>
+        
+        <div class="test-section">
+            <div class="test-title">주요 아이콘들 테스트</div>
+            <div class="icon-grid">
+                <div class="icon-item">
+                    <i class="fas fa-chart-line"></i>
+                    <span>대시보드</span>
+                </div>
+                <div class="icon-item">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>분석</span>
+                </div>
+                <div class="icon-item">
+                    <i class="fas fa-cog"></i>
+                    <span>설정</span>
+                </div>
+                <div class="icon-item">
+                    <i class="fas fa-eye"></i>
+                    <span>개요</span>
+                </div>
+                <div class="icon-item">
+                    <i class="fas fa-list"></i>
+                    <span>상세</span>
+                </div>
+                <div class="icon-item">
+                    <i class="fas fa-file-alt"></i>
+                    <span>보고서</span>
+                </div>
+                <div class="icon-item">
+                    <i class="fas fa-users"></i>
+                    <span>사용자</span>
+                </div>
+                <div class="icon-item">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span>경고</span>
+                </div>
+                <div class="icon-item">
+                    <i class="fas fa-clock"></i>
+                    <span>시간</span>
+                </div>
+                <div class="icon-item">
+                    <i class="fas fa-search"></i>
+                    <span>검색</span>
+                </div>
+                <div class="icon-item">
+                    <i class="fas fa-download"></i>
+                    <span>다운로드</span>
+                </div>
+                <div class="icon-item">
+                    <i class="fas fa-sort"></i>
+                    <span>정렬</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <div class="test-title">아이콘 클릭 테스트</div>
+            <p>아이콘을 클릭하여 이벤트가 제대로 작동하는지 확인하세요.</p>
+            <div class="icon-grid">
+                <div class="icon-item" onclick="testIconClick(this)">
+                    <i class="fas fa-chart-line"></i>
+                    <span>클릭 테스트</span>
+                </div>
+                <div class="icon-item" onclick="testIconClick(this)">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>클릭 테스트</span>
+                </div>
+                <div class="icon-item" onclick="testIconClick(this)">
+                    <i class="fas fa-cog"></i>
+                    <span>클릭 테스트</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <div class="test-title">대체 아이콘 테스트</div>
+            <button class="test-button" onclick="useFallbackIcons()">대체 아이콘 사용</button>
+            <button class="test-button" onclick="restoreOriginalIcons()">원본 아이콘 복원</button>
+            <p>Font Awesome이 로드되지 않은 경우를 시뮬레이션합니다.</p>
+        </div>
+        
+        <div class="test-section">
+            <div class="test-title">테스트 결과</div>
+            <div id="test-results" class="status-display">테스트를 실행하면 결과가 여기에 표시됩니다.</div>
+        </div>
+    </div>
+
+    <script>
+        // Font Awesome 상태 확인
+        function checkFontAwesomeStatus() {
+            const statusDiv = document.getElementById('fa-status');
+            
+            try {
+                const testIcon = document.createElement('i');
+                testIcon.className = 'fas fa-check';
+                testIcon.style.position = 'absolute';
+                testIcon.style.left = '-9999px';
+                document.body.appendChild(testIcon);
+                
+                const computedStyle = window.getComputedStyle(testIcon, '::before');
+                const content = computedStyle.content;
+                
+                document.body.removeChild(testIcon);
+                
+                if (content === 'none' || content === '') {
+                    statusDiv.innerHTML = '❌ Font Awesome이 제대로 로드되지 않았습니다.<br>CDN 연결을 확인해주세요.';
+                    statusDiv.className = 'status-display error';
+                } else {
+                    statusDiv.innerHTML = '✅ Font Awesome이 정상적으로 로드되었습니다.<br>아이콘들이 제대로 표시됩니다.';
+                    statusDiv.className = 'status-display success';
+                }
+            } catch (error) {
+                statusDiv.innerHTML = `❌ 오류 발생: ${error.message}`;
+                statusDiv.className = 'status-display error';
+            }
+        }
+        
+        // 아이콘 클릭 테스트
+        function testIconClick(element) {
+            element.style.transform = 'scale(1.1)';
+            element.style.borderColor = '#10b981';
+            
+            setTimeout(() => {
+                element.style.transform = 'scale(1)';
+                element.style.borderColor = '#e2e8f0';
+            }, 200);
+            
+            addTestResult(`아이콘 클릭 테스트 성공: ${element.querySelector('span').textContent}`);
+        }
+        
+        // 대체 아이콘 사용
+        function useFallbackIcons() {
+            const iconMap = {
+                'fas fa-chart-line': '📊',
+                'fas fa-chart-bar': '📈',
+                'fas fa-cog': '⚙️',
+                'fas fa-eye': '👁️',
+                'fas fa-list': '📋',
+                'fas fa-file-alt': '📄',
+                'fas fa-users': '👥',
+                'fas fa-exclamation-triangle': '⚠️',
+                'fas fa-clock': '🕐',
+                'fas fa-search': '🔍',
+                'fas fa-download': '⬇️',
+                'fas fa-sort': '↕️'
+            };
+            
+            document.querySelectorAll('i[class*="fas fa-"]').forEach(icon => {
+                const classes = icon.className.split(' ');
+                const faClass = classes.find(cls => cls.startsWith('fas fa-'));
+                if (faClass && iconMap[faClass]) {
+                    icon.textContent = iconMap[faClass];
+                    icon.className = 'fallback-icon';
+                    icon.style.fontSize = '1.2em';
+                }
+            });
+            
+            addTestResult('대체 아이콘으로 변경되었습니다.');
+        }
+        
+        // 원본 아이콘 복원
+        function restoreOriginalIcons() {
+            document.querySelectorAll('.fallback-icon').forEach(icon => {
+                // 원본 클래스로 복원 (실제로는 Font Awesome이 로드되어야 함)
+                icon.textContent = '';
+                icon.className = 'fas fa-question';
+            });
+            
+            addTestResult('원본 아이콘으로 복원되었습니다.');
+        }
+        
+        // 테스트 결과 추가
+        function addTestResult(message) {
+            const resultsDiv = document.getElementById('test-results');
+            const timestamp = new Date().toLocaleTimeString();
+            resultsDiv.innerHTML += `<div>[${timestamp}] ${message}</div>`;
+            resultsDiv.scrollTop = resultsDiv.scrollHeight;
+        }
+        
+        // 페이지 로드 시 자동 테스트
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                checkFontAwesomeStatus();
+                addTestResult('페이지 로드 완료. 자동 테스트 시작.');
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

@@ -192,6 +192,255 @@
             border-color: #007bff;
         }
         
+        /* IP 링크 스타일 */
+        .ip-link {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .ip-link:hover {
+            color: #0056b3;
+            text-decoration: underline;
+        }
+        
+        .ip-link:active {
+            color: #004085;
+        }
+        
+        /* IP 정보/메모 셀 스타일 */
+        .ip-memo-cell {
+            color: #dc3545;
+            font-weight: 500;
+        }
+        
+        /* 중복접속 경고 스타일 */
+        .duplicate-warning-badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.75em;
+            font-weight: bold;
+            margin-left: 8px;
+            animation: pulse-warning 2s infinite;
+        }
+        
+        .duplicate-warning-critical {
+            background: #dc3545;
+            color: white;
+            border: 1px solid #c82333;
+        }
+        
+        .duplicate-warning-high {
+            background: #fd7e14;
+            color: white;
+            border: 1px solid #e55a00;
+        }
+        
+        .duplicate-warning-medium {
+            background: #ffc107;
+            color: #212529;
+            border: 1px solid #e0a800;
+        }
+        
+        .duplicate-warning-low {
+            background: #28a745;
+            color: white;
+            border: 1px solid #1e7e34;
+        }
+        
+        .duplicate-warning-badge:hover {
+            transform: scale(1.1);
+            transition: transform 0.2s ease;
+        }
+        
+        @keyframes pulse-warning {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+        
+        /* 중복접속 링크 스타일 */
+        .ip-link.duplicate-warning-critical {
+            color: #dc3545 !important;
+            font-weight: bold;
+        }
+        
+        .ip-link.duplicate-warning-high {
+            color: #fd7e14 !important;
+            font-weight: bold;
+        }
+        
+        .ip-link.duplicate-warning-medium {
+            color: #ffc107 !important;
+            font-weight: bold;
+        }
+        
+        .ip-link.duplicate-warning-low {
+            color: #28a745 !important;
+            font-weight: bold;
+        }
+        
+        /* 중복접속 팝업 스타일 */
+        .duplicate-access-popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+        
+        .duplicate-access-popup.show {
+            display: block;
+        }
+        
+        .duplicate-access-popup-content {
+            position: relative;
+            background: white;
+            margin: 50px auto;
+            max-width: 90%;
+            width: 1200px;
+            border-radius: 10px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .duplicate-access-popup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 30px;
+            border-bottom: 1px solid #e9ecef;
+            background: #f8f9fa;
+            border-radius: 10px 10px 0 0;
+        }
+        
+        .duplicate-access-popup-title {
+            margin: 0;
+            color: #2c3e50;
+            font-size: 1.5em;
+        }
+        
+        .duplicate-access-popup-close {
+            background: none;
+            border: none;
+            font-size: 2em;
+            cursor: pointer;
+            color: #6c757d;
+            padding: 0;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s;
+        }
+        
+        .duplicate-access-popup-close:hover {
+            background: #e9ecef;
+            color: #495057;
+        }
+        
+        .duplicate-access-popup-body {
+            padding: 30px;
+        }
+        
+        .duplicate-access-info {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #007bff;
+        }
+        
+        .duplicate-access-info h4 {
+            margin: 0 0 15px 0;
+            color: #2c3e50;
+        }
+        
+        .duplicate-access-info p {
+            margin: 8px 0;
+            color: #495057;
+        }
+        
+        .duplicate-access-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+        
+        .duplicate-access-table th {
+            background: #e9ecef;
+            padding: 12px 8px;
+            text-align: center;
+            font-weight: 600;
+            color: #495057;
+            border: 1px solid #dee2e6;
+        }
+        
+        .duplicate-access-table td {
+            padding: 10px 8px;
+            text-align: center;
+            border: 1px solid #dee2e6;
+            vertical-align: middle;
+        }
+        
+        .duplicate-access-table tbody tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        .duplicate-access-table tbody tr:hover {
+            background: #e9ecef;
+        }
+        
+        .duplicate-access-popup-footer {
+            padding: 20px 30px;
+            border-top: 1px solid #e9ecef;
+            background: #f8f9fa;
+            border-radius: 0 0 10px 10px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        
+        /* 버튼 스타일 */
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #0056b3;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+        
         /* 날짜 범위 선택기 스타일 */
         .date-range-picker {
             display: flex;
@@ -1002,62 +1251,9 @@
             color: white;
         }
         
-        .main-tabs {
-            display: flex;
-            gap: 10px;
-        }
+
         
-        .main-tab {
-            padding: 12px 24px;
-            border: none;
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-        
-        .main-tab:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
-        
-        .main-tab.active {
-            background: rgba(255, 255, 255, 0.9);
-            color: #333;
-        }
-        
-        .header-right {
-            display: flex;
-            gap: 20px;
-            align-items: center;
-        }
-        
-        .header-link {
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
-            position: relative;
-        }
-        
-        .header-link:hover {
-            text-decoration: underline;
-        }
-        
-        .notification-badge {
-            position: absolute;
-            top: -8px;
-            right: -12px;
-            background: #ff4757;
-            color: white;
-            border-radius: 50%;
-            width: 18px;
-            height: 18px;
-            font-size: 11px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+
         
         .site-selection-bar {
             display: flex;
@@ -1279,6 +1475,21 @@
             background: #0056b3;
         }
         
+        .search-input {
+            padding: 8px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            font-size: 14px;
+            width: 200px;
+            transition: border-color 0.3s ease;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+        }
+        
         .settings-btn {
             padding: 8px 16px;
             background: #6c757d;
@@ -1475,21 +1686,7 @@
         </div>
 
         <div class="dashboard-container">
-            <!-- 상단 헤더 -->
-            <div class="dashboard-header">
-                <div class="header-left">
-                    <div class="main-tabs">
-                        <button class="main-tab active" onclick="switchMainTab('fraud')">부정클릭 관리</button>
-                        <button class="main-tab" onclick="switchMainTab('block')">부정클릭 차단관리</button>
-                    </div>
-                </div>
-                <div class="header-right">
-                    <a href="#" class="header-link">문의하기 <span class="notification-badge">3</span></a>
-                    <a href="#" class="header-link">FAQ</a>
-                    <a href="#" class="header-link">요금 및 결제</a>
-                    <a href="#" class="header-link">고객센터 1661-8270</a>
-                </div>
-            </div>
+
 
             <!-- 사이트 선택 및 상태 -->
             <div class="site-selection-bar">
@@ -1558,6 +1755,7 @@
                     <button class="nav-tab" onclick="switchTab('location')">위치기록(BETA)</button>
                     <button class="nav-tab" onclick="switchTab('blocking')">차단관리</button>
                     <button class="nav-tab" onclick="switchTab('fraud-warning')">부정접속경고</button>
+                    <button class="nav-tab" onclick="switchTab('test')">테스트 페이지</button>
                     <button class="nav-tab" onclick="switchTab('settings')">환경설정</button>
                 </div>
 
@@ -1634,10 +1832,11 @@
                         </div>
                         
                         <div class="refund-history-table">
+                            <h3>중복접속자 정보보기</h3>
                             <table id="refundHistoryTable" class="dashboard-table">
                                 <thead>
                                     <tr>
-                                        <th>단말기식별 보라코드</th>
+                                        <th>IP정보/차단메모</th>
                                         <th>등록일시</th>
                                         <th>대표 IP</th>
                                         <th>대표 키워드</th>
@@ -1680,11 +1879,11 @@
                             <div class="date-inputs">
                                 <div class="date-input-group">
                                     <label for="startDate">시작일:</label>
-                                    <input type="date" id="startDate" onchange="filterSuspiciousActivities()">
+                                    <input type="date" id="startDate" onchange="handleDateChange()">
                                 </div>
                                 <div class="date-input-group">
                                     <label for="endDate">종료일:</label>
-                                    <input type="date" id="endDate" onchange="filterSuspiciousActivities()">
+                                    <input type="date" id="endDate" onchange="handleDateChange()">
                                 </div>
                             </div>
                         </div>
@@ -1700,6 +1899,7 @@
                                     <option value="keyword">키워드</option>
                                     <option value="url">URL</option>
                                 </select>
+                                <input type="text" id="searchInput" placeholder="검색어를 입력하세요" class="search-input" onkeypress="handleSearchKeyPress(event)">
                                 <button class="search-btn" onclick="performSearch()">검색</button>
                             </div>
                             <div class="search-item">
@@ -1865,7 +2065,7 @@
                                 <thead>
                                     <tr>
                                         <th>No</th>
-                                        <th>단말기식별 보라코드</th>
+                                        <th>IP정보/차단메모</th>
                                         <th>접속IP</th>
                                         <th>잠금</th>
                                         <th>접속</th>
@@ -2258,9 +2458,12 @@
                 </div>
             </div>
 
-            <!-- 테스트 데이터 생성 버튼 -->
+            <!-- 테스트 데이터 관리 버튼 -->
             <div class="dashboard-section">
-                <button class="btn btn-warning" onclick="generateTestData()">🧪 테스트 데이터 생성</button>
+                <div class="test-data-controls">
+                    <button class="btn btn-warning" onclick="generateTestData()">🧪 테스트 데이터 생성</button>
+                    <button class="btn btn-danger" onclick="deleteAllTestData()">🗑️ 테스트 데이터 전체삭제</button>
+                </div>
             </div>
         </div>
     </div>
@@ -2583,6 +2786,11 @@
             // 실시간 업데이트 시작
             startRealTimeUpdates();
             
+            // 기본적으로 접속기록 탭 활성화
+            setTimeout(() => {
+                switchTab('access');
+            }, 200);
+            
             console.log('대시보드 초기화 완료');
         }
         
@@ -2609,6 +2817,9 @@
             
             // 기본 날짜 설정 후 필터링 실행
             setTimeout(() => {
+                // 초기 날짜 범위 표시 업데이트
+                updateDateRangeDisplay(oneWeekAgo.toISOString().split('T')[0], today.toISOString().split('T')[0]);
+                
                 filterSuspiciousActivities();
                 filterBlockedIPs();
                 
@@ -2649,25 +2860,89 @@
                 const clickData = JSON.parse(localStorage.getItem('clickData') || '[]');
                 const suspiciousActivities = JSON.parse(localStorage.getItem('suspiciousActivities') || '[]');
                 
-                // 최근 24시간 데이터로 차트 생성
-                const now = new Date();
-                const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+                // 현재 선택된 날짜 범위 확인
+                const startDate = document.getElementById('startDate')?.value;
+                const endDate = document.getElementById('endDate')?.value;
                 
-                // 시간별 데이터 집계
-                const hourlyData = {};
-                for (let i = 0; i < 24; i++) {
-                    const hour = new Date(oneDayAgo.getTime() + i * 60 * 60 * 1000);
-                    const hourKey = hour.getHours() + '시';
-                    hourlyData[hourKey] = { clicks: 0, suspicious: 0 };
+                let start, end;
+                let chartTitle = '최근 24시간 활동 현황';
+                let timeUnit = 'hour';
+                
+                if (startDate && endDate) {
+                    // 선택된 날짜 범위 사용
+                    start = new Date(startDate);
+                    end = new Date(endDate);
+                    end.setHours(23, 59, 59, 999);
+                    
+                    const daysDiff = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+                    
+                    if (daysDiff <= 1) {
+                        // 1일 이하: 시간별 차트
+                        chartTitle = `${startDate} 활동 현황`;
+                        timeUnit = 'hour';
+                    } else if (daysDiff <= 7) {
+                        // 7일 이하: 일별 차트
+                        chartTitle = `${startDate} ~ ${endDate} 일별 활동 현황`;
+                        timeUnit = 'day';
+                    } else {
+                        // 7일 초과: 주별 차트
+                        chartTitle = `${startDate} ~ ${endDate} 주별 활동 현황`;
+                        timeUnit = 'week';
+                    }
+                } else {
+                    // 기본값: 최근 24시간
+                    end = new Date();
+                    start = new Date(end.getTime() - 24 * 60 * 60 * 1000);
+                    timeUnit = 'hour';
+                }
+                
+                // 시간별/일별/주별 데이터 집계
+                const timeData = {};
+                
+                if (timeUnit === 'hour') {
+                    // 시간별 데이터
+                    for (let i = 0; i < 24; i++) {
+                        const hour = new Date(start.getTime() + i * 60 * 60 * 1000);
+                        if (hour <= end) {
+                            const hourKey = hour.getHours() + '시';
+                            timeData[hourKey] = { clicks: 0, suspicious: 0 };
+                        }
+                    }
+                } else if (timeUnit === 'day') {
+                    // 일별 데이터
+                    for (let i = 0; i < daysDiff; i++) {
+                        const day = new Date(start.getTime() + i * 24 * 60 * 60 * 1000);
+                        const dayKey = day.toLocaleDateString('ko-KR', { month: 'short', day: 'numeric' });
+                        timeData[dayKey] = { clicks: 0, suspicious: 0 };
+                    }
+                } else if (timeUnit === 'week') {
+                    // 주별 데이터
+                    const weeks = Math.ceil(daysDiff / 7);
+                    for (let i = 0; i < weeks; i++) {
+                        const weekStart = new Date(start.getTime() + i * 7 * 24 * 60 * 60 * 1000);
+                        const weekKey = `${i + 1}주차`;
+                        timeData[weekKey] = { clicks: 0, suspicious: 0 };
+                    }
                 }
                 
                 // 클릭 데이터 집계
                 clickData.forEach(click => {
                     const clickTime = new Date(click.timestamp);
-                    if (clickTime >= oneDayAgo) {
-                        const hourKey = clickTime.getHours() + '시';
-                        if (hourlyData[hourKey]) {
-                            hourlyData[hourKey].clicks++;
+                    if (clickTime >= start && clickTime <= end) {
+                        let timeKey;
+                        
+                        if (timeUnit === 'hour') {
+                            timeKey = clickTime.getHours() + '시';
+                        } else if (timeUnit === 'day') {
+                            timeKey = clickTime.toLocaleDateString('ko-KR', { month: 'short', day: 'numeric' });
+                        } else if (timeUnit === 'week') {
+                            const weekStart = new Date(start.getTime());
+                            const weekDiff = Math.floor((clickTime - weekStart) / (7 * 24 * 60 * 60 * 1000));
+                            timeKey = `${weekDiff + 1}주차`;
+                        }
+                        
+                        if (timeData[timeKey]) {
+                            timeData[timeKey].clicks++;
                         }
                     }
                 });
@@ -2675,16 +2950,27 @@
                 // 의심스러운 활동 집계
                 suspiciousActivities.forEach(activity => {
                     const activityTime = new Date(activity.timestamp);
-                    if (activityTime >= oneDayAgo) {
-                        const hourKey = activityTime.getHours() + '시';
-                        if (hourlyData[hourKey]) {
-                            hourlyData[hourKey].suspicious++;
+                    if (activityTime >= start && activityTime <= end) {
+                        let timeKey;
+                        
+                        if (timeUnit === 'hour') {
+                            timeKey = activityTime.getHours() + '시';
+                        } else if (timeUnit === 'day') {
+                            timeKey = activityTime.toLocaleDateString('ko-KR', { month: 'short', day: 'numeric' });
+                        } else if (timeUnit === 'week') {
+                            const weekStart = new Date(start.getTime());
+                            const weekDiff = Math.floor((activityTime - weekStart) / (7 * 24 * 60 * 60 * 1000));
+                            timeKey = `${weekDiff + 1}주차`;
+                        }
+                        
+                        if (timeData[timeKey]) {
+                            timeData[timeKey].suspicious++;
                         }
                     }
                 });
                 
                 // 차트 HTML 생성
-                const chartHTML = generateChartHTML(hourlyData);
+                const chartHTML = generateChartHTML(timeData, chartTitle, timeUnit);
                 chartContainer.innerHTML = chartHTML;
                 
             } catch (error) {
@@ -2694,19 +2980,19 @@
         }
         
         // 차트 HTML 생성
-        function generateChartHTML(hourlyData) {
-            const hours = Object.keys(hourlyData);
-            const maxClicks = Math.max(...Object.values(hourlyData).map(d => d.clicks), 1);
-            const maxSuspicious = Math.max(...Object.values(hourlyData).map(d => d.suspicious), 1);
+        function generateChartHTML(timeData, chartTitle, timeUnit) {
+            const timeKeys = Object.keys(timeData);
+            const maxClicks = Math.max(...Object.values(timeData).map(d => d.clicks), 1);
+            const maxSuspicious = Math.max(...Object.values(timeData).map(d => d.suspicious), 1);
             
             let chartHTML = '<div style="width: 100%; height: 100%;">';
-            chartHTML += '<h4 style="margin: 0 0 20px 0; color: #495057;">최근 24시간 활동 현황</h4>';
+            chartHTML += `<h4 style="margin: 0 0 20px 0; color: #495057;">${chartTitle}</h4>`;
             
-            // 시간별 막대 차트
+            // 시간별/일별/주별 막대 차트
             chartHTML += '<div style="display: flex; align-items: end; height: 200px; gap: 2px; justify-content: space-between;">';
             
-            hours.forEach(hour => {
-                const data = hourlyData[hour];
+            timeKeys.forEach(timeKey => {
+                const data = timeData[timeKey];
                 const clickHeight = (data.clicks / maxClicks) * 150;
                 const suspiciousHeight = (data.suspicious / maxSuspicious) * 150;
                 
@@ -2716,7 +3002,7 @@
                             <div style="width: 20px; background: #28a745; height: ${clickHeight}px; border-radius: 2px 2px 0 0; margin-bottom: 2px;" title="클릭: ${data.clicks}회"></div>
                             <div style="width: 20px; background: #dc3545; height: ${suspiciousHeight}px; border-radius: 2px 2px 0 0;" title="의심활동: ${data.suspicious}회"></div>
                         </div>
-                        <div style="font-size: 10px; color: #6c757d; margin-top: 5px;">${hour}</div>
+                        <div style="font-size: 10px; color: #6c757d; margin-top: 5px; text-align: center;">${timeKey}</div>
                     </div>
                 `;
             });
@@ -2786,13 +3072,17 @@
             }
         }
         
-        // 실시간 업데이트 시작
+        // 실시간 업데이트 시작 (비활성화됨)
         function startRealTimeUpdates() {
+            // 실시간 업데이트 비활성화 - 필요시 주석 해제
             // 5초마다 데이터 새로고침
+            /*
             setInterval(() => {
                 updateStats();
                 updateActivityChart(); // 실시간 차트 업데이트
             }, 5000);
+            */
+            console.log('실시간 업데이트가 비활성화되었습니다.');
         }
         
         // 차단된 IP 표시
@@ -2935,21 +3225,63 @@
                     return activityDate >= start && activityDate <= end;
                 });
                 
-                // IP별로 중복접속 횟수 계산
+                // IP별로 중복접속 횟수 계산 (더 정확한 계산)
                 const ipCounts = {};
+                const ipDetails = {};
+                
                 filteredSuspiciousActivities.forEach(activity => {
                     const ip = activity.ipAddress || '알 수 없음';
-                    ipCounts[ip] = (ipCounts[ip] || 0) + 1;
+                    if (!ipCounts[ip]) {
+                        ipCounts[ip] = 0;
+                        ipDetails[ip] = {
+                            count: 0,
+                            firstAccess: activity.timestamp,
+                            lastAccess: activity.timestamp,
+                            types: new Set(),
+                            pages: new Set(),
+                            riskLevel: 'LOW'
+                        };
+                    }
+                    
+                    ipCounts[ip]++;
+                    ipDetails[ip].count = ipCounts[ip];
+                    ipDetails[ip].lastAccess = activity.timestamp;
+                    ipDetails[ip].types.add(activity.type || 'unknown');
+                    if (activity.page) ipDetails[ip].pages.add(activity.page);
+                    
+                    // 위험도 계산
+                    if (ipCounts[ip] >= 20) {
+                        ipDetails[ip].riskLevel = 'CRITICAL';
+                    } else if (ipCounts[ip] >= 15) {
+                        ipDetails[ip].riskLevel = 'HIGH';
+                    } else if (ipCounts[ip] >= 10) {
+                        ipDetails[ip].riskLevel = 'MEDIUM';
+                    } else if (ipCounts[ip] >= 5) {
+                        ipDetails[ip].riskLevel = 'LOW';
+                    }
                 });
                 
                 // 중복접속 횟수 정보를 활동 데이터에 추가
                 filteredSuspiciousActivities.forEach(activity => {
                     const ip = activity.ipAddress || '알 수 없음';
                     activity.duplicateCount = ipCounts[ip];
+                    activity.duplicateDetails = ipDetails[ip];
+                    
+                    // 중복접속 경고 표시를 위한 플래그 추가
+                    if (ipCounts[ip] >= 5) {
+                        activity.showDuplicateWarning = true;
+                        activity.duplicateWarningLevel = ipDetails[ip].riskLevel;
+                    }
                 });
                 
-                // 테이블 업데이트
-                displaySuspiciousActivities();
+                // 날짜 범위 표시 업데이트
+                updateDateRangeDisplay(startDate, endDate);
+                
+                // 테이블 업데이트 - 상세 접속기록 표시
+                displayAccessLog();
+                
+                // 차트 업데이트 (새로운 날짜 범위에 맞게)
+                updateActivityChart();
                 
                 console.log('의심스러운 활동 필터링 완료:', filteredSuspiciousActivities.length);
             } catch (error) {
@@ -2983,6 +3315,9 @@
                 
                 // 테이블 업데이트
                 displayBlockedIPs();
+                
+                // 차트 업데이트 (새로운 날짜 범위에 맞게)
+                updateActivityChart();
                 
                 console.log('차단된 IP 필터링 완료:', filteredBlockedIPs.length);
             } catch (error) {
@@ -3096,16 +3431,46 @@
                         const activityTypes = ['excessive_clicks', 'repeated_location', 'unnatural_interval', 'bot_behavior'];
                         const randomType = activityTypes[Math.floor(Math.random() * activityTypes.length)];
                         
+                        // 중복 접속을 위한 IP 주소 생성 (일부는 중복되도록)
+                        const isDuplicateIP = Math.random() > 0.6; // 40% 확률로 중복 IP
+                        let ipAddress;
+                        if (isDuplicateIP && testSuspiciousData.length > 0) {
+                            // 기존 데이터에서 랜덤하게 IP 선택하여 중복 생성
+                            const existingIPs = testSuspiciousData.map(item => item.ipAddress);
+                            ipAddress = existingIPs[Math.floor(Math.random() * existingIPs.length)];
+                        } else {
+                            ipAddress = `192.168.1.${Math.floor(Math.random() * 255)}`;
+                        }
+                        
+                        // 중복 접속 횟수 계산
+                        const existingIPCount = testSuspiciousData.filter(item => item.ipAddress === ipAddress).length;
+                        const clicks = existingIPCount > 0 ? existingIPCount + 1 : Math.floor(Math.random() * 5) + 1;
+                        
                         testSuspiciousData.push({
                             timestamp: activityTime.toISOString(),
                             type: randomType,
-                            ipAddress: `192.168.1.${Math.floor(Math.random() * 255)}`,
+                            ipAddress: ipAddress,
                             url: 'https://example.com',
                             data: {
                                 clickCount: Math.floor(Math.random() * 20) + 5,
                                 repeatCount: Math.floor(Math.random() * 10) + 2,
                                 interval: Math.floor(Math.random() * 1000) + 100
-                            }
+                            },
+                            // displayAccessLog 함수가 필요로 하는 추가 필드들
+                            accessDuration: Math.floor(Math.random() * 3600) + 60, // 접속 시간(초)
+                            page: ['홈페이지', '차량검색', '예약페이지', '고객센터', '이벤트'][Math.floor(Math.random() * 5)],
+                            keyword: ['렌트카', '자동차', '예약', '할인', '서울', '부산'][Math.floor(Math.random() * 6)],
+                            userSearchTerm: ['렌트카 추천', '저렴한 렌트카', 'SUV 렌트', '경제형 차량'][Math.floor(Math.random() * 4)],
+                            media: ['구글', '네이버', '카카오', '페이스북', '인스타그램'][Math.floor(Math.random() * 5)],
+                            adType: ['구글광고', '네이버광고', '카카오광고', '페이스북광고'][Math.floor(Math.random() * 4)],
+                            adClickRank: Math.floor(Math.random() * 10) + 1,
+                            userActivity: ['페이지 탐색', '차량 비교', '예약 문의', '가격 조회'][Math.floor(Math.random() * 4)],
+                            location: ['서울', '부산', '대구', '인천', '광주', '대전'][Math.floor(Math.random() * 6)],
+                            deviceType: ['PC', '모바일', '태블릿'][Math.floor(Math.random() * 3)],
+                            alertCount: Math.floor(Math.random() * 5),
+                            clicks: clicks, // 중복 접속 횟수
+                            notificationCount: Math.floor(Math.random() * 3), // 알림 횟수
+                            ipInfo: ['서울 강남구', '부산 해운대구', '대구 수성구', '인천 연수구', '광주 서구'][Math.floor(Math.random() * 5)] // IP 위치 정보
                         });
                     }
                     
@@ -3124,23 +3489,157 @@
                     }
                 }
                 
+                // 추가 중복 접속 기록 생성 (같은 IP로 여러 번 접속)
+                const duplicateAccessData = [];
+                const duplicateIPs = [
+                    { ip: '203.241.123.45', count: 25, name: '매우 의심스러운 IP (극도 중복)' },
+                    { ip: '192.168.100.10', count: 20, name: '과도한 접속 IP (고도 중복)' },
+                    { ip: '10.0.0.50', count: 15, name: '중복 접속 IP (중도 중복)' },
+                    { ip: '172.16.0.25', count: 12, name: '반복 접속 IP (중복)' },
+                    { ip: '8.8.8.8', count: 8, name: '일반 중복 IP' },
+                    { ip: '1.1.1.1', count: 18, name: '의심스러운 클라우드 IP' },
+                    { ip: '114.114.114.114', count: 22, name: '중국 DNS 중복 IP' },
+                    { ip: '208.67.222.222', count: 16, name: 'OpenDNS 중복 IP' }
+                ];
+                
+                duplicateIPs.forEach(ipConfig => {
+                    const { ip, count, name } = ipConfig;
+                    
+                    // 각 IP별로 지정된 횟수만큼 접속 기록 생성
+                    for (let k = 0; k < count; k++) {
+                        // 최근 7일 내에서 랜덤한 시간에 접속
+                        const duplicateTime = new Date(now.getTime() - Math.random() * 7 * 24 * 60 * 60 * 1000);
+                        
+                        // 시간대별로 다른 패턴 생성 (업무시간, 야간 등)
+                        const hour = duplicateTime.getHours();
+                        let timePattern = '일반';
+                        if (hour >= 9 && hour <= 18) {
+                            timePattern = '업무시간';
+                        } else if (hour >= 19 && hour <= 23) {
+                            timePattern = '저녁시간';
+                        } else if (hour >= 0 && hour <= 8) {
+                            timePattern = '새벽시간';
+                        }
+                        
+                        duplicateAccessData.push({
+                            timestamp: duplicateTime.toISOString(),
+                            type: 'repeated_access',
+                            ipAddress: ip,
+                            url: 'https://example.com',
+                            data: {
+                                clickCount: Math.floor(Math.random() * 15) + 3,
+                                repeatCount: count,
+                                interval: Math.floor(Math.random() * 500) + 50
+                            },
+                            accessDuration: Math.floor(Math.random() * 1800) + 30,
+                            page: ['홈페이지', '차량검색', '예약페이지', '고객센터', '이벤트'][Math.floor(Math.random() * 5)],
+                            keyword: ['렌트카', '자동차', '예약', '할인', '서울', '부산'][Math.floor(Math.random() * 6)],
+                            userSearchTerm: ['렌트카 추천', '저렴한 렌트카', 'SUV 렌트', '경제형 차량'][Math.floor(Math.random() * 4)],
+                            media: ['구글', '네이버', '카카오', '페이스북', '인스타그램'][Math.floor(Math.random() * 5)],
+                            adType: ['구글광고', '네이버광고', '카카오광고', '페이스북광고'][Math.floor(Math.random() * 4)],
+                            adClickRank: Math.floor(Math.random() * 10) + 1,
+                            userActivity: ['페이지 탐색', '차량 비교', '예약 문의', '가격 조회'][Math.floor(Math.random() * 4)],
+                            location: ['서울', '부산', '대구', '인천', '광주', '대전'][Math.floor(Math.random() * 6)],
+                            deviceType: ['PC', '모바일', '태블릿'][Math.floor(Math.random() * 3)],
+                            alertCount: Math.floor(Math.random() * 5),
+                            clicks: count, // 중복 접속 횟수
+                            notificationCount: Math.floor(Math.random() * 3), // 알림 횟수
+                            ipInfo: ['서울 강남구', '부산 해운대구', '대구 수성구', '인천 연수구', '광주 서구'][Math.floor(Math.random() * 5)],
+                            timePattern: timePattern, // 시간대 패턴
+                            ipName: name // IP 설명
+                        });
+                    }
+                });
+                
                 // 기존 데이터와 병합
                 const existingClickData = JSON.parse(localStorage.getItem('clickData') || '[]');
                 const existingSuspiciousData = JSON.parse(localStorage.getItem('suspiciousActivities') || '[]');
                 const existingBlockedData = JSON.parse(localStorage.getItem('blockedIPs') || '[]');
                 
                 localStorage.setItem('clickData', JSON.stringify([...existingClickData, ...testClickData]));
-                localStorage.setItem('suspiciousActivities', JSON.stringify([...existingSuspiciousData, ...testSuspiciousData]));
+                localStorage.setItem('suspiciousActivities', JSON.stringify([...existingSuspiciousData, ...testSuspiciousData, ...duplicateAccessData, ...simultaneousAccessData]));
                 localStorage.setItem('blockedIPs', JSON.stringify([...existingBlockedData, ...testBlockedData]));
                 
-                alert(`테스트 데이터가 생성되었습니다!\n클릭: ${testClickData.length}개\n의심활동: ${testSuspiciousData.length}개\n차단IP: ${testBlockedData.length}개`);
+                alert(`테스트 데이터가 생성되었습니다!\n클릭: ${testClickData.length}개\n의심활동: ${testSuspiciousData.length}개\n중복접속: ${duplicateAccessData.length}개\n동시접속: ${simultaneousAccessData.length}개\n차단IP: ${testBlockedData.length}개`);
                 
                 // 데이터 새로고침
                 refreshData();
                 
+                // 중복접속 팝업 자동 표시 테스트 (가장 의심스러운 IP)
+                setTimeout(() => {
+                    const mostSuspiciousIP = duplicateIPs.reduce((prev, current) => 
+                        (prev.count > current.count) ? prev : current
+                    );
+                    
+                    if (mostSuspiciousIP) {
+                        showDuplicateAccessPopup(
+                            mostSuspiciousIP.ip, 
+                            mostSuspiciousIP.name, 
+                            mostSuspiciousIP.count, 
+                            Math.floor(Math.random() * 3) + 1
+                        );
+                        
+                        // 3초 후 자동으로 팝업 닫기
+                        setTimeout(() => {
+                            closeDuplicateAccessPopup();
+                        }, 3000);
+                    }
+                }, 1000);
+                
             } catch (error) {
                 console.error('테스트 데이터 생성 중 오류:', error);
                 alert('테스트 데이터 생성 중 오류가 발생했습니다.');
+            }
+        }
+        
+        // 테스트 데이터 전체 삭제 (개발용)
+        function deleteAllTestData() {
+            if (!confirm('모든 테스트 데이터를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) {
+                return;
+            }
+            
+            try {
+                // 로컬스토리지에서 테스트 데이터 삭제
+                localStorage.removeItem('clickData');
+                localStorage.removeItem('suspiciousActivities');
+                localStorage.removeItem('blockedIPs');
+                
+                // 테이블 데이터 초기화
+                if (window.filteredSuspiciousActivities) {
+                    window.filteredSuspiciousActivities = [];
+                }
+                if (window.filteredBlockedIPs) {
+                    window.filteredBlockedIPs = [];
+                }
+                
+                // 테이블 내용 초기화
+                const suspiciousTableBody = document.getElementById('suspiciousTableBody');
+                const blockedIPsTableBody = document.getElementById('blockedIPsTableBody');
+                
+                if (suspiciousTableBody) {
+                    suspiciousTableBody.innerHTML = '<tr><td colspan="6" class="no-data">데이터가 없습니다.</td></tr>';
+                }
+                
+                if (blockedIPsTableBody) {
+                    blockedIPsTableBody.innerHTML = '<tr><td colspan="6" class="no-data">데이터가 없습니다.</td></tr>';
+                }
+                
+                // 차트 데이터 초기화
+                const activityChart = document.getElementById('activityChart');
+                if (activityChart) {
+                    activityChart.innerHTML = '<p>차트가 여기에 동적으로 생성됩니다</p>';
+                }
+                
+                alert('모든 테스트 데이터가 삭제되었습니다.');
+                
+                // 데이터 새로고침
+                if (typeof refreshData === 'function') {
+                    refreshData();
+                }
+                
+            } catch (error) {
+                console.error('테스트 데이터 삭제 중 오류:', error);
+                alert('테스트 데이터 삭제 중 오류가 발생했습니다.');
             }
         }
         
@@ -3157,6 +3656,9 @@
                 
                 // 활성 버튼 표시 업데이트
                 updateActiveQuickDateButton('suspicious', period);
+                
+                // 날짜 범위 표시 업데이트
+                updateDateRangeDisplay(startDate, endDate);
                 
                 // 데이터 필터링
                 filterSuspiciousActivities();
@@ -3235,6 +3737,42 @@
             };
         }
         
+        // 날짜 범위 표시 업데이트
+        function updateDateRangeDisplay(startDate, endDate) {
+            const currentDateRangeElement = document.getElementById('currentDateRange');
+            if (!currentDateRangeElement) return;
+            
+            // 날짜 형식 변환
+            const formatDate = (dateStr) => {
+                const date = new Date(dateStr);
+                return `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, '0')}.${String(date.getDate()).padStart(2, '0')}`;
+            };
+            
+            const formattedStartDate = formatDate(startDate);
+            const formattedEndDate = formatDate(endDate);
+            
+            // 같은 날짜인지 확인
+            if (startDate === endDate) {
+                currentDateRangeElement.textContent = formattedStartDate;
+            } else {
+                currentDateRangeElement.textContent = `${formattedStartDate} - ${formattedEndDate}`;
+            }
+        }
+        
+        // 날짜 변경 처리 (수동 입력 시)
+        function handleDateChange() {
+            const startDate = document.getElementById('startDate')?.value;
+            const endDate = document.getElementById('endDate')?.value;
+            
+            if (startDate && endDate) {
+                // 날짜 범위 표시 업데이트
+                updateDateRangeDisplay(startDate, endDate);
+                
+                // 데이터 필터링
+                filterSuspiciousActivities();
+            }
+        }
+        
         // 활성 빠른 날짜 버튼 표시 업데이트
         function updateActiveQuickDateButton(type, period) {
             // 모든 버튼에서 active 클래스 제거
@@ -3269,29 +3807,13 @@
             if (tabName === 'access') {
                 displayAccessLog();
             }
-        }
-        
-        // 메인 탭 전환 함수
-        function switchMainTab(tabType) {
-            // 모든 메인 탭 버튼 비활성화
-            const mainTabs = document.querySelectorAll('.main-tab');
-            mainTabs.forEach(tab => tab.classList.remove('active'));
-            
-            // 선택된 메인 탭 활성화
-            const selectedMainTab = document.querySelector(`[onclick="switchMainTab('${tabType}')"]`);
-            if (selectedMainTab) selectedMainTab.classList.add('active');
-            
-            // 탭 타입에 따른 콘텐츠 변경
-            if (tabType === 'fraud') {
-                // 부정클릭 관리 탭 표시
-                document.querySelector('.main-content').style.display = 'block';
-                switchTab('access'); // 기본적으로 접속기록 탭 표시
-            } else if (tabType === 'block') {
-                // 부정클릭 차단관리 탭 표시
-                document.querySelector('.main-content').style.display = 'block';
-                switchTab('blocking'); // 차단관리 탭 표시
+            // 알림기록 탭인 경우 데이터 표시
+            else if (tabName === 'notification') {
+                displayNotifications();
             }
         }
+        
+
         
         // 검색 기능
         function performSearch() {
@@ -3304,8 +3826,81 @@
             }
             
             // 검색 로직 구현
-            console.log(`검색 필드: ${searchField}, 검색어: ${searchValue}`);
-            // 실제 검색 구현은 데이터 구조에 따라 달라집니다
+            const suspiciousActivities = JSON.parse(localStorage.getItem('suspiciousActivities') || '[]');
+            const filteredData = suspiciousActivities.filter(activity => {
+                switch (searchField) {
+                    case 'ip':
+                        return activity.ipAddress && activity.ipAddress.includes(searchValue);
+                    case 'keyword':
+                        return activity.keyword && activity.keyword.includes(searchValue);
+                    case 'url':
+                        return activity.url && activity.url.includes(searchValue);
+                    default:
+                        return false;
+                }
+            });
+            
+            // 검색 결과를 테이블에 표시
+            displaySearchResults(filteredData);
+            
+            console.log(`검색 필드: ${searchField}, 검색어: ${searchValue}, 결과: ${filteredData.length}건`);
+        }
+        
+        // 검색 결과 표시 함수
+        function displaySearchResults(searchResults) {
+            const tableBody = document.getElementById('suspiciousTableBody');
+            if (!tableBody) return;
+            
+            if (searchResults.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="14" class="no-data">검색 결과가 없습니다.</td></tr>';
+                return;
+            }
+            
+            tableBody.innerHTML = '';
+            searchResults.forEach(activity => {
+                const row = document.createElement('tr');
+                
+                // 접속 시간 계산 (초 단위)
+                const accessTime = activity.accessDuration || Math.floor(Math.random() * 300) + 30;
+                
+                // 접속자 활동 분석
+                let userActivity = '';
+                if (accessTime < 60) {
+                    userActivity = '빠른 이탈 (30초 미만)';
+                } else if (accessTime < 180) {
+                    userActivity = '일반적 탐색 (1-3분)';
+                } else if (accessTime < 300) {
+                    userActivity = '적극적 탐색 (3-5분)';
+                } else {
+                    userActivity = '상세 탐색 (5분 이상)';
+                }
+                
+                row.innerHTML = `
+                    <td>${new Date(activity.timestamp).toLocaleString('ko-KR')}</td>
+                    <td>${activity.ipAddress || '알 수 없음'}</td>
+                    <td>${activity.location || '알 수 없음'}</td>
+                    <td>${activity.clicks || 1}</td>
+                    <td>${activity.alertCount || 0}</td>
+                    <td>${activity.deviceType || '모바일'}</td>
+                    <td>${accessTime}</td>
+                    <td>${activity.page || '홈페이지'}</td>
+                    <td>${activity.keyword || '평택렌트카'}</td>
+                    <td>${activity.userSearchTerm || '평택렌트카'}</td>
+                    <td>${activity.media || '네이버'}</td>
+                    <td>${activity.adType || '네이버광고'}</td>
+                    <td>${activity.adClickRank || Math.floor(Math.random() * 4) + 1}</td>
+                    <td>${userActivity}</td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+        }
+        
+        // 검색 입력 필드 Enter 키 이벤트 핸들러
+        function handleSearchKeyPress(event) {
+            if (event.key === 'Enter') {
+                performSearch();
+            }
         }
         
         // 접속기록 다운로드
@@ -3554,13 +4149,41 @@
                 const startDate = document.getElementById('startDate').value;
                 const endDate = document.getElementById('endDate').value;
                 
-                // 날짜 필터링
+                // 날짜가 설정되지 않은 경우 기본적으로 최근 30일 데이터 표시
                 let filteredData = suspiciousActivities;
-                if (startDate && endDate) {
+                if (!startDate || !endDate) {
+                    // 기본 날짜 설정 (최근 30일)
+                    const today = new Date();
+                    const thirtyDaysAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
+                    
+                    // 날짜 입력 필드에 설정
+                    const startInput = document.getElementById('startDate');
+                    const endInput = document.getElementById('endDate');
+                    if (startInput && endInput) {
+                        startInput.value = thirtyDaysAgo.toISOString().split('T')[0];
+                        endInput.value = today.toISOString().split('T')[0];
+                    }
+                    
+                    // 최근 30일 데이터 필터링
+                    filteredData = suspiciousActivities.filter(activity => {
+                        const activityDate = new Date(activity.timestamp);
+                        return activityDate >= thirtyDaysAgo && activityDate <= today;
+                    });
+                    
+                    // 활성 버튼 표시 업데이트
+                    updateActiveQuickDateButton('suspicious', 'last30Days');
+                    
+                    // 날짜 범위 표시 업데이트
+                    updateDateRangeDisplay(thirtyDaysAgo.toISOString().split('T')[0], today.toISOString().split('T')[0]);
+                } else {
+                    // 기존 날짜 필터링 로직
                     filteredData = suspiciousActivities.filter(activity => {
                         const activityDate = new Date(activity.timestamp).toISOString().split('T')[0];
                         return activityDate >= startDate && activityDate <= endDate;
                     });
+                    
+                    // 날짜 범위 표시 업데이트
+                    updateDateRangeDisplay(startDate, endDate);
                 }
                 
                 // 테이블에 데이터 표시
@@ -3602,7 +4225,17 @@
                     
                     row.innerHTML = `
                         <td>${new Date(activity.timestamp).toLocaleDateString('ko-KR', {year: '2-digit', month: '2-digit', day: '2-digit'})} (${new Date(activity.timestamp).toLocaleTimeString('ko-KR', {hour: '2-digit', minute: '2-digit', second: '2-digit'})})</td>
-                        <td>${activity.ipAddress || '알 수 없음'} ${activity.ipInfo ? `(${activity.ipInfo})` : ''}</td>
+                        <td>
+                            ${activity.clicks > 1 ? 
+                                `<a href="#" class="ip-link duplicate-warning-${activity.duplicateWarningLevel || 'low'}" onclick="showDuplicateAccessPopup('${activity.ipAddress}', '${activity.ipInfo || ''}', ${activity.clicks}, ${activity.notificationCount || 0})" title="중복접속자 정보보기">${activity.ipAddress || '알 수 없음'}</a>` : 
+                                `${activity.ipAddress || '알 수 없음'}`
+                            }
+                            ${activity.ipInfo ? `(${activity.ipInfo})` : ''}
+                            ${activity.showDuplicateWarning ? 
+                                `<span class="duplicate-warning-badge duplicate-warning-${activity.duplicateWarningLevel || 'low'}">⚠️ ${activity.duplicateCount}회 중복</span>` : 
+                                ''
+                            }
+                        </td>
                         <td>-</td>
                         <td>${activity.clicks > 1 ? activity.clicks : ''}</td>
                         <td>${activity.notificationCount || ''}</td>
@@ -3730,6 +4363,145 @@
                 alert('API 상태 확인 중 오류가 발생했습니다.');
             }
         }
+        
+        // 중복접속 팝업 표시 함수
+        function showDuplicateAccessPopup(ipAddress, ipInfo, accessCount, notificationCount) {
+            const popup = document.getElementById('duplicateAccessPopup');
+            const popupTitle = document.getElementById('duplicateAccessPopupTitle');
+            const popupInfo = document.getElementById('duplicateAccessPopupInfo');
+            const popupTable = document.getElementById('duplicateAccessPopupTable');
+            
+            // 팝업 제목 설정
+            popupTitle.textContent = `중복접속자 정보보기`;
+            
+            // 접속 정보 설정
+            popupInfo.innerHTML = `
+                <h4>📊 접속 요약</h4>
+                <p><strong>IP 주소:</strong> ${ipAddress}</p>
+                <p><strong>IP 정보:</strong> ${ipInfo || '정보 없음'}</p>
+                <p><strong>총 접속 횟수:</strong> ${accessCount}회</p>
+                <p><strong>알림 횟수:</strong> ${notificationCount}회</p>
+                <p><strong>관리자 조치:</strong> ${notificationCount > 0 ? '관리자가 차단설정을 완료했습니다.' : '아직 차단설정이 되지 않았습니다.'}</p>
+            `;
+            
+            // 중복접속 기록 테이블 생성 (시뮬레이션 데이터)
+            const mockData = generateMockDuplicateAccessData(ipAddress, accessCount);
+            let tableHTML = `
+                <table class="duplicate-access-table">
+                    <thead>
+                        <tr>
+                            <th>접속시간</th>
+                            <th>단말식별</th>
+                            <th>IP정보/메모</th>
+                            <th>페이지</th>
+                            <th>광고 키워드</th>
+                            <th>사용자 검색어</th>
+                            <th>매체</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            mockData.forEach(record => {
+                tableHTML += `
+                    <tr>
+                        <td>${record.accessTime}</td>
+                        <td>${record.deviceType}</td>
+                        <td class="ip-memo-cell">${record.ipInfo || record.memo}</td>
+                        <td>${record.page}</td>
+                        <td>${record.keyword}</td>
+                        <td>${record.searchTerm}</td>
+                        <td>${record.media}</td>
+                    </tr>
+                `;
+            });
+            
+            tableHTML += '</tbody></table>';
+            popupTable.innerHTML = tableHTML;
+            
+            // 팝업 표시
+            popup.classList.add('show');
+        }
+        
+        // 중복접속 팝업 닫기 함수
+        function closeDuplicateAccessPopup() {
+            const popup = document.getElementById('duplicateAccessPopup');
+            popup.classList.remove('show');
+        }
+        
+        // 모의 중복접속 데이터 생성 함수
+        function generateMockDuplicateAccessData(ipAddress, count) {
+            const data = [];
+            const deviceTypes = ['PC', '모바일', '태블릿'];
+            const pages = ['홈페이지', '차량검색', '예약페이지', '고객센터', '이벤트'];
+            const keywords = ['렌트카', '자동차대여', '차량렌트', '자동차임대'];
+            const searchTerms = ['렌트카 추천', '렌트카 가격', '렌트카 예약', '렌트카 비교'];
+            const media = ['네이버', '구글', '직접접속', 'SNS'];
+            const ipInfos = ['서울 강남구', '부산 해운대구', '대구 수성구', '인천 연수구', '광주 서구'];
+            const memos = ['의심스러운 접속 패턴', '과도한 클릭 행위', '자동화 도구 사용 의심', 'IP 차단 필요', '추가 모니터링 필요'];
+            
+            for (let i = 0; i < count; i++) {
+                const randomDate = new Date();
+                randomDate.setMinutes(randomDate.getMinutes() - Math.floor(Math.random() * 1440)); // 최근 24시간 내
+                
+                // IP 정보 또는 메모 중 하나를 랜덤으로 선택
+                const isIPInfo = Math.random() > 0.5;
+                const ipInfoOrMemo = isIPInfo ? 
+                    ipInfos[Math.floor(Math.random() * ipInfos.length)] : 
+                    memos[Math.floor(Math.random() * memos.length)];
+                
+                data.push({
+                    accessTime: randomDate.toLocaleString('ko-KR'),
+                    deviceType: deviceTypes[Math.floor(Math.random() * deviceTypes.length)],
+                    ipInfo: isIPInfo ? ipInfoOrMemo : null,
+                    memo: isIPInfo ? null : ipInfoOrMemo,
+                    page: pages[Math.floor(Math.random() * pages.length)],
+                    keyword: keywords[Math.floor(Math.random() * keywords.length)],
+                    searchTerm: searchTerms[Math.floor(Math.random() * searchTerms.length)],
+                    media: media[Math.floor(Math.random() * media.length)]
+                });
+            }
+            
+            return data.sort((a, b) => new Date(b.accessTime) - new Date(a.accessTime));
+        }
+        
+        // IP 링크 클릭 이벤트 처리 함수
+        function handleIPClick(ipAddress, accessCount) {
+            if (accessCount >= 2) {
+                // 2회 이상 접속 시 팝업 표시
+                const isBlocked = checkIPBlockStatus(ipAddress);
+                showDuplicateAccessPopup(ipAddress, accessCount, isBlocked);
+            }
+        }
+        
+        // IP 차단 상태 확인 함수 (시뮬레이션)
+        function checkIPBlockStatus(ipAddress) {
+            // 실제로는 서버에서 차단 상태를 확인해야 함
+            // 여기서는 랜덤으로 차단 상태를 반환
+            return Math.random() > 0.5;
+        }
     </script>
+    
+    <!-- 중복접속 팝업 -->
+    <div id="duplicateAccessPopup" class="duplicate-access-popup">
+        <div class="duplicate-access-popup-content">
+            <div class="duplicate-access-popup-header">
+                <h3 id="duplicateAccessPopupTitle" class="duplicate-access-popup-title">중복접속 상세정보</h3>
+                <button class="duplicate-access-popup-close" onclick="closeDuplicateAccessPopup()">&times;</button>
+            </div>
+            <div class="duplicate-access-popup-body">
+                <div id="duplicateAccessPopupInfo" class="duplicate-access-info">
+                    <!-- 접속 정보가 여기에 표시됩니다 -->
+                </div>
+                <div id="duplicateAccessPopupTable">
+                    <!-- 중복접속 기록 테이블이 여기에 표시됩니다 -->
+                </div>
+            </div>
+            <div class="duplicate-access-popup-footer">
+                <button class="btn btn-primary" onclick="closeDuplicateAccessPopup()">확인</button>
+                <button class="btn btn-secondary" onclick="closeDuplicateAccessPopup()">닫기</button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

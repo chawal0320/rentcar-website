@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>네이버 파워링크 접속기록 테스트 - SM렌트카</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+        
+        .header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .test-section {
+            margin-bottom: 40px;
+            padding: 25px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            background: #fafafa;
+        }
+        
+        .test-section h2 {
+            color: #667eea;
+            margin-top: 0;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+        
+        .test-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .test-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+        
+        .test-button.secondary {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        
+        .test-button.success {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        
+        .test-button.warning {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+        
+        .log-section {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-family: 'Courier New', monospace;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .log-entry {
+            margin: 5px 0;
+            padding: 5px;
+            border-left: 3px solid #4facfe;
+            background: rgba(255,255,255,0.05);
+        }
+        
+        .log-entry.success {
+            border-left-color: #48bb78;
+            color: #9ae6b4;
+        }
+        
+        .log-entry.warning {
+            border-left-color: #ed8936;
+            color: #fbd38d;
+        }
+        
+        .log-entry.error {
+            border-left-color: #f56565;
+            color: #fed7d7;
+        }
+        
+        .info-box {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border-left: 5px solid #667eea;
+        }
+        
+        .info-box h3 {
+            margin-top: 0;
+            color: #2d3748;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        
+        .status-active {
+            background: #48bb78;
+            box-shadow: 0 0 10px #48bb78;
+        }
+        
+        .status-inactive {
+            background: #f56565;
+            box-shadow: 0 0 10px #f56565;
+        }
+        
+        .url-display {
+            background: #f7fafc;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            font-family: 'Courier New', monospace;
+            word-break: break-all;
+            margin: 10px 0;
+        }
+        
+        .utm-params {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .utm-param {
+            background: #f7fafc;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .utm-param label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #4a5568;
+        }
+        
+        .utm-param input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔍 네이버 파워링크 접속기록 테스트</h1>
+            <p>네이버 파워링크 광고 클릭 시에만 접속기록이 생성되는지 테스트합니다</p>
+        </div>
+        
+        <div class="content">
+            <div class="info-box">
+                <h3>📋 테스트 목적</h3>
+                <p>이 페이지는 네이버 파워링크 광고 클릭으로만 접속기록이 생성되는지 확인하는 테스트 페이지입니다. 
+                일반 접속이나 다른 경로로의 접속은 접속기록에 기록되지 않아야 합니다.</p>
+            </div>
+            
+            <div class="test-section">
+                <h2>🧪 테스트 시나리오</h2>
+                
+                <div class="utm-params">
+                    <div class="utm-param">
+                        <label>UTM Source:</label>
+                        <input type="text" id="utm_source" value="naver" placeholder="utm_source">
+                    </div>
+                    <div class="utm-param">
+                        <label>UTM Medium:</label>
+                        <input type="text" id="utm_medium" value="powerlink" placeholder="utm_medium">
+                    </div>
+                    <div class="utm-param">
+                        <label>UTM Campaign:</label>
+                        <input type="text" id="utm_campaign" value="test_campaign" placeholder="utm_campaign">
+                    </div>
+                    <div class="utm-param">
+                        <label>UTM Term:</label>
+                        <input type="text" id="utm_term" value="렌트카" placeholder="utm_term">
+                    </div>
+                </div>
+                
+                <button class="test-button success" onclick="simulatePowerLinkClick()">
+                    🎯 네이버 파워링크 광고 클릭 시뮬레이션
+                </button>
+                
+                <button class="test-button secondary" onclick="simulateNormalClick()">
+                    📝 일반 클릭 시뮬레이션
+                </button>
+                
+                <button class="test-button warning" onclick="simulateDirectAccess()">
+                    🚪 직접 접속 시뮬레이션
+                </button>
+                
+                <button class="test-button" onclick="clearLogs()">
+                    🗑️ 로그 초기화
+                </button>
+            </div>
+            
+            <div class="test-section">
+                <h2>📊 현재 상태</h2>
+                <p><span class="status-indicator status-active"></span>클릭 보호 시스템: <strong id="system-status">활성화됨</strong></p>
+                <p><span class="status-indicator status-inactive"></span>접속기록 생성: <strong id="access-status">대기중</strong></p>
+                
+                <div class="url-display">
+                    <strong>현재 URL:</strong> <span id="current-url"></span>
+                </div>
+                
+                <div class="url-display">
+                    <strong>리퍼러:</strong> <span id="current-referrer"></span>
+                </div>
+            </div>
+            
+            <div class="test-section">
+                <h2>📝 테스트 로그</h2>
+                <div class="log-section" id="test-logs">
+                    <div class="log-entry">테스트 페이지가 로드되었습니다. 테스트를 시작하세요.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="click-protection.js"></script>
+    <script>
+        // 테스트 로그 관리
+        let testLogs = [];
+        
+        function addLog(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString('ko-KR');
+            const logEntry = {
+                message: `[${timestamp}] ${message}`,
+                type: type
+            };
+            
+            testLogs.push(logEntry);
+            updateLogDisplay();
+            
+            // 콘솔에도 출력
+            console.log(`[${timestamp}] ${message}`);
+        }
+        
+        function updateLogDisplay() {
+            const logContainer = document.getElementById('test-logs');
+            logContainer.innerHTML = '';
+            
+            testLogs.forEach(log => {
+                const logDiv = document.createElement('div');
+                logDiv.className = `log-entry ${log.type}`;
+                logDiv.textContent = log.message;
+                logContainer.appendChild(logDiv);
+            });
+            
+            // 스크롤을 맨 아래로
+            logContainer.scrollTop = logContainer.scrollHeight;
+        }
+        
+        function clearLogs() {
+            testLogs = [];
+            updateLogDisplay();
+            addLog('로그가 초기화되었습니다.', 'info');
+        }
+        
+        // 현재 상태 업데이트
+        function updateStatus() {
+            document.getElementById('current-url').textContent = window.location.href;
+            document.getElementById('current-referrer').textContent = document.referrer || '없음';
+            
+            // 클릭 보호 시스템 상태 확인
+            if (window.clickProtection) {
+                document.getElementById('system-status').textContent = '활성화됨';
+                addLog('클릭 보호 시스템이 활성화되었습니다.', 'success');
+            } else {
+                document.getElementById('system-status').textContent = '비활성화됨';
+                addLog('클릭 보호 시스템이 비활성화되었습니다.', 'error');
+            }
+        }
+        
+        // 네이버 파워링크 광고 클릭 시뮬레이션
+        function simulatePowerLinkClick() {
+            addLog('네이버 파워링크 광고 클릭 시뮬레이션을 시작합니다...', 'info');
+            
+            // UTM 파라미터로 URL 변경
+            const url = new URL(window.location.href);
+            url.searchParams.set('utm_source', document.getElementById('utm_source').value);
+            url.searchParams.set('utm_medium', document.getElementById('utm_medium').value);
+            url.searchParams.set('utm_campaign', document.getElementById('utm_campaign').value);
+            url.searchParams.set('utm_term', document.getElementById('utm_term').value);
+            
+            // 리퍼러 설정 (시뮬레이션)
+            Object.defineProperty(document, 'referrer', {
+                get: function() {
+                    return 'https://powerlink.naver.com/search?query=렌트카&where=powerlink';
+                }
+            });
+            
+            // URL 변경
+            window.history.pushState({}, '', url.toString());
+            
+            addLog('UTM 파라미터가 설정되었습니다: ' + url.search, 'success');
+            addLog('리퍼러가 네이버 파워링크로 설정되었습니다.', 'success');
+            
+            // 상태 업데이트
+            updateStatus();
+            
+            // 클릭 이벤트 시뮬레이션
+            setTimeout(() => {
+                const clickEvent = new MouseEvent('click', {
+                    clientX: 100,
+                    clientY: 100,
+                    bubbles: true,
+                    cancelable: true
+                });
+                
+                document.body.dispatchEvent(clickEvent);
+                addLog('클릭 이벤트가 발생했습니다.', 'info');
+                
+                // 접속기록 상태 확인
+                setTimeout(() => {
+                    if (window.clickProtection && window.clickProtection.isNaverPowerLinkAccess()) {
+                        document.getElementById('access-status').textContent = '파워링크 접속 확인됨';
+                        addLog('네이버 파워링크 접속이 확인되었습니다.', 'success');
+                    } else {
+                        document.getElementById('access-status').textContent = '일반 접속';
+                        addLog('일반 접속으로 확인되었습니다.', 'warning');
+                    }
+                }, 1000);
+            }, 500);
+        }
+        
+        // 일반 클릭 시뮬레이션
+        function simulateNormalClick() {
+            addLog('일반 클릭 시뮬레이션을 시작합니다...', 'info');
+            
+            // UTM 파라미터 제거
+            const url = new URL(window.location.href);
+            url.searchParams.delete('utm_source');
+            url.searchParams.delete('utm_medium');
+            url.searchParams.delete('utm_campaign');
+            url.searchParams.delete('utm_term');
+            
+            // URL 변경
+            window.history.pushState({}, '', url.toString());
+            
+            addLog('UTM 파라미터가 제거되었습니다.', 'info');
+            
+            // 상태 업데이트
+            updateStatus();
+            
+            // 클릭 이벤트 시뮬레이션
+            setTimeout(() => {
+                const clickEvent = new MouseEvent('click', {
+                    clientX: 200,
+                    clientY: 200,
+                    bubbles: true,
+                    cancelable: true
+                });
+                
+                document.body.dispatchEvent(clickEvent);
+                addLog('일반 클릭 이벤트가 발생했습니다.', 'info');
+                
+                // 접속기록 상태 확인
+                setTimeout(() => {
+                    if (window.clickProtection && window.clickProtection.isNaverPowerLinkAccess()) {
+                        document.getElementById('access-status').textContent = '파워링크 접속 확인됨';
+                        addLog('네이버 파워링크 접속이 확인되었습니다.', 'warning');
+                    } else {
+                        document.getElementById('access-status').textContent = '일반 접속';
+                        addLog('일반 접속으로 확인되었습니다.', 'success');
+                    }
+                }, 1000);
+            }, 500);
+        }
+        
+        // 직접 접속 시뮬레이션
+        function simulateDirectAccess() {
+            addLog('직접 접속 시뮬레이션을 시작합니다...', 'info');
+            
+            // 모든 파라미터 제거
+            const url = new URL(window.location.href);
+            url.search = '';
+            
+            // URL 변경
+            window.history.pushState({}, '', url.toString());
+            
+            addLog('모든 파라미터가 제거되었습니다.', 'info');
+            
+            // 상태 업데이트
+            updateStatus();
+            
+            // 접속기록 상태 확인
+            setTimeout(() => {
+                if (window.clickProtection && window.clickProtection.isNaverPowerLinkAccess()) {
+                    document.getElementById('access-status').textContent = '파워링크 접속 확인됨';
+                    addLog('네이버 파워링크 접속이 확인되었습니다.', 'warning');
+                } else {
+                    document.getElementById('access-status').textContent = '일반 접속';
+                    addLog('일반 접속으로 확인되었습니다.', 'success');
+                }
+            }, 1000);
+        }
+        
+        // 페이지 로드 시 초기화
+        window.addEventListener('load', function() {
+            addLog('테스트 페이지가 로드되었습니다.', 'info');
+            updateStatus();
+            
+            // 클릭 보호 시스템 초기화 대기
+            setTimeout(() => {
+                if (window.clickProtection) {
+                    addLog('클릭 보호 시스템이 준비되었습니다.', 'success');
+                } else {
+                    addLog('클릭 보호 시스템을 찾을 수 없습니다.', 'error');
+                }
+            }, 2000);
+        });
+        
+        // URL 변경 감지
+        window.addEventListener('popstate', function() {
+            updateStatus();
+        });
+    </script>
+</body>
+</html>

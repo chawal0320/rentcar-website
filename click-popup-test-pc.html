@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>부정클릭 팝업 테스트 - PC 버전</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .test-section {
+            padding: 40px;
+        }
+
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .test-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+
+        .test-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            border-color: #667eea;
+        }
+
+        .test-card h3 {
+            color: #495057;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .test-card p {
+            color: #6c757d;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            margin: 5px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6c757d, #495057);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #dc3545, #c82333);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #28a745, #20c997);
+        }
+
+        .simulation-section {
+            background: #e3f2fd;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 2px solid #2196f3;
+        }
+
+        .simulation-section h2 {
+            color: #1976d2;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            text-align: center;
+        }
+
+        .simulation-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .status-display {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .status-item:last-child {
+            border-bottom: none;
+        }
+
+        .status-label {
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .status-value {
+            color: #6c757d;
+            font-family: monospace;
+        }
+
+        .warning-info {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .warning-info h4 {
+            color: #856404;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .warning-info ul {
+            color: #856404;
+            padding-left: 20px;
+        }
+
+        .warning-info li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        .test-results {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+        }
+
+        .test-results h3 {
+            color: #495057;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .result-item {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .result-item.success {
+            border-left-color: #28a745;
+        }
+
+        .result-item.error {
+            border-left-color: #dc3545;
+        }
+
+        .result-item.warning {
+            border-left-color: #ffc107;
+        }
+
+        .result-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #495057;
+        }
+
+        .result-description {
+            color: #6c757d;
+            font-size: 14px;
+        }
+
+        .footer {
+            background: #343a40;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-size: 14px;
+        }
+
+        .footer a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+
+            .header {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .test-section {
+                padding: 20px;
+            }
+
+            .test-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .simulation-controls {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚨 부정클릭 팝업 테스트</h1>
+            <p>PC 버전 - 1차, 2차, 3차 팝업 테스트 및 시뮬레이션</p>
+        </div>
+
+        <div class="test-section">
+            <div class="warning-info">
+                <h4>⚠️ 테스트 안내사항</h4>
+                <ul>
+                    <li>이 페이지는 부정클릭 방지 시스템의 팝업 기능을 테스트하기 위한 페이지입니다.</li>
+                    <li>실제 광고 클릭을 시뮬레이션하여 각 단계별 경고 팝업을 확인할 수 있습니다.</li>
+                    <li>테스트 후에는 반드시 즐겨찾기에 추가하여 직접 방문하시기 바랍니다.</li>
+                </ul>
+            </div>
+
+            <div class="test-grid">
+                <div class="test-card">
+                    <h3>🔵 1단계 경고 테스트</h3>
+                    <p>2회 클릭 시 1단계 경고 팝업이 표시됩니다. 파란색 테마로 표시되며, 즐겨찾기 추가를 권장합니다.</p>
+                    <button class="btn" onclick="testLevel1()">1단계 팝업 테스트</button>
+                </div>
+
+                <div class="test-card">
+                    <h3>🟠 2단계 경고 테스트</h3>
+                    <p>3회 클릭 시 2단계 경고 팝업이 표시됩니다. 주황색 테마로 표시되며, 광고 클릭 중단을 권장합니다.</p>
+                    <button class="btn" onclick="testLevel2()">2단계 팝업 테스트</button>
+                </div>
+
+                <div class="test-card">
+                    <h3>🔴 3단계 경고 테스트</h3>
+                    <p>4회 클릭 시 3단계 경고 팝업이 표시됩니다. 빨간색 테마로 표시되며, 즉시 광고 클릭을 중단해야 합니다.</p>
+                    <button class="btn" onclick="testLevel3()">3단계 팝업 테스트</button>
+                </div>
+            </div>
+
+            <div class="simulation-section">
+                <h2>🧪 네이버 광고 클릭 시뮬레이션</h2>
+                <p style="text-align: center; margin-bottom: 20px; color: #1976d2;">
+                    실제 네이버 파워링크 광고 클릭 상황을 시뮬레이션하여 부정클릭 방지 시스템을 테스트합니다.
+                </p>
+                
+                <div class="simulation-controls">
+                    <button class="btn btn-success" onclick="simulateNaverAdClick()">
+                        🎯 네이버 광고 클릭 시뮬레이션
+                    </button>
+                    <button class="btn btn-secondary" onclick="simulateWithUTM()">
+                        🔗 UTM 파라미터 시뮬레이션
+                    </button>
+                    <button class="btn btn-danger" onclick="resetSimulation()">
+                        🔄 시뮬레이션 초기화
+                    </button>
+                </div>
+
+                <div class="status-display">
+                    <h4 style="color: #1976d2; margin-bottom: 15px;">📊 시뮬레이션 상태</h4>
+                    <div class="status-item">
+                        <span class="status-label">현재 클릭 횟수:</span>
+                        <span class="status-value" id="click-count">0</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">경고 레벨:</span>
+                        <span class="status-value" id="warning-level">없음</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">시뮬레이션 모드:</span>
+                        <span class="status-value" id="simulation-mode">비활성</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">마지막 업데이트:</span>
+                        <span class="status-value" id="last-update">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="test-results">
+                <h3>📋 테스트 결과</h3>
+                <div id="test-results-container">
+                    <div class="result-item">
+                        <div class="result-title">시스템 준비 완료</div>
+                        <div class="result-description">부정클릭 방지 시스템이 초기화되었습니다. 테스트를 시작할 수 있습니다.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>© 2024 에스엠렌트카. 부정클릭 방지 시스템 테스트 페이지</p>
+            <p><a href="https://smrentcar.com" target="_blank">공식 웹사이트</a> | <a href="tel:0507-1337-3679">0507-1337-3679</a></p>
+        </div>
+    </div>
+
+    <!-- 부정클릭 방지 시스템 스크립트 -->
+    <script src="click-protection.js"></script>
+    
+    <script>
+        // 전역 변수
+        let clickProtection;
+        let testResults = [];
+        let simulationActive = false;
+
+        // 페이지 로드 시 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeSystem();
+        });
+
+        // 시스템 초기화
+        function initializeSystem() {
+            try {
+                // 부정클릭 방지 시스템 초기화
+                clickProtection = new ClickProtectionSystem();
+                
+                // 스타일 적용
+                clickProtection.applyWarningStyles();
+                
+                addTestResult('success', '시스템 초기화', '부정클릭 방지 시스템이 성공적으로 초기화되었습니다.');
+                
+                // 상태 업데이트 시작
+                startStatusUpdates();
+                
+                console.log('✅ 시스템 초기화 완료');
+            } catch (error) {
+                addTestResult('error', '시스템 초기화 실패', `오류: ${error.message}`);
+                console.error('❌ 시스템 초기화 실패:', error);
+            }
+        }
+
+        // 1단계 경고 테스트
+        function testLevel1() {
+            try {
+                // 클릭 횟수를 2회로 설정하여 1단계 경고 트리거
+                clickProtection.sessionData.clickCount = 2;
+                
+                // 1단계 경고 팝업 표시
+                clickProtection.showTestWarning(1);
+                
+                addTestResult('success', '1단계 경고 테스트', '1단계 경고 팝업이 성공적으로 표시되었습니다.');
+                updateStatus();
+                
+                console.log('✅ 1단계 경고 테스트 완료');
+            } catch (error) {
+                addTestResult('error', '1단계 경고 테스트 실패', `오류: ${error.message}`);
+                console.error('❌ 1단계 경고 테스트 실패:', error);
+            }
+        }
+
+        // 2단계 경고 테스트
+        function testLevel2() {
+            try {
+                // 클릭 횟수를 3회로 설정하여 2단계 경고 트리거
+                clickProtection.sessionData.clickCount = 3;
+                
+                // 2단계 경고 팝업 표시
+                clickProtection.showTestWarning(2);
+                
+                addTestResult('success', '2단계 경고 테스트', '2단계 경고 팝업이 성공적으로 표시되었습니다.');
+                updateStatus();
+                
+                console.log('✅ 2단계 경고 테스트 완료');
+            } catch (error) {
+                addTestResult('error', '2단계 경고 테스트 실패', `오류: ${error.message}`);
+                console.error('❌ 2단계 경고 테스트 실패:', error);
+            }
+        }
+
+        // 3단계 경고 테스트
+        function testLevel3() {
+            try {
+                // 클릭 횟수를 4회로 설정하여 3단계 경고 트리거
+                clickProtection.sessionData.clickCount = 4;
+                
+                // 3단계 경고 팝업 표시
+                clickProtection.showTestWarning(3);
+                
+                addTestResult('success', '3단계 경고 테스트', '3단계 경고 팝업이 성공적으로 표시되었습니다.');
+                updateStatus();
+                
+                console.log('✅ 3단계 경고 테스트 완료');
+            } catch (error) {
+                addTestResult('error', '3단계 경고 테스트 실패', `오류: ${error.message}`);
+                console.error('❌ 3단계 경고 테스트 실패:', error);
+            }
+        }
+
+        // 네이버 광고 클릭 시뮬레이션
+        function simulateNaverAdClick() {
+            try {
+                simulationActive = true;
+                
+                // 가짜 네이버 광고 요소 생성
+                const fakeAdElement = document.createElement('div');
+                fakeAdElement.className = 'naver-ad-test sponsored powerlink';
+                fakeAdElement.id = 'test-ad-element';
+                fakeAdElement.textContent = '네이버 파워링크 광고 테스트';
+                fakeAdElement.style.cssText = `
+                    position: fixed;
+                    top: 50px;
+                    right: 50px;
+                    background: #ff6b35;
+                    color: white;
+                    padding: 20px;
+                    border-radius: 10px;
+                    cursor: pointer;
+                    z-index: 9999;
+                    font-family: Arial, sans-serif;
+                    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+                    font-weight: bold;
+                `;
+                
+                // 클릭 이벤트 추가
+                fakeAdElement.addEventListener('click', (e) => {
+                    console.log('🧪 테스트 파워링크 광고 클릭됨');
+                    
+                    // 클릭 횟수 증가
+                    clickProtection.sessionData.clickCount++;
+                    
+                    // 경고 팝업 표시
+                    clickProtection.showWarningPopup();
+                    
+                    // 상태 업데이트
+                    updateStatus();
+                    
+                    // 테스트 결과 추가
+                    addTestResult('success', '광고 클릭 시뮬레이션', 
+                        `네이버 파워링크 광고 클릭이 시뮬레이션되었습니다. (클릭 ${clickProtection.sessionData.clickCount}회)`);
+                });
+                
+                document.body.appendChild(fakeAdElement);
+                
+                addTestResult('success', '시뮬레이션 시작', '네이버 광고 클릭 시뮬레이션이 시작되었습니다. 오른쪽 상단의 테스트 광고를 클릭해보세요.');
+                updateStatus();
+                
+                console.log('✅ 네이버 광고 클릭 시뮬레이션 시작');
+                
+                // 30초 후 자동 제거
+                setTimeout(() => {
+                    if (fakeAdElement.parentElement) {
+                        fakeAdElement.remove();
+                        simulationActive = false;
+                        updateStatus();
+                        addTestResult('warning', '시뮬레이션 종료', '테스트 광고가 자동으로 제거되었습니다.');
+                    }
+                }, 30000);
+                
+            } catch (error) {
+                addTestResult('error', '시뮬레이션 실패', `오류: ${error.message}`);
+                console.error('❌ 시뮬레이션 실패:', error);
+            }
+        }
+
+        // UTM 파라미터로 시뮬레이션
+        function simulateWithUTM() {
+            try {
+                // 현재 URL에 UTM 파라미터 추가
+                const currentUrl = new URL(window.location.href);
+                currentUrl.searchParams.set('utm_source', 'naver');
+                currentUrl.searchParams.set('utm_medium', 'powerlink');
+                currentUrl.searchParams.set('utm_campaign', 'powerlink_test');
+                currentUrl.searchParams.set('utm_term', '렌트카');
+                
+                // URL 변경 (히스토리 API 사용)
+                window.history.pushState({}, '', currentUrl.toString());
+                
+                addTestResult('success', 'UTM 파라미터 적용', 'UTM 파라미터가 성공적으로 적용되었습니다. 네이버 파워링크 광고로 인식됩니다.');
+                
+                // 10초 후 원래 URL로 복원
+                setTimeout(() => {
+                    window.history.back();
+                    addTestResult('info', 'UTM 파라미터 제거', 'UTM 파라미터가 제거되었습니다.');
+                }, 10000);
+                
+                console.log('✅ UTM 파라미터 시뮬레이션 완료');
+                
+            } catch (error) {
+                addTestResult('error', 'UTM 파라미터 시뮬레이션 실패', `오류: ${error.message}`);
+                console.error('❌ UTM 파라미터 시뮬레이션 실패:', error);
+            }
+        }
+
+        // 시뮬레이션 초기화
+        function resetSimulation() {
+            try {
+                // 클릭 횟수 초기화
+                clickProtection.sessionData.clickCount = 0;
+                
+                // 기존 팝업 제거
+                clickProtection.removeExistingPopup();
+                
+                // 테스트 광고 요소 제거
+                const testAd = document.getElementById('test-ad-element');
+                if (testAd) {
+                    testAd.remove();
+                }
+                
+                simulationActive = false;
+                
+                addTestResult('success', '시뮬레이션 초기화', '모든 시뮬레이션이 초기화되었습니다.');
+                updateStatus();
+                
+                console.log('✅ 시뮬레이션 초기화 완료');
+                
+            } catch (error) {
+                addTestResult('error', '시뮬레이션 초기화 실패', `오류: ${error.message}`);
+                console.error('❌ 시뮬레이션 초기화 실패:', error);
+            }
+        }
+
+        // 테스트 결과 추가
+        function addTestResult(type, title, description) {
+            const result = {
+                type: type,
+                title: title,
+                description: description,
+                timestamp: new Date().toLocaleTimeString('ko-KR')
+            };
+            
+            testResults.unshift(result);
+            
+            // 최대 10개 결과만 유지
+            if (testResults.length > 10) {
+                testResults = testResults.slice(0, 10);
+            }
+            
+            updateTestResultsDisplay();
+        }
+
+        // 테스트 결과 표시 업데이트
+        function updateTestResultsDisplay() {
+            const container = document.getElementById('test-results-container');
+            if (!container) return;
+            
+            container.innerHTML = testResults.map(result => `
+                <div class="result-item ${result.type}">
+                    <div class="result-title">${result.title}</div>
+                    <div class="result-description">${result.description}</div>
+                    <small style="color: #6c757d; font-size: 12px;">${result.timestamp}</small>
+                </div>
+            `).join('');
+        }
+
+        // 상태 업데이트
+        function updateStatus() {
+            if (!clickProtection) return;
+            
+            const clickCount = clickProtection.sessionData.clickCount;
+            const warningLevel = getWarningLevel(clickCount);
+            
+            document.getElementById('click-count').textContent = clickCount;
+            document.getElementById('warning-level').textContent = getWarningLevelText(warningLevel);
+            document.getElementById('simulation-mode').textContent = simulationActive ? '활성' : '비활성';
+            document.getElementById('last-update').textContent = new Date().toLocaleTimeString('ko-KR');
+        }
+
+        // 경고 레벨 결정
+        function getWarningLevel(clickCount) {
+            if (clickCount >= 4) return 3;
+            if (clickCount >= 3) return 2;
+            if (clickCount >= 2) return 1;
+            return 0;
+        }
+
+        // 경고 레벨 텍스트
+        function getWarningLevelText(level) {
+            switch (level) {
+                case 0: return '없음';
+                case 1: return '1단계 (파란색)';
+                case 2: return '2단계 (주황색)';
+                case 3: return '3단계 (빨간색)';
+                default: return '알 수 없음';
+            }
+        }
+
+        // 상태 업데이트 시작
+        function startStatusUpdates() {
+            setInterval(updateStatus, 1000);
+        }
+
+        // 즐겨찾기 추가 테스트
+        function testAddToFavorites() {
+            try {
+                clickProtection.addToFavorites();
+                addTestResult('success', '즐겨찾기 테스트', '즐겨찾기 추가 기능이 테스트되었습니다.');
+            } catch (error) {
+                addTestResult('error', '즐겨찾기 테스트 실패', `오류: ${error.message}`);
+            }
+        }
+
+        // 시스템 진단
+        function diagnoseSystem() {
+            try {
+                const status = clickProtection.getSystemStatus();
+                addTestResult('info', '시스템 진단', `상태: ${status.status}, 모니터링: ${status.monitoring ? '활성' : '비활성'}`);
+            } catch (error) {
+                addTestResult('error', '시스템 진단 실패', `오류: ${error.message}`);
+            }
+        }
+
+        // 전역 함수로 노출 (테스트용)
+        window.testLevel1 = testLevel1;
+        window.testLevel2 = testLevel2;
+        window.testLevel3 = testLevel3;
+        window.simulateNaverAdClick = simulateNaverAdClick;
+        window.simulateWithUTM = simulateWithUTM;
+        window.resetSimulation = resetSimulation;
+        window.testAddToFavorites = testAddToFavorites;
+        window.diagnoseSystem = diagnoseSystem;
+    </script>
+</body>
+</html>

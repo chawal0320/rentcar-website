@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>부정클릭 팝업 테스트 - 모바일</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 10px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 25px 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .test-section {
+            padding: 20px;
+        }
+
+        .test-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .test-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+
+        .test-card:active {
+            transform: scale(0.98);
+            background: #e9ecef;
+        }
+
+        .test-card h3 {
+            color: #495057;
+            margin-bottom: 12px;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .test-card p {
+            color: #6c757d;
+            margin-bottom: 15px;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: block;
+            width: 100%;
+            margin: 5px 0;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .btn:active {
+            transform: scale(0.95);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6c757d, #495057);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #dc3545, #c82333);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #28a745, #20c997);
+        }
+
+        .simulation-section {
+            background: #e3f2fd;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 2px solid #2196f3;
+        }
+
+        .simulation-section h2 {
+            color: #1976d2;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+            text-align: center;
+        }
+
+        .simulation-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .status-display {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 15px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .status-item:last-child {
+            border-bottom: none;
+        }
+
+        .status-label {
+            font-weight: 600;
+            color: #495057;
+            font-size: 14px;
+        }
+
+        .status-value {
+            color: #6c757d;
+            font-family: monospace;
+            font-size: 14px;
+        }
+
+        .warning-info {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .warning-info h4 {
+            color: #856404;
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+        }
+
+        .warning-info ul {
+            color: #856404;
+            padding-left: 20px;
+            font-size: 14px;
+        }
+
+        .warning-info li {
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+
+        .test-results {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 25px;
+        }
+
+        .test-results h3 {
+            color: #495057;
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 1.3rem;
+        }
+
+        .result-item {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 12px;
+            border-left: 4px solid #667eea;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .result-item.success {
+            border-left-color: #28a745;
+        }
+
+        .result-item.error {
+            border-left-color: #dc3545;
+        }
+
+        .result-item.warning {
+            border-left-color: #ffc107;
+        }
+
+        .result-title {
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #495057;
+            font-size: 14px;
+        }
+
+        .result-description {
+            color: #6c757d;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        .footer {
+            background: #343a40;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-size: 13px;
+        }
+
+        .footer a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        .mobile-optimized {
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior: contain;
+        }
+
+        .touch-feedback {
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        .swipe-hint {
+            background: rgba(102, 126, 234, 0.1);
+            border: 1px dashed #667eea;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+            text-align: center;
+            color: #667eea;
+            font-size: 14px;
+        }
+
+        .swipe-hint::before {
+            content: "👆 ";
+            font-size: 18px;
+        }
+
+        .mobile-gestures {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 12px;
+        }
+
+        .gesture-item {
+            text-align: center;
+            font-size: 12px;
+            color: #6c757d;
+        }
+
+        .gesture-icon {
+            font-size: 24px;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .quick-action-btn {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 600;
+            color: #495057;
+            transition: all 0.3s ease;
+            touch-action: manipulation;
+        }
+
+        .quick-action-btn:active {
+            background: #e9ecef;
+            transform: scale(0.95);
+        }
+
+        .test-ad-banner {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #ff6b35;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            z-index: 9999;
+            font-family: Arial, sans-serif;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            font-weight: bold;
+            font-size: 14px;
+            max-width: 120px;
+            text-align: center;
+            line-height: 1.3;
+        }
+
+        .test-ad-banner:active {
+            transform: scale(0.95);
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                margin: 5px;
+                border-radius: 15px;
+            }
+
+            .header {
+                padding: 20px 15px;
+            }
+
+            .header h1 {
+                font-size: 1.6rem;
+            }
+
+            .test-section {
+                padding: 15px;
+            }
+
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+
+            .test-ad-banner {
+                right: 10px;
+                top: 10px;
+                max-width: 100px;
+                padding: 12px;
+                font-size: 12px;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .container {
+                max-width: 600px;
+            }
+
+            .test-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            }
+
+            .quick-actions {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container mobile-optimized">
+        <div class="header">
+            <h1>🚨 부정클릭 팝업 테스트</h1>
+            <p>모바일 버전 - 터치 최적화</p>
+        </div>
+
+        <div class="test-section">
+            <div class="warning-info">
+                <h4>⚠️ 모바일 테스트 안내사항</h4>
+                <ul>
+                    <li>이 페이지는 모바일 환경에서 부정클릭 방지 시스템을 테스트하기 위한 페이지입니다.</li>
+                    <li>터치 제스처와 모바일 최적화된 인터페이스를 제공합니다.</li>
+                    <li>테스트 후에는 반드시 즐겨찾기에 추가하여 직접 방문하시기 바랍니다.</li>
+                </ul>
+            </div>
+
+            <div class="swipe-hint">
+                아래 카드들을 터치하여 각 단계별 경고 팝업을 테스트해보세요
+            </div>
+
+            <div class="test-grid">
+                <div class="test-card touch-feedback">
+                    <h3>🔵 1단계 경고 테스트</h3>
+                    <p>2회 클릭 시 1단계 경고 팝업이 표시됩니다. 파란색 테마로 표시되며, 즐겨찾기 추가를 권장합니다.</p>
+                    <button class="btn" onclick="testLevel1()">1단계 팝업 테스트</button>
+                </div>
+
+                <div class="test-card touch-feedback">
+                    <h3>🟠 2단계 경고 테스트</h3>
+                    <p>3회 클릭 시 2단계 경고 팝업이 표시됩니다. 주황색 테마로 표시되며, 광고 클릭 중단을 권장합니다.</p>
+                    <button class="btn" onclick="testLevel2()">2단계 팝업 테스트</button>
+                </div>
+
+                <div class="test-card touch-feedback">
+                    <h3>🔴 3단계 경고 테스트</h3>
+                    <p>4회 클릭 시 3단계 경고 팝업이 표시됩니다. 빨간색 테마로 표시되며, 즉시 광고 클릭을 중단해야 합니다.</p>
+                    <button class="btn" onclick="testLevel3()">3단계 팝업 테스트</button>
+                </div>
+            </div>
+
+            <div class="quick-actions">
+                <div class="quick-action-btn" onclick="testLevel1()">
+                    🔵 1단계
+                </div>
+                <div class="quick-action-btn" onclick="testLevel2()">
+                    🟠 2단계
+                </div>
+                <div class="quick-action-btn" onclick="testLevel3()">
+                    🔴 3단계
+                </div>
+                <div class="quick-action-btn" onclick="resetSimulation()">
+                    🔄 초기화
+                </div>
+            </div>
+
+            <div class="mobile-gestures">
+                <div class="gesture-item">
+                    <span class="gesture-icon">👆</span>
+                    터치
+                </div>
+                <div class="gesture-item">
+                    <span class="gesture-icon">👆👆</span>
+                    더블터치
+                </div>
+                <div class="gesture-item">
+                    <span class="gesture-icon">👆👆👆</span>
+                    트리플터치
+                </div>
+                <div class="gesture-item">
+                    <span class="gesture-icon">👆👆👆👆</span>
+                    쿼드터치
+                </div>
+            </div>
+
+            <div class="simulation-section">
+                <h2>🧪 모바일 광고 클릭 시뮬레이션</h2>
+                <p style="text-align: center; margin-bottom: 15px; color: #1976d2; font-size: 14px;">
+                    모바일 환경에서 네이버 파워링크 광고 클릭 상황을 시뮬레이션합니다.
+                </p>
+                
+                <div class="simulation-controls">
+                    <button class="btn btn-success" onclick="simulateMobileAdClick()">
+                        🎯 모바일 광고 클릭 시뮬레이션
+                    </button>
+                    <button class="btn btn-secondary" onclick="simulateWithUTM()">
+                        🔗 UTM 파라미터 시뮬레이션
+                    </button>
+                    <button class="btn btn-danger" onclick="resetSimulation()">
+                        🔄 시뮬레이션 초기화
+                    </button>
+                </div>
+
+                <div class="status-display">
+                    <h4 style="color: #1976d2; margin-bottom: 15px; font-size: 1.1rem;">📊 시뮬레이션 상태</h4>
+                    <div class="status-item">
+                        <span class="status-label">현재 클릭 횟수:</span>
+                        <span class="status-value" id="click-count">0</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">경고 레벨:</span>
+                        <span class="status-value" id="warning-level">없음</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">시뮬레이션 모드:</span>
+                        <span class="status-value" id="simulation-mode">비활성</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">마지막 업데이트:</span>
+                        <span class="status-value" id="last-update">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="test-results">
+                <h3>📋 테스트 결과</h3>
+                <div id="test-results-container">
+                    <div class="result-item">
+                        <div class="result-title">모바일 시스템 준비 완료</div>
+                        <div class="result-description">부정클릭 방지 시스템이 모바일 환경에 최적화되어 초기화되었습니다.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>© 2024 에스엠렌트카. 모바일 부정클릭 방지 시스템 테스트</p>
+            <p><a href="https://smrentcar.com" target="_blank">공식 웹사이트</a> | <a href="tel:0507-1337-3679">0507-1337-3679</a></p>
+        </div>
+    </div>
+
+    <!-- 부정클릭 방지 시스템 스크립트 -->
+    <script src="click-protection.js"></script>
+    
+    <script>
+        // 전역 변수
+        let clickProtection;
+        let testResults = [];
+        let simulationActive = false;
+        let testAdBanner = null;
+
+        // 페이지 로드 시 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeMobileSystem();
+            setupMobileOptimizations();
+        });
+
+        // 모바일 시스템 초기화
+        function initializeMobileSystem() {
+            try {
+                // 부정클릭 방지 시스템 초기화
+                clickProtection = new ClickProtectionSystem();
+                
+                // 스타일 적용
+                clickProtection.applyWarningStyles();
+                
+                addTestResult('success', '모바일 시스템 초기화', '부정클릭 방지 시스템이 모바일 환경에 최적화되어 초기화되었습니다.');
+                
+                // 상태 업데이트 시작
+                startStatusUpdates();
+                
+                console.log('✅ 모바일 시스템 초기화 완료');
+            } catch (error) {
+                addTestResult('error', '모바일 시스템 초기화 실패', `오류: ${error.message}`);
+                console.error('❌ 모바일 시스템 초기화 실패:', error);
+            }
+        }
+
+        // 모바일 최적화 설정
+        function setupMobileOptimizations() {
+            // 터치 이벤트 최적화
+            document.addEventListener('touchstart', function(e) {
+                // 터치 피드백
+                if (e.target.classList.contains('touch-feedback')) {
+                    e.target.style.transform = 'scale(0.98)';
+                }
+            }, { passive: true });
+
+            document.addEventListener('touchend', function(e) {
+                // 터치 피드백 복원
+                if (e.target.classList.contains('touch-feedback')) {
+                    setTimeout(() => {
+                        e.target.style.transform = 'scale(1)';
+                    }, 100);
+                }
+            }, { passive: true });
+
+            // 스크롤 최적화
+            document.addEventListener('scroll', function(e) {
+                e.preventDefault();
+            }, { passive: false });
+
+            // 더블탭 줌 방지
+            let lastTouchEnd = 0;
+            document.addEventListener('touchend', function(event) {
+                const now = (new Date()).getTime();
+                if (now - lastTouchEnd <= 300) {
+                    event.preventDefault();
+                }
+                lastTouchEnd = now;
+            }, false);
+        }
+
+        // 1단계 경고 테스트
+        function testLevel1() {
+            try {
+                // 클릭 횟수를 2회로 설정하여 1단계 경고 트리거
+                clickProtection.sessionData.clickCount = 2;
+                
+                // 1단계 경고 팝업 표시
+                clickProtection.showTestWarning(1);
+                
+                addTestResult('success', '1단계 경고 테스트', '1단계 경고 팝업이 모바일에 최적화되어 표시되었습니다.');
+                updateStatus();
+                
+                console.log('✅ 1단계 경고 테스트 완료 (모바일)');
+            } catch (error) {
+                addTestResult('error', '1단계 경고 테스트 실패', `오류: ${error.message}`);
+                console.error('❌ 1단계 경고 테스트 실패:', error);
+            }
+        }
+
+        // 2단계 경고 테스트
+        function testLevel2() {
+            try {
+                // 클릭 횟수를 3회로 설정하여 2단계 경고 트리거
+                clickProtection.sessionData.clickCount = 3;
+                
+                // 2단계 경고 팝업 표시
+                clickProtection.showTestWarning(2);
+                
+                addTestResult('success', '2단계 경고 테스트', '2단계 경고 팝업이 모바일에 최적화되어 표시되었습니다.');
+                updateStatus();
+                
+                console.log('✅ 2단계 경고 테스트 완료 (모바일)');
+            } catch (error) {
+                addTestResult('error', '2단계 경고 테스트 실패', `오류: ${error.message}`);
+                console.error('❌ 2단계 경고 테스트 실패:', error);
+            }
+        }
+
+        // 3단계 경고 테스트
+        function testLevel3() {
+            try {
+                // 클릭 횟수를 4회로 설정하여 3단계 경고 트리거
+                clickProtection.sessionData.clickCount = 4;
+                
+                // 3단계 경고 팝업 표시
+                clickProtection.showTestWarning(3);
+                
+                addTestResult('success', '3단계 경고 테스트', '3단계 경고 팝업이 모바일에 최적화되어 표시되었습니다.');
+                updateStatus();
+                
+                console.log('✅ 3단계 경고 테스트 완료 (모바일)');
+            } catch (error) {
+                addTestResult('error', '3단계 경고 테스트 실패', `오류: ${error.message}`);
+                console.error('❌ 3단계 경고 테스트 실패:', error);
+            }
+        }
+
+        // 모바일 광고 클릭 시뮬레이션
+        function simulateMobileAdClick() {
+            try {
+                simulationActive = true;
+                
+                // 기존 테스트 광고 제거
+                if (testAdBanner) {
+                    testAdBanner.remove();
+                }
+                
+                // 모바일 최적화된 테스트 광고 생성
+                testAdBanner = document.createElement('div');
+                testAdBanner.className = 'test-ad-banner';
+                testAdBanner.textContent = '네이버 파워링크 광고 테스트';
+                testAdBanner.id = 'mobile-test-ad';
+                
+                // 터치 이벤트 추가
+                testAdBanner.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    console.log('🧪 모바일 테스트 파워링크 광고 터치됨');
+                    
+                    // 클릭 횟수 증가
+                    clickProtection.sessionData.clickCount++;
+                    
+                    // 경고 팝업 표시
+                    clickProtection.showWarningPopup();
+                    
+                    // 상태 업데이트
+                    updateStatus();
+                    
+                    // 테스트 결과 추가
+                    addTestResult('success', '모바일 광고 터치 시뮬레이션', 
+                        `네이버 파워링크 광고 터치가 시뮬레이션되었습니다. (클릭 ${clickProtection.sessionData.clickCount}회)`);
+                    
+                    // 터치 피드백
+                    testAdBanner.style.transform = 'scale(0.9)';
+                    setTimeout(() => {
+                        testAdBanner.style.transform = 'scale(1)';
+                    }, 150);
+                }, { passive: false });
+                
+                document.body.appendChild(testAdBanner);
+                
+                addTestResult('success', '모바일 시뮬레이션 시작', '모바일 광고 클릭 시뮬레이션이 시작되었습니다. 오른쪽 상단의 테스트 광고를 터치해보세요.');
+                updateStatus();
+                
+                console.log('✅ 모바일 광고 클릭 시뮬레이션 시작');
+                
+                // 30초 후 자동 제거
+                setTimeout(() => {
+                    if (testAdBanner && testAdBanner.parentElement) {
+                        testAdBanner.remove();
+                        testAdBanner = null;
+                        simulationActive = false;
+                        updateStatus();
+                        addTestResult('warning', '모바일 시뮬레이션 종료', '테스트 광고가 자동으로 제거되었습니다.');
+                    }
+                }, 30000);
+                
+            } catch (error) {
+                addTestResult('error', '모바일 시뮬레이션 실패', `오류: ${error.message}`);
+                console.error('❌ 모바일 시뮬레이션 실패:', error);
+            }
+        }
+
+        // UTM 파라미터로 시뮬레이션
+        function simulateWithUTM() {
+            try {
+                // 현재 URL에 UTM 파라미터 추가
+                const currentUrl = new URL(window.location.href);
+                currentUrl.searchParams.set('utm_source', 'naver');
+                currentUrl.searchParams.set('utm_medium', 'powerlink');
+                currentUrl.searchParams.set('utm_campaign', 'mobile_powerlink_test');
+                currentUrl.searchParams.set('utm_term', '렌트카');
+                
+                // URL 변경 (히스토리 API 사용)
+                window.history.pushState({}, '', currentUrl.toString());
+                
+                addTestResult('success', '모바일 UTM 파라미터 적용', 'UTM 파라미터가 성공적으로 적용되었습니다. 네이버 파워링크 광고로 인식됩니다.');
+                
+                // 10초 후 원래 URL로 복원
+                setTimeout(() => {
+                    window.history.back();
+                    addTestResult('info', '모바일 UTM 파라미터 제거', 'UTM 파라미터가 제거되었습니다.');
+                }, 10000);
+                
+                console.log('✅ 모바일 UTM 파라미터 시뮬레이션 완료');
+                
+            } catch (error) {
+                addTestResult('error', '모바일 UTM 파라미터 시뮬레이션 실패', `오류: ${error.message}`);
+                console.error('❌ 모바일 UTM 파라미터 시뮬레이션 실패:', error);
+            }
+        }
+
+        // 시뮬레이션 초기화
+        function resetSimulation() {
+            try {
+                // 클릭 횟수 초기화
+                clickProtection.sessionData.clickCount = 0;
+                
+                // 기존 팝업 제거
+                clickProtection.removeExistingPopup();
+                
+                // 테스트 광고 요소 제거
+                if (testAdBanner) {
+                    testAdBanner.remove();
+                    testAdBanner = null;
+                }
+                
+                simulationActive = false;
+                
+                addTestResult('success', '모바일 시뮬레이션 초기화', '모든 모바일 시뮬레이션이 초기화되었습니다.');
+                updateStatus();
+                
+                console.log('✅ 모바일 시뮬레이션 초기화 완료');
+                
+            } catch (error) {
+                addTestResult('error', '모바일 시뮬레이션 초기화 실패', `오류: ${error.message}`);
+                console.error('❌ 모바일 시뮬레이션 초기화 실패:', error);
+            }
+        }
+
+        // 테스트 결과 추가
+        function addTestResult(type, title, description) {
+            const result = {
+                type: type,
+                title: title,
+                description: description,
+                timestamp: new Date().toLocaleTimeString('ko-KR')
+            };
+            
+            testResults.unshift(result);
+            
+            // 최대 8개 결과만 유지 (모바일 최적화)
+            if (testResults.length > 8) {
+                testResults = testResults.slice(0, 8);
+            }
+            
+            updateTestResultsDisplay();
+        }
+
+        // 테스트 결과 표시 업데이트
+        function updateTestResultsDisplay() {
+            const container = document.getElementById('test-results-container');
+            if (!container) return;
+            
+            container.innerHTML = testResults.map(result => `
+                <div class="result-item ${result.type}">
+                    <div class="result-title">${result.title}</div>
+                    <div class="result-description">${result.description}</div>
+                    <small style="color: #6c757d; font-size: 11px;">${result.timestamp}</small>
+                </div>
+            `).join('');
+        }
+
+        // 상태 업데이트
+        function updateStatus() {
+            if (!clickProtection) return;
+            
+            const clickCount = clickProtection.sessionData.clickCount;
+            const warningLevel = getWarningLevel(clickCount);
+            
+            document.getElementById('click-count').textContent = clickCount;
+            document.getElementById('warning-level').textContent = getWarningLevelText(warningLevel);
+            document.getElementById('simulation-mode').textContent = simulationActive ? '활성' : '비활성';
+            document.getElementById('last-update').textContent = new Date().toLocaleTimeString('ko-KR');
+        }
+
+        // 경고 레벨 결정
+        function getWarningLevel(clickCount) {
+            if (clickCount >= 4) return 3;
+            if (clickCount >= 3) return 2;
+            if (clickCount >= 2) return 1;
+            return 0;
+        }
+
+        // 경고 레벨 텍스트
+        function getWarningLevelText(level) {
+            switch (level) {
+                case 0: return '없음';
+                case 1: return '1단계 (파란색)';
+                case 2: return '2단계 (주황색)';
+                case 3: return '3단계 (빨간색)';
+                default: return '알 수 없음';
+            }
+        }
+
+        // 상태 업데이트 시작
+        function startStatusUpdates() {
+            setInterval(updateStatus, 1000);
+        }
+
+        // 모바일 즐겨찾기 추가 테스트
+        function testMobileAddToFavorites() {
+            try {
+                clickProtection.addToFavorites();
+                addTestResult('success', '모바일 즐겨찾기 테스트', '모바일 환경에서 즐겨찾기 추가 기능이 테스트되었습니다.');
+            } catch (error) {
+                addTestResult('error', '모바일 즐겨찾기 테스트 실패', `오류: ${error.message}`);
+            }
+        }
+
+        // 모바일 시스템 진단
+        function diagnoseMobileSystem() {
+            try {
+                const status = clickProtection.getSystemStatus();
+                addTestResult('info', '모바일 시스템 진단', `상태: ${status.status}, 모니터링: ${status.monitoring ? '활성' : '비활성'}`);
+            } catch (error) {
+                addTestResult('error', '모바일 시스템 진단 실패', `오류: ${error.message}`);
+            }
+        }
+
+        // 전역 함수로 노출 (테스트용)
+        window.testLevel1 = testLevel1;
+        window.testLevel2 = testLevel2;
+        window.testLevel3 = testLevel3;
+        window.simulateMobileAdClick = simulateMobileAdClick;
+        window.simulateWithUTM = simulateWithUTM;
+        window.resetSimulation = resetSimulation;
+        window.testMobileAddToFavorites = testMobileAddToFavorites;
+        window.diagnoseMobileSystem = diagnoseMobileSystem;
+    </script>
+</body>
+</html>
