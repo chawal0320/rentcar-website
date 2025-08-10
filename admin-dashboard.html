@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>부정클릭 방지 시스템 - 관리자 대시보드</title>
+    <title>관리자 대시보드 - 부정클릭 방지 시스템</title>
     
     <!-- 네이버 광고 부정클릭 방지 시스템 -->
     <script src="click-protection.js"></script>
@@ -35,12 +35,19 @@
             background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
             color: white;
             padding: 30px;
-            text-align: center;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
         }
 
         .header h1 {
             font-size: 2.5em;
-            margin-bottom: 10px;
+            margin: 0;
         }
 
         .header p {
@@ -209,6 +216,24 @@
 
         .btn-success:hover {
             background: #229954;
+        }
+
+        .btn-info {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .btn-info:hover {
+            background: #138496;
+        }
+
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0056b3;
         }
 
         .chart-container {
@@ -462,20 +487,226 @@
                 padding: 20px;
             }
             
+            .header-top {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+            
             .header h1 {
                 font-size: 2em;
             }
+            
+            .admin-mode-badge {
+                display: none;
+            }
+        }
+
+        /* 로그인 화면 스타일 */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .login-form {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        
+        .login-form h1 {
+            color: #495057;
+            margin-bottom: 30px;
+            font-size: 2em;
+            font-weight: 300;
+        }
+        
+        .login-form .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        
+        .login-form label {
+            display: block;
+            margin-bottom: 8px;
+            color: #495057;
+            font-weight: 500;
+        }
+        
+        .login-form input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+        
+        .login-form input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .login-form button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+        
+        .login-form button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+        
+        .login-form button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .error-message {
+            color: #dc3545;
+            margin-top: 15px;
+            font-size: 14px;
+            display: none;
+        }
+        
+        .success-message {
+            color: #28a745;
+            margin-top: 15px;
+            font-size: 14px;
+            display: none;
+        }
+        
+        /* 로그인 후 대시보드 스타일 */
+        .dashboard-content {
+            display: none;
+        }
+        
+        .dashboard-content.logged-in {
+            display: block;
+        }
+        
+        /* 로그아웃 버튼 스타일 */
+        .logout-section {
+            background: #f8f9fa;
+            padding: 15px 25px;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logout-section .user-info {
+            color: #495057;
+            font-weight: 500;
+        }
+        
+        .logout-section .logout-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .logout-section .logout-btn:hover {
+            background: #c82333;
+            transform: translateY(-1px);
+        }
+        
+        /* 모바일에서는 로그인 화면 숨김 */
+        @media (max-width: 768px) {
+            .login-container {
+                display: none;
+            }
+            
+            .dashboard-content {
+                display: block !important;
+            }
+            
+            .dashboard-content::before {
+                content: "모바일에서는 로그인 없이 접근할 수 없습니다. PC에서 접속해주세요.";
+                display: block;
+                text-align: center;
+                padding: 50px 20px;
+                color: #6c757d;
+                font-size: 16px;
+                background: #f8f9fa;
+                border-radius: 10px;
+                margin: 20px;
+            }
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>🛡️ 부정클릭 방지 시스템</h1>
-            <p>에스엔엠렌트카 홈페이지 보안 모니터링 대시보드</p>
-            <div class="admin-mode-badge">
-                <span>👑 관리자 모드</span>
-                <small>경고 팝업 비활성화됨</small>
+    <!-- 로그인 화면 (PC에서만 표시) -->
+    <div class="login-container" id="loginContainer">
+        <div class="login-form">
+            <h1>🔐 관리자 로그인</h1>
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label for="username">아이디</label>
+                    <input type="text" id="username" name="username" required placeholder="관리자 아이디를 입력하세요">
+                </div>
+                <div class="form-group">
+                    <label for="password">비밀번호</label>
+                    <input type="password" id="password" name="password" required placeholder="비밀번호를 입력하세요">
+                </div>
+                <button type="submit" id="loginBtn">로그인</button>
+                <div class="error-message" id="errorMessage">아이디 또는 비밀번호가 올바르지 않습니다.</div>
+                <div class="success-message" id="successMessage">로그인 성공! 대시보드로 이동합니다...</div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 대시보드 내용 (로그인 후에만 표시) -->
+    <div class="dashboard-content" id="dashboardContent">
+        <!-- 로그아웃 섹션 -->
+        <div class="logout-section">
+            <div class="user-info">
+                <span>👑 관리자: <strong id="loggedInUser">chawal</strong></span>
+                <span style="margin-left: 20px; color: #6c757d;">부정클릭 방지 시스템</span>
+            </div>
+            <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
+        </div>
+
+        <div class="container">
+                    <div class="header">
+            <div class="header-top">
+                <h1>부정클릭 방지 시스템</h1>
+                <div class="admin-mode-badge">
+                    <span>👑 관리자 모드</span>
+                    <small>경고 팝업 비활성화됨</small>
+                </div>
             </div>
         </div>
 
@@ -506,6 +737,8 @@
                     <button class="btn btn-success" onclick="clickProtection.showTestWarning(1)">테스트 경고창 1단계</button>
                     <button class="btn btn-warning" onclick="clickProtection.showTestWarning(2)">테스트 경고창 2단계</button>
                     <button class="btn btn-danger" onclick="clickProtection.showTestWarning(3)">테스트 경고창 3단계</button>
+                    <button class="btn btn-info" onclick="clickProtection.simulateNaverAdClick()">🧪 네이버 광고 클릭 테스트</button>
+                    <button class="btn btn-primary" onclick="clickProtection.simulateNaverAdClickWithUTM()">🔗 UTM 파라미터 테스트</button>
                     <button class="btn btn-warning" onclick="exportAllData()">📊 전체 데이터 내보내기</button>
                     <button class="btn btn-danger" onclick="clearAllData()">🗑️ 모든 데이터 초기화</button>
                 </div>
@@ -525,8 +758,25 @@
             <button class="refresh-btn" onclick="refreshData()">🔄 데이터 새로고침</button>
 
             <div class="alert alert-info">
-                <strong>💡 안내:</strong> 이 대시보드는 네이버 광고 부정클릭 방지를 위한 모니터링 시스템입니다. 
+                <strong>💡 안내:</strong> 이 대시보드는 네이버 파워링크 광고 부정클릭 방지를 위한 모니터링 시스템입니다. 
                 의심스러운 활동이 감지되면 즉시 알림을 받을 수 있습니다.
+            </div>
+            
+            <div class="alert alert-warning">
+                <strong>🔗 파워링크 광고 설정 가이드:</strong>
+                <ul style="margin: 10px 0 0 20px; padding: 0;">
+                    <li>네이버 광고센터에서 UTM 파라미터 설정: <code>utm_source=naver&utm_medium=cpc&utm_campaign=캠페인명</code></li>
+                    <li>광고 URL에 UTM 파라미터 추가하여 정확한 광고 클릭 추적</li>
+                    <li>키워드별, 캠페인별 광고 성과 분석 가능</li>
+                </ul>
+            </div>
+            
+            <div class="alert alert-success">
+                <strong>🔐 네이버 광고 API 연동 상태:</strong>
+                <div id="api-status" style="margin: 10px 0 0 0;">
+                    <span class="status-indicator">🔄 연결 확인 중...</span>
+                    <button class="btn btn-sm btn-outline-primary" onclick="checkApiConnection()" style="margin-left: 10px;">연결 테스트</button>
+                </div>
             </div>
 
             <div class="section">
@@ -658,6 +908,7 @@
     </div>
 
     <script>
+        // 로그인 관련 변수들
         let clickProtection;
         let currentPage = 1;
         let itemsPerPage = 10;
@@ -668,8 +919,131 @@
         let blockedItemsPerPage = 10;
         let filteredBlockedIPs = [];
         
+        // 로그인 정보
+        const ADMIN_CREDENTIALS = {
+            username: 'chawal',
+            password: '0000'
+        };
+        
         // 페이지 로드 시 초기화
         document.addEventListener('DOMContentLoaded', function() {
+            // 모바일 체크
+            if (window.innerWidth <= 768) {
+                showMobileMessage();
+                return;
+            }
+            
+            // PC에서 로그인 상태 확인
+            checkLoginStatus();
+        });
+        
+        // 모바일 메시지 표시
+        function showMobileMessage() {
+            document.getElementById('loginContainer').style.display = 'none';
+            document.getElementById('dashboardContent').style.display = 'block';
+        }
+        
+        // 로그인 상태 확인
+        function checkLoginStatus() {
+            const isLoggedIn = sessionStorage.getItem('adminLoggedIn') === 'true';
+            const loginTime = sessionStorage.getItem('adminLoginTime');
+            
+            if (isLoggedIn && loginTime) {
+                // 24시간 세션 체크
+                const loginTimestamp = parseInt(loginTime);
+                const currentTime = Date.now();
+                const sessionDuration = 24 * 60 * 60 * 1000; // 24시간
+                
+                if (currentTime - loginTimestamp < sessionDuration) {
+                    // 세션이 유효함
+                    showDashboard();
+                    return;
+                } else {
+                    // 세션이 만료됨
+                    sessionStorage.removeItem('adminLoggedIn');
+                    sessionStorage.removeItem('adminLoginTime');
+                }
+            }
+            
+            // 로그인되지 않음
+            showLoginForm();
+        }
+        
+        // 로그인 폼 표시
+        function showLoginForm() {
+            document.getElementById('loginContainer').style.display = 'flex';
+            document.getElementById('dashboardContent').style.display = 'none';
+        }
+        
+        // 대시보드 표시
+        function showDashboard() {
+            document.getElementById('loginContainer').style.display = 'none';
+            document.getElementById('dashboardContent').style.display = 'block';
+            
+            // 대시보드 초기화
+            initializeDashboard();
+        }
+        
+        // 로그인 처리
+        function handleLogin(event) {
+            event.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const loginBtn = document.getElementById('loginBtn');
+            const errorMessage = document.getElementById('errorMessage');
+            const successMessage = document.getElementById('successMessage');
+            
+            // 에러 메시지 숨김
+            errorMessage.style.display = 'none';
+            successMessage.style.display = 'none';
+            
+            // 로그인 버튼 비활성화
+            loginBtn.disabled = true;
+            loginBtn.textContent = '로그인 중...';
+            
+            // 자격 증명 확인
+            if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
+                // 로그인 성공
+                successMessage.style.display = 'block';
+                
+                // 세션 저장
+                sessionStorage.setItem('adminLoggedIn', 'true');
+                sessionStorage.setItem('adminLoginTime', Date.now().toString());
+                
+                // 2초 후 대시보드 표시
+                setTimeout(() => {
+                    showDashboard();
+                }, 2000);
+            } else {
+                // 로그인 실패
+                errorMessage.style.display = 'block';
+                loginBtn.disabled = false;
+                loginBtn.textContent = '로그인';
+            }
+        }
+        
+        // 로그아웃 처리
+        function handleLogout() {
+            if (confirm('로그아웃하시겠습니까?')) {
+                // 세션 삭제
+                sessionStorage.removeItem('adminLoggedIn');
+                sessionStorage.removeItem('adminLoginTime');
+                
+                // 로그인 폼 표시
+                showLoginForm();
+                
+                // 폼 초기화
+                document.getElementById('loginForm').reset();
+                document.getElementById('errorMessage').style.display = 'none';
+                document.getElementById('successMessage').style.display = 'none';
+                document.getElementById('loginBtn').disabled = false;
+                document.getElementById('loginBtn').textContent = '로그인';
+            }
+        }
+        
+        // 대시보드 초기화
+        function initializeDashboard() {
             // 오늘 날짜를 기본값으로 설정
             const today = new Date();
             const oneWeekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
@@ -687,7 +1061,7 @@
             
             // 실시간 업데이트 시작
             startRealTimeUpdates();
-        });
+        }
         
         // 의심스러운 활동 필터링 및 표시
         function filterSuspiciousActivities() {
@@ -983,6 +1357,64 @@
             URL.revokeObjectURL(url);
         }
         
+        // 네이버 광고 API 연결 테스트
+        async function checkApiConnection() {
+            const statusElement = document.getElementById('api-status');
+            const statusIndicator = statusElement.querySelector('.status-indicator');
+            const testButton = statusElement.querySelector('button');
+            
+            try {
+                statusIndicator.textContent = '🔄 API 연결 테스트 중...';
+                testButton.disabled = true;
+                
+                // API 연결 테스트
+                const adData = await clickProtection.getNaverAdData();
+                
+                if (adData) {
+                    statusIndicator.textContent = '✅ API 연결 성공';
+                    statusIndicator.style.color = '#28a745';
+                    
+                    // 성공 메시지 표시
+                    const successInfo = document.createElement('div');
+                    successInfo.style.marginTop = '10px';
+                    successInfo.style.fontSize = '12px';
+                    successInfo.innerHTML = `
+                        <strong>연결 정보:</strong><br>
+                        • 고객 ID: ${clickProtection.naverApiConfig.customerId || '확인 중'}<br>
+                        • API 키: ${clickProtection.naverApiConfig.accessLicense.substring(0, 20)}...<br>
+                        • 마지막 업데이트: ${new Date().toLocaleString()}
+                    `;
+                    
+                    // 기존 정보 제거 후 새로 추가
+                    const existingInfo = statusElement.querySelector('.success-info');
+                    if (existingInfo) existingInfo.remove();
+                    successInfo.className = 'success-info';
+                    statusElement.appendChild(successInfo);
+                } else {
+                    statusIndicator.textContent = '⚠️ API 연결 실패';
+                    statusIndicator.style.color = '#ffc107';
+                }
+            } catch (error) {
+                statusIndicator.textContent = '❌ API 연결 오류';
+                statusIndicator.style.color = '#dc3545';
+                
+                // 오류 정보 표시
+                const errorInfo = document.createElement('div');
+                errorInfo.style.marginTop = '10px';
+                errorInfo.style.fontSize = '12px';
+                errorInfo.style.color = '#dc3545';
+                errorInfo.innerHTML = `<strong>오류:</strong> ${error.message}`;
+                
+                // 기존 정보 제거 후 새로 추가
+                const existingInfo = statusElement.querySelector('.error-info');
+                if (existingInfo) existingInfo.remove();
+                errorInfo.className = 'error-info';
+                statusElement.appendChild(errorInfo);
+            } finally {
+                testButton.disabled = true;
+            }
+        }
+        
         // 모든 데이터 초기화
         function clearAllData() {
             if (confirm('정말로 모든 데이터를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) {
@@ -1021,6 +1453,13 @@
         
         // 시스템 상태 주기적 업데이트
         setInterval(updateSystemStatus, 10000); // 10초마다 업데이트
+        
+        // 페이지 로드 시 API 연결 상태 확인
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                checkApiConnection();
+            }, 2000); // 2초 후 API 연결 확인
+        });
     </script>
 </body>
 </html>

@@ -14,6 +14,14 @@ class ClickProtectionSystem {
         this.isAdminMode = window.location.pathname.includes('admin-dashboard.html') || 
                            window.location.href.includes('admin-dashboard.html');
         
+        // 네이버 광고 API 설정
+        this.naverApiConfig = {
+            accessLicense: '01000000009f1a8537c8e834d658c880d7ce576ba1f37ef528238e367fc86c0d26abedd311',
+            secretKey: 'AQAAAACfGoU3yOg01ljIgNfOV2uhWq+uuhbXfy/tsz4BwDjyTg==',
+            baseUrl: 'https://api.naver.com',
+            customerId: null // 고객 ID는 API 호출 시 설정
+        };
+        
         this.init();
     }
 
@@ -100,8 +108,14 @@ class ClickProtectionSystem {
         // 부정클릭 패턴 분석
         this.analyzeClickPattern(clickData);
 
-        // 단계별 경고 팝업 표시
-        this.showWarningPopup();
+        // 네이버 광고 클릭인지 확인 후 경고 팝업 표시 (비동기 처리)
+        this.isNaverAdClick(event).then(isAdClick => {
+            if (isAdClick) {
+                this.showWarningPopup();
+            }
+        }).catch(error => {
+            console.log('❌ 네이버 광고 클릭 확인 중 오류:', error.message);
+        });
 
         // 클릭 데이터 전송 (서버로)
         this.sendClickData(clickData);
@@ -598,6 +612,165 @@ class ClickProtectionSystem {
         `;
     }
 
+    // 네이버 파워링크 광고 클릭인지 확인 (API 연동 포함)
+    async isNaverAdClick(event) {
+        // 1. UTM 파라미터 확인 (가장 정확한 방법)
+        const urlParams = new URLSearchParams(window.location.search);
+        const utmSource = urlParams.get('utm_source');
+        const utmMedium = urlParams.get('utm_medium');
+        const utmCampaign = urlParams.get('utm_campaign');
+        const utmTerm = urlParams.get('utm_term');
+        
+        if (utmSource === 'naver' || utmSource === 'naver_ads') {
+            console.log('🔄 UTM 파라미터로 네이버 광고 클릭 감지됨:', {
+                utmSource,
+                utmMedium,
+                utmCampaign,
+                utmTerm
+            });
+            return true;
+        }
+        
+        // 2. 네이버 파워링크 전용 URL 패턴 확인
+        const currentUrl = window.location.href;
+        if (this.isNaverPowerLinkUrl(currentUrl)) {
+            console.log('🔄 네이버 파워링크 URL 패턴으로 광고 클릭 감지됨:', currentUrl);
+            return true;
+        }
+        
+        // 3. 리퍼러가 네이버 검색/광고인 경우 확인
+        if (this.isNaverReferrer(document.referrer)) {
+            console.log('🔄 네이버 리퍼러로부터 광고 클릭 감지됨:', document.referrer);
+            return true;
+        }
+        
+        // 4. 클릭된 요소의 파워링크 광고 특성 확인
+        if (this.hasPowerLinkCharacteristics(event)) {
+            console.log('🔄 파워링크 광고 요소 특성으로 감지됨');
+            return true;
+        }
+        
+        // 5. API 연동으로 추가 검증 (백그라운드에서 실행)
+        try {
+            const clickData = {
+                timestamp: Date.now(),
+                referrer: document.referrer,
+                url: window.location.href,
+                target: event.target.tagName,
+                targetText: event.target.textContent?.substring(0, 50) || ''
+            };
+            
+            // 비동기로 API 검증 실행 (결과는 로그로만 확인)
+            this.verifyNaverAdClick(clickData).then(isAdClick => {
+                if (isAdClick) {
+                    console.log('🔗 API 검증으로 네이버 광고 클릭 확인됨');
+                }
+            }).catch(error => {
+                console.log('🔗 API 검증 중 오류:', error.message);
+            });
+        } catch (error) {
+            console.log('🔗 API 검증 준비 중 오류:', error.message);
+        }
+        
+        // 일반 클릭은 광고가 아님
+        console.log('📝 일반 클릭 (광고 아님):', {
+            target: event.target.tagName,
+            text: event.target.textContent?.substring(0, 30) || '',
+            referrer: document.referrer,
+            url: window.location.href
+        });
+        
+        return false;
+    }
+    
+    // 네이버 파워링크 URL 패턴 확인
+    isNaverPowerLinkUrl(url) {
+        const powerLinkPatterns = [
+            /naver\.com\/search\.query/,
+            /search\.naver\.com\/search\.naver/,
+            /ad\.naver\.com/,
+            /ads\.naver\.com/,
+            /powerlink\.naver\.com/,
+            /cafe\.naver\.com\/.*\?query=/,
+            /blog\.naver\.com\/.*\?query=/,
+            /news\.naver\.com\/.*\?query=/
+        ];
+        
+        return powerLinkPatterns.some(pattern => pattern.test(url));
+    }
+    
+    // 네이버 리퍼러 확인
+    isNaverReferrer(referrer) {
+        if (!referrer) return false;
+        
+        const naverDomains = [
+            'naver.com',
+            'search.naver.com',
+            'ad.naver.com',
+            'ads.naver.com',
+            'powerlink.naver.com',
+            'cafe.naver.com',
+            'blog.naver.com',
+            'news.naver.com'
+        ];
+        
+        return naverDomains.some(domain => referrer.includes(domain));
+    }
+    
+    // 파워링크 광고 요소 특성 확인
+    hasPowerLinkCharacteristics(event) {
+        let element = event.target;
+        
+        while (element && element !== document.body) {
+            const className = element.className || '';
+            const id = element.id || '';
+            const href = element.href || '';
+            const textContent = element.textContent || '';
+            
+            // 파워링크 광고 관련 패턴 확인
+            if (
+                // 파워링크 광고 클래스 패턴
+                className.includes('ad') || 
+                className.includes('advertisement') ||
+                className.includes('naver') ||
+                className.includes('광고') ||
+                className.includes('sponsored') ||
+                className.includes('powerlink') ||
+                className.includes('power-link') ||
+                
+                // 파워링크 광고 ID 패턴
+                id.includes('ad') ||
+                id.includes('advertisement') ||
+                id.includes('naver') ||
+                id.includes('sponsored') ||
+                id.includes('powerlink') ||
+                
+                // 파워링크 광고 링크 패턴
+                href.includes('naver.com') ||
+                href.includes('search.naver.com') ||
+                href.includes('ad.naver.com') ||
+                href.includes('ads.naver.com') ||
+                href.includes('powerlink.naver.com') ||
+                
+                // 파워링크 광고 텍스트 패턴
+                textContent.includes('광고') ||
+                textContent.includes('네이버') ||
+                textContent.includes('sponsored') ||
+                textContent.includes('ad') ||
+                textContent.includes('Ad') ||
+                textContent.includes('AD') ||
+                textContent.includes('파워링크') ||
+                textContent.includes('powerlink')
+            ) {
+                return true;
+            }
+            
+            element = element.parentElement;
+        }
+        
+        return false;
+    }
+
     // 현재 IP 주소 가져오기 (실제 구현시 서버에서 가져와야 함)
     getCurrentIP() {
         // 실제 환경에서는 서버에서 IP를 가져와야 합니다
@@ -997,6 +1170,220 @@ class ClickProtectionSystem {
     // 테스트용: 수동으로 경고 팝업 표시
     showTestWarning(level = 1) {
         this.createWarningPopup(level, level === 1 ? 2 : level === 2 ? 5 : 8);
+    }
+    
+    // 테스트용: 네이버 광고 클릭 시뮬레이션
+    simulateNaverAdClick() {
+        console.log('🧪 네이버 광고 클릭 시뮬레이션 시작');
+        
+        // 가짜 네이버 광고 요소 생성
+        const fakeAdElement = document.createElement('div');
+        fakeAdElement.className = 'naver-ad-test sponsored powerlink';
+        fakeAdElement.id = 'test-ad-element';
+        fakeAdElement.textContent = '네이버 파워링크 광고 테스트';
+        fakeAdElement.style.cssText = `
+            position: fixed;
+            top: 50px;
+            right: 50px;
+            background: #ff6b35;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            z-index: 9999;
+            font-family: Arial, sans-serif;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        `;
+        
+        // 클릭 이벤트 추가
+        fakeAdElement.addEventListener('click', (e) => {
+            console.log('🧪 테스트 파워링크 광고 클릭됨');
+            this.handleClick(e);
+        });
+        
+        document.body.appendChild(fakeAdElement);
+        
+        // 10초 후 자동 제거
+        setTimeout(() => {
+            if (fakeAdElement.parentElement) {
+                fakeAdElement.remove();
+            }
+        }, 10000);
+        
+        console.log('🧪 테스트 파워링크 광고 요소가 생성되었습니다. 10초 후 자동으로 제거됩니다.');
+    }
+    
+    // 테스트용: UTM 파라미터로 네이버 광고 클릭 시뮬레이션
+    simulateNaverAdClickWithUTM() {
+        console.log('🧪 UTM 파라미터로 네이버 광고 클릭 시뮬레이션 시작');
+        
+        // 현재 URL에 UTM 파라미터 추가
+        const currentUrl = new URL(window.location.href);
+        currentUrl.searchParams.set('utm_source', 'naver');
+        currentUrl.searchParams.set('utm_medium', 'cpc');
+        currentUrl.searchParams.set('utm_campaign', 'powerlink_test');
+        currentUrl.searchParams.set('utm_term', '렌트카');
+        
+        // URL 변경 (히스토리 API 사용)
+        window.history.pushState({}, '', currentUrl.toString());
+        
+        // 페이지 새로고침 없이 UTM 파라미터 적용
+        console.log('🔄 UTM 파라미터가 적용되었습니다:', currentUrl.toString());
+        
+        // 5초 후 원래 URL로 복원
+        setTimeout(() => {
+            window.history.back();
+            console.log('🔄 UTM 파라미터가 제거되었습니다.');
+        }, 5000);
+        
+        // 테스트 광고 클릭 시뮬레이션 실행
+        this.simulateNaverAdClick();
+    }
+    
+    // 네이버 광고 API 연동 메서드들
+    async getNaverAdData() {
+        try {
+            console.log('🔗 네이버 광고 API 호출 시작');
+            
+            // 고객 ID가 없으면 먼저 조회
+            if (!this.naverApiConfig.customerId) {
+                await this.getCustomerId();
+            }
+            
+            // 광고 데이터 조회
+            const adData = await this.callNaverAdAPI('/ads/v1/campaigns', 'GET');
+            console.log('📊 네이버 광고 데이터 조회 성공:', adData);
+            
+            return adData;
+        } catch (error) {
+            console.error('❌ 네이버 광고 API 호출 실패:', error);
+            return null;
+        }
+    }
+    
+    // 고객 ID 조회
+    async getCustomerId() {
+        try {
+            const response = await this.callNaverAdAPI('/ads/v1/customers', 'GET');
+            if (response && response.customers && response.customers.length > 0) {
+                this.naverApiConfig.customerId = response.customers[0].customerId;
+                console.log('🆔 고객 ID 설정됨:', this.naverApiConfig.customerId);
+            }
+        } catch (error) {
+            console.error('❌ 고객 ID 조회 실패:', error);
+        }
+    }
+    
+    // 네이버 광고 API 호출
+    async callNaverAdAPI(endpoint, method = 'GET', data = null) {
+        const timestamp = Date.now();
+        const signature = this.generateSignature(endpoint, method, timestamp);
+        
+        const headers = {
+            'Content-Type': 'application/json',
+            'X-Timestamp': timestamp.toString(),
+            'X-API-KEY': this.naverApiConfig.accessLicense,
+            'X-Customer': this.naverApiConfig.customerId || '',
+            'X-Signature': signature
+        };
+        
+        const config = {
+            method: method,
+            headers: headers
+        };
+        
+        if (data && method !== 'GET') {
+            config.body = JSON.stringify(data);
+        }
+        
+        try {
+            const response = await fetch(`${this.naverApiConfig.baseUrl}${endpoint}`, config);
+            
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            
+            return await response.json();
+        } catch (error) {
+            throw new Error(`API 호출 실패: ${error.message}`);
+        }
+    }
+    
+    // API 서명 생성
+    generateSignature(endpoint, method, timestamp) {
+        const message = `${method}${endpoint}${timestamp}`;
+        const encoder = new TextEncoder();
+        const data = encoder.encode(message);
+        
+        // 간단한 해시 생성 (실제로는 더 안전한 방법 사용 권장)
+        let hash = 0;
+        for (let i = 0; i < data.length; i++) {
+            const char = data[i];
+            hash = ((hash << 5) - hash) + char;
+            hash = hash & hash; // 32비트 정수로 변환
+        }
+        
+        return hash.toString(16);
+    }
+    
+    // 실제 네이버 광고 클릭인지 API로 확인
+    async verifyNaverAdClick(clickData) {
+        try {
+            // UTM 파라미터가 있으면 우선 확인
+            if (this.hasUTMParameters()) {
+                return true;
+            }
+            
+            // API로 광고 클릭 데이터 확인
+            const adData = await this.getNaverAdData();
+            if (adData) {
+                // 클릭 데이터와 광고 데이터 비교 분석
+                return this.analyzeAdClickData(clickData, adData);
+            }
+            
+            return false;
+        } catch (error) {
+            console.error('❌ 네이버 광고 클릭 검증 실패:', error);
+            return false;
+        }
+    }
+    
+    // UTM 파라미터 확인
+    hasUTMParameters() {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.has('utm_source') && urlParams.get('utm_source') === 'naver';
+    }
+    
+    // 광고 클릭 데이터 분석
+    analyzeAdClickData(clickData, adData) {
+        // 광고 데이터와 클릭 데이터를 비교하여 실제 광고 클릭인지 판단
+        // 여기서는 간단한 패턴 매칭을 사용하지만, 실제로는 더 정교한 분석 필요
+        
+        const referrer = clickData.referrer;
+        const timestamp = clickData.timestamp;
+        
+        // 네이버 도메인에서의 접근 확인
+        if (this.isNaverReferrer(referrer)) {
+            return true;
+        }
+        
+        // 시간대별 광고 노출 패턴 확인
+        if (adData.campaigns) {
+            for (const campaign of adData.campaigns) {
+                if (campaign.status === 'ACTIVE' && this.isWithinAdSchedule(timestamp, campaign)) {
+                    return true;
+                }
+            }
+        }
+        
+        return false;
+    }
+    
+    // 광고 스케줄 내 시간인지 확인
+    isWithinAdSchedule(timestamp, campaign) {
+        // 캠페인 스케줄 정보가 있다면 시간대 확인
+        // 실제 구현에서는 campaign.schedule 정보 활용
+        return true; // 기본값
     }
 }
 
