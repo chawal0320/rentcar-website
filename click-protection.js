@@ -492,113 +492,170 @@ class ClickProtectionSystem {
                 position: fixed;
                 top: 20px;
                 left: 20px;
-                max-width: 350px;
+                max-width: 380px;
                 background: white;
-                border-radius: 12px;
-                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+                border-radius: 16px;
+                box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.1);
                 z-index: 10000;
                 font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-                animation: slideInLeft 0.3s ease-out;
-                border: 2px solid;
+                animation: slideInLeft 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+                border: 3px solid;
+                backdrop-filter: blur(10px);
+                transform-origin: left center;
             }
             
             .warning-level-1 {
-                border-color: #ffc107;
-                background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+                border-color: #ff6b35;
+                background: linear-gradient(135deg, #fff8e1, #ffecb3);
+                box-shadow: 0 12px 40px rgba(255, 107, 53, 0.3), 0 0 0 1px rgba(255, 107, 53, 0.2);
             }
             
             .warning-level-2 {
-                border-color: #fd7e14;
-                background: linear-gradient(135deg, #ffe8d6, #ffd8a8);
+                border-color: #ff5722;
+                background: linear-gradient(135deg, #ffebee, #ffcdd2);
+                box-shadow: 0 12px 40px rgba(255, 87, 34, 0.4), 0 0 0 1px rgba(255, 87, 34, 0.3);
             }
             
             .warning-level-3 {
-                border-color: #dc3545;
-                background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+                border-color: #d32f2f;
+                background: linear-gradient(135deg, #ffebee, #ef9a9a);
+                box-shadow: 0 12px 40px rgba(211, 47, 47, 0.5), 0 0 0 1px rgba(211, 47, 47, 0.4);
             }
             
             .warning-header {
                 display: flex;
                 align-items: center;
-                padding: 15px 20px 10px;
-                border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+                padding: 18px 22px 12px;
+                border-bottom: 2px solid rgba(0, 0, 0, 0.08);
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 16px 16px 0 0;
             }
             
             .warning-icon {
-                font-size: 24px;
-                margin-right: 12px;
+                font-size: 28px;
+                margin-right: 15px;
+                filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+                animation: pulse 2s infinite;
             }
             
             .warning-title {
-                font-weight: 600;
-                font-size: 16px;
-                color: #2c3e50;
+                font-weight: 700;
+                font-size: 17px;
+                color: #1a1a1a;
                 flex: 1;
+                text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+                letter-spacing: 0.5px;
             }
             
             .close-btn {
-                background: none;
-                border: none;
-                font-size: 20px;
-                color: #6c757d;
+                background: rgba(0, 0, 0, 0.1);
+                border: 2px solid rgba(0, 0, 0, 0.1);
+                font-size: 22px;
+                color: #495057;
                 cursor: pointer;
                 padding: 0;
-                width: 24px;
-                height: 24px;
+                width: 28px;
+                height: 28px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 border-radius: 50%;
-                transition: all 0.2s;
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                font-weight: bold;
             }
             
             .close-btn:hover {
-                background: rgba(0, 0, 0, 0.1);
-                color: #495057;
+                background: rgba(0, 0, 0, 0.2);
+                color: #1a1a1a;
+                transform: scale(1.1) rotate(90deg);
+                border-color: rgba(0, 0, 0, 0.2);
             }
             
             .warning-content {
-                padding: 15px 20px 20px;
+                padding: 18px 22px 22px;
+                background: rgba(255, 255, 255, 0.05);
             }
             
             .warning-content p {
-                margin: 0 0 15px 0;
-                color: #495057;
-                line-height: 1.5;
-                font-size: 14px;
+                margin: 0 0 18px 0;
+                color: #2c3e50;
+                line-height: 1.6;
+                font-size: 15px;
+                font-weight: 500;
+                text-shadow: 0 1px 1px rgba(255, 255, 255, 0.8);
             }
             
             .warning-actions {
                 display: flex;
-                gap: 10px;
+                gap: 12px;
             }
             
             .favorites-btn {
-                background: #007bff;
+                background: linear-gradient(135deg, #2196f3, #1976d2);
                 color: white;
                 border: none;
-                padding: 8px 16px;
-                border-radius: 6px;
-                font-size: 13px;
+                padding: 12px 20px;
+                border-radius: 8px;
+                font-size: 14px;
                 cursor: pointer;
-                transition: all 0.2s;
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
                 flex: 1;
+                font-weight: 600;
+                text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+                box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);
+                position: relative;
+                overflow: hidden;
             }
             
             .favorites-btn:hover {
-                background: #0056b3;
-                transform: translateY(-1px);
+                background: linear-gradient(135deg, #1976d2, #1565c0);
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(33, 150, 243, 0.4);
+            }
+            
+            .favorites-btn:active {
+                transform: translateY(0);
+                box-shadow: 0 2px 10px rgba(33, 150, 243, 0.3);
             }
             
             @keyframes slideInLeft {
                 from {
-                    transform: translateX(-100%);
+                    transform: translateX(-100%) scale(0.8);
                     opacity: 0;
                 }
                 to {
-                    transform: translateX(0);
+                    transform: translateX(0) scale(1);
                     opacity: 1;
                 }
+            }
+            
+            @keyframes pulse {
+                0%, 100% {
+                    transform: scale(1);
+                }
+                50% {
+                    transform: scale(1.1);
+                }
+            }
+            
+            @keyframes shake {
+                0%, 100% {
+                    transform: translateX(0);
+                }
+                10%, 30%, 50%, 70%, 90% {
+                    transform: translateX(-2px);
+                }
+                20%, 40%, 60%, 80% {
+                    transform: translateX(2px);
+                }
+            }
+            
+            .warning-level-2 .warning-icon {
+                animation: shake 0.5s infinite;
+            }
+            
+            .warning-level-3 .warning-icon {
+                animation: shake 0.3s infinite;
             }
             
             /* 모바일 반응형 */
@@ -612,24 +669,28 @@ class ClickProtectionSystem {
                 }
                 
                 .warning-header {
-                    padding: 12px 15px 8px;
+                    padding: 15px 18px 10px;
                 }
                 
                 .warning-content {
-                    padding: 12px 15px 15px;
+                    padding: 15px 18px 18px;
                 }
                 
                 .warning-title {
-                    font-size: 15px;
+                    font-size: 16px;
                 }
                 
                 .warning-content p {
-                    font-size: 13px;
+                    font-size: 14px;
                 }
                 
                 .favorites-btn {
-                    padding: 10px 16px;
-                    font-size: 14px;
+                    padding: 14px 18px;
+                    font-size: 15px;
+                }
+                
+                .warning-icon {
+                    font-size: 26px;
                 }
             }
             
@@ -642,19 +703,24 @@ class ClickProtectionSystem {
                 }
                 
                 .warning-header {
-                    padding: 10px 12px 6px;
+                    padding: 12px 15px 8px;
                 }
                 
                 .warning-content {
-                    padding: 10px 12px 12px;
+                    padding: 12px 15px 15px;
                 }
                 
                 .warning-icon {
-                    font-size: 20px;
-                    margin-right: 8px;
+                    font-size: 24px;
+                    margin-right: 10px;
                 }
                 
                 .warning-title {
+                    font-size: 15px;
+                }
+                
+                .favorites-btn {
+                    padding: 12px 16px;
                     font-size: 14px;
                 }
             }
