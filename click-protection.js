@@ -9,6 +9,11 @@ class ClickProtectionSystem {
         this.suspiciousPatterns = [];
         this.blockedIPs = new Set();
         this.sessionData = this.getSessionData();
+        
+        // 관리자 모드 확인 (admin-dashboard.html인지 체크)
+        this.isAdminMode = window.location.pathname.includes('admin-dashboard.html') || 
+                           window.location.href.includes('admin-dashboard.html');
+        
         this.init();
     }
 
@@ -357,6 +362,11 @@ class ClickProtectionSystem {
 
     // 단계별 경고 팝업 표시
     showWarningPopup() {
+        // 관리자 모드에서는 경고 팝업 표시하지 않음
+        if (this.isAdminMode) {
+            return;
+        }
+        
         const clickCount = this.sessionData.clickCount;
         const warningLevel = this.getWarningLevel(clickCount);
         

@@ -48,6 +48,26 @@
             opacity: 0.9;
         }
 
+        .admin-mode-badge {
+            margin-top: 15px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            display: inline-block;
+        }
+
+        .admin-mode-badge span {
+            display: block;
+            font-size: 1.1em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .admin-mode-badge small {
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -253,6 +273,39 @@
             color: #721c24;
         }
 
+        .admin-controls {
+            background: #f8f9fa;
+            padding: 30px;
+            margin-bottom: 20px;
+            border-radius: 15px;
+        }
+
+        .control-section {
+            margin-bottom: 25px;
+        }
+
+        .control-section h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .control-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .monitoring-info p {
+            margin: 8px 0;
+            font-size: 1em;
+        }
+
+        .monitoring-info strong {
+            color: #2c3e50;
+        }
+
         @media (max-width: 768px) {
             .stats-grid {
                 grid-template-columns: 1fr;
@@ -278,6 +331,10 @@
         <div class="header">
             <h1>🛡️ 부정클릭 방지 시스템</h1>
             <p>에스엔엠렌트카 홈페이지 보안 모니터링 대시보드</p>
+            <div class="admin-mode-badge">
+                <span>👑 관리자 모드</span>
+                <small>경고 팝업 비활성화됨</small>
+            </div>
         </div>
 
         <div class="stats-grid">
@@ -296,6 +353,29 @@
             <div class="stat-card success">
                 <div class="stat-number" id="activeSessions">0</div>
                 <div class="stat-label">활성 세션</div>
+            </div>
+        </div>
+
+        <!-- 관리자 전용 기능 -->
+        <div class="admin-controls">
+            <div class="control-section">
+                <h3>🔧 관리자 도구</h3>
+                <div class="control-buttons">
+                    <button class="btn btn-success" onclick="clickProtection.showTestWarning(1)">테스트 경고창 1단계</button>
+                    <button class="btn btn-warning" onclick="clickProtection.showTestWarning(2)">테스트 경고창 2단계</button>
+                    <button class="btn btn-danger" onclick="clickProtection.showTestWarning(3)">테스트 경고창 3단계</button>
+                    <button class="btn btn-warning" onclick="exportAllData()">📊 전체 데이터 내보내기</button>
+                    <button class="btn btn-danger" onclick="clearAllData()">🗑️ 모든 데이터 초기화</button>
+                </div>
+            </div>
+            
+            <div class="control-section">
+                <h3>📋 실시간 모니터링</h3>
+                <div class="monitoring-info">
+                    <p><strong>현재 상태:</strong> <span id="systemStatus">정상</span></p>
+                    <p><strong>마지막 업데이트:</strong> <span id="lastUpdate">-</span></p>
+                    <p><strong>관리자 모드:</strong> <span style="color: #27ae60; font-weight: bold;">활성화됨</span></p>
+                </div>
             </div>
         </div>
 
@@ -520,6 +600,60 @@
                 refreshData();
             }
         }
+
+        // 관리자 전용 함수들
+        function exportAllData() {
+            try {
+                const allData = {
+                    statistics: window.clickProtection ? window.clickProtection.getStatistics() : {},
+                    blockedIPs: JSON.parse(localStorage.getItem('blockedIPs') || '[]'),
+                    suspiciousActivities: JSON.parse(localStorage.getItem('suspiciousActivities') || '[]'),
+                    clickData: JSON.parse(localStorage.getItem('clickData') || '[]'),
+                    blockedSessions: JSON.parse(localStorage.getItem('blockedSessions') || '[]'),
+                    exportTime: new Date().toISOString()
+                };
+
+                const dataStr = JSON.stringify(allData, null, 2);
+                const dataBlob = new Blob([dataStr], {type: 'application/json'});
+                const url = URL.createObjectURL(dataBlob);
+                
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `click-protection-data-${new Date().toISOString().split('T')[0]}.json`;
+                link.click();
+                
+                URL.revokeObjectURL(url);
+                alert('✅ 모든 데이터가 성공적으로 내보내졌습니다!');
+            } catch (error) {
+                alert('❌ 데이터 내보내기 중 오류가 발생했습니다: ' + error.message);
+            }
+        }
+
+        function clearAllData() {
+            if (confirm('⚠️ 정말로 모든 데이터를 초기화하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) {
+                try {
+                    localStorage.removeItem('blockedIPs');
+                    localStorage.removeItem('blockedSessions');
+                    localStorage.removeItem('suspiciousActivities');
+                    localStorage.removeItem('clickData');
+                    localStorage.removeItem('clickProtectionData');
+                    
+                    // 페이지 새로고침
+                    location.reload();
+                } catch (error) {
+                    alert('❌ 데이터 초기화 중 오류가 발생했습니다: ' + error.message);
+                }
+            }
+        }
+
+        // 페이지 로드 시 관리자 모드 확인
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.clickProtection && window.clickProtection.isAdminMode) {
+                console.log('👑 관리자 모드가 활성화되었습니다. 경고 팝업이 비활성화되었습니다.');
+                document.getElementById('systemStatus').textContent = '관리자 모드';
+                document.getElementById('lastUpdate').textContent = new Date().toLocaleString('ko-KR');
+            }
+        });
 
         function exportData() {
             if (window.clickProtection) {
