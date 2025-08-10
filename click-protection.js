@@ -82,6 +82,7 @@ class ClickProtectionSystem {
             target: event.target.tagName,
             targetText: event.target.textContent?.substring(0, 50) || '',
             sessionId: this.sessionData.sessionId,
+            ipAddress: this.getCurrentIP(),
             userAgent: navigator.userAgent,
             referrer: document.referrer,
             url: window.location.href,
@@ -180,6 +181,7 @@ class ClickProtectionSystem {
             data,
             timestamp: Date.now(),
             sessionId: this.sessionData.sessionId,
+            ipAddress: this.getCurrentIP(),
             url: window.location.href
         };
 

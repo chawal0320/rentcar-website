@@ -404,7 +404,7 @@
                             <tr>
                                 <th>시간</th>
                                 <th>활동 유형</th>
-                                <th>세션 ID</th>
+                                <th>접속자 IP</th>
                                 <th>상세 정보</th>
                                 <th>상태</th>
                                 <th>조치</th>
@@ -426,7 +426,7 @@
                                 <th>시간</th>
                                 <th>위치 (X, Y)</th>
                                 <th>클릭 대상</th>
-                                <th>세션 ID</th>
+                                <th>접속자 IP</th>
                                 <th>리퍼러</th>
                             </tr>
                         </thead>
@@ -514,7 +514,7 @@
                     row.innerHTML = `
                         <td>${time}</td>
                         <td>${this.getActivityTypeName(activity.type)}</td>
-                        <td>${activity.sessionId.substring(0, 20)}...</td>
+                        <td>${activity.ipAddress || '알 수 없음'}</td>
                         <td>${this.getActivityDescription(activity)}</td>
                         <td><span class="status-badge status-suspicious">의심</span></td>
                         <td>
@@ -543,7 +543,7 @@
                         <td>${time}</td>
                         <td>(${click.x}, ${click.y})</td>
                         <td>${click.target} - ${click.targetText}</td>
-                        <td>${click.sessionId.substring(0, 20)}...</td>
+                        <td>${click.ipAddress || '알 수 없음'}</td>
                         <td>${referrer.substring(0, 50)}</td>
                     `;
                     tbody.appendChild(row);
