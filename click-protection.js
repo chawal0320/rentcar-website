@@ -384,7 +384,7 @@ class ClickProtectionSystem {
     }
 
             // 경고 팝업 생성
-        createWarningPopup(level, clickCount) {
+                createWarningPopup(level, clickCount) {
             this.removeExistingPopup();
             
             // 스타일 적용
@@ -395,6 +395,9 @@ class ClickProtectionSystem {
             popup.className = `warning-popup warning-level-${level}`;
             
             const config = this.getWarningConfig(level, clickCount);
+            
+            // 접속 정보 테이블 생성
+            const accessTable = this.createAccessInfoTable(clickCount);
             
             popup.innerHTML = `
                 <div class="warning-header">
@@ -409,16 +412,69 @@ class ClickProtectionSystem {
                             ⭐ 즐겨찾기 추가
                         </button>
                     </div>
+                    <div class="access-info-section">
+                        <h4>접속 정보</h4>
+                        ${accessTable}
+                    </div>
                 </div>
             `;
             
             document.body.appendChild(popup);
             
-            // 5초 후 자동으로 닫기
-            setTimeout(() => {
-                this.closeWarningPopup();
-            }, 5000);
+            // 사용자가 직접 닫기 버튼을 클릭할 때까지 팝업 유지
+            // setTimeout(() => {
+            //     this.closeWarningPopup();
+            // }, 5000);
         }
+
+    // 접속 정보 테이블 생성
+    createAccessInfoTable(clickCount) {
+        const currentIP = this.getCurrentIP();
+        const currentTime = new Date().toLocaleString('ko-KR', {
+            year: '2-digit',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+        });
+        
+        // 클릭한 수만큼 행 생성
+        let tableRows = '';
+        for (let i = 0; i < clickCount; i++) {
+            tableRows += `
+                <tr>
+                    <td>${currentIP}</td>
+                    <td>가나다 (네이버)</td>
+                    <td>${currentTime}</td>
+                </tr>
+            `;
+        }
+        
+        return `
+            <div class="access-table-container">
+                <table class="access-table">
+                    <thead>
+                        <tr>
+                            <th>접속IP</th>
+                            <th>클릭키워드 (광고매체)</th>
+                            <th>접속시간</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${tableRows}
+                    </tbody>
+                </table>
+            </div>
+        `;
+    }
+
+    // 현재 IP 주소 가져오기 (실제 구현시 서버에서 가져와야 함)
+    getCurrentIP() {
+        // 실제 환경에서는 서버에서 IP를 가져와야 합니다
+        // 현재는 예시 IP를 반환
+        return '10.10.10.10';
+    }
 
     // 경고 설정 가져오기
     getWarningConfig(level, clickCount) {
@@ -658,6 +714,62 @@ class ClickProtectionSystem {
                 animation: shake 0.3s infinite;
             }
             
+            /* 접속 정보 테이블 스타일 */
+            .access-info-section {
+                margin-top: 20px;
+                padding-top: 20px;
+                border-top: 1px solid rgba(0, 0, 0, 0.1);
+            }
+            
+            .access-info-section h4 {
+                margin: 0 0 15px 0;
+                color: #2c3e50;
+                font-size: 16px;
+                font-weight: 600;
+                text-align: center;
+            }
+            
+            .access-table-container {
+                overflow-x: auto;
+                border-radius: 8px;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            }
+            
+            .access-table {
+                width: 100%;
+                border-collapse: collapse;
+                background: white;
+                border-radius: 8px;
+                overflow: hidden;
+                font-size: 13px;
+            }
+            
+            .access-table th {
+                background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+                color: #495057;
+                font-weight: 600;
+                padding: 12px 8px;
+                text-align: center;
+                border-bottom: 2px solid #dee2e6;
+                font-size: 12px;
+            }
+            
+            .access-table td {
+                padding: 10px 8px;
+                text-align: center;
+                border-bottom: 1px solid #f1f3f4;
+                color: #6c757d;
+                font-size: 12px;
+            }
+            
+            .access-table tbody tr:nth-child(even) {
+                background-color: #f8f9fa;
+            }
+            
+            .access-table tbody tr:hover {
+                background-color: #e3f2fd;
+            }
+            
             /* 모바일 반응형 */
             @media (max-width: 768px) {
                 .warning-popup {
@@ -692,6 +804,16 @@ class ClickProtectionSystem {
                 .warning-icon {
                     font-size: 26px;
                 }
+                
+                .access-table {
+                    font-size: 12px;
+                }
+                
+                .access-table th,
+                .access-table td {
+                    padding: 8px 6px;
+                    font-size: 11px;
+                }
             }
             
             /* 작은 모바일 화면 */
@@ -721,6 +843,20 @@ class ClickProtectionSystem {
                 
                 .favorites-btn {
                     padding: 12px 16px;
+                    font-size: 14px;
+                }
+                
+                .access-table {
+                    font-size: 11px;
+                }
+                
+                .access-table th,
+                .access-table td {
+                    padding: 6px 4px;
+                    font-size: 10px;
+                }
+                
+                .access-info-section h4 {
                     font-size: 14px;
                 }
             }
