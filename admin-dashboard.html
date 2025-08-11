@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>관리자 대시보드 - 부정클릭 방지 시스템</title>
     
+    <!-- Font Awesome 아이콘 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
     <!-- 네이버 광고 부정클릭 방지 시스템 -->
     <script src="click-protection.js"></script>
     
@@ -162,11 +165,12 @@
                                             <li>팝업 내용과 디자인이 올바른지 확인</li>
                                         </ol>
                                         
-                                        <div class="test-debug">
-                                            <p><strong>디버깅:</strong></p>
-                                            <button onclick="testPopupDirectly()" class="debug-btn">팝업 직접 테스트</button>
-                                            <button onclick="checkClickProtection()" class="debug-btn">부정클릭방지 상태 확인</button>
-                                        </div>
+                                                                <div class="test-debug">
+                            <p><strong>디버깅:</strong></p>
+                            <button onclick="testPopupDirectly()" class="debug-btn">팝업 직접 테스트</button>
+                            <button onclick="checkClickProtection()" class="debug-btn">부정클릭방지 상태 확인</button>
+                            <button onclick="createTestPage()" class="debug-btn">테스트 페이지 생성</button>
+                        </div>
                                     </div>
                             </div>
                         `;
@@ -328,6 +332,11 @@
             }, 15000);
         }
         
+        // 테스트 페이지 생성 함수
+        function createTestPage() {
+            alert('테스트 페이지 생성 기능이 준비 중입니다. 대신 "팝업 직접 테스트" 버튼을 사용해주세요.');
+        }
+
         // 부정클릭방지 상태 확인 함수
         function checkClickProtection() {
             console.log('부정클릭방지 상태 확인 시작');
@@ -343,40 +352,93 @@
             }
         }
         
-        // 탭 전환 함수
+        // 탭 전환 함수 (통합된 버전)
         function switchTab(tabName) {
-            console.log('탭 전환:', tabName);
+            console.log('=== 탭 전환 시작 ===', tabName);
             
-            // 모든 탭 콘텐츠 숨기기
-            const tabContents = document.querySelectorAll('.tab-content');
-            tabContents.forEach(content => {
-                content.classList.remove('active');
-                content.style.display = 'none';
-            });
-            
-            // 모든 탭 버튼 비활성화
-            const navTabs = document.querySelectorAll('.nav-tab');
-            navTabs.forEach(tab => {
-                tab.classList.remove('active');
-            });
-            
-            // 선택된 탭 콘텐츠 표시
-            const selectedTab = document.getElementById(tabName + '-tab');
-            if (selectedTab) {
-                selectedTab.classList.add('active');
-                selectedTab.style.display = 'block';
-                console.log('탭 콘텐츠 표시됨:', tabName);
-            } else {
-                console.error('탭 콘텐츠를 찾을 수 없음:', tabName);
-            }
-            
-            // 선택된 탭 버튼 활성화
-            const selectedNavTab = document.querySelector(`[onclick="switchTab('${tabName}')"]`);
-            if (selectedNavTab) {
-                selectedNavTab.classList.add('active');
-                console.log('탭 버튼 활성화됨:', tabName);
-            } else {
-                console.error('탭 버튼을 찾을 수 없음:', tabName);
+            try {
+                // 1. 모든 탭 콘텐츠 숨기기
+                const allTabs = document.querySelectorAll('.tab-content');
+                console.log('찾은 탭 개수:', allTabs.length);
+                
+                allTabs.forEach((tab, index) => {
+                    console.log(`탭 ${index}:`, tab.id, '클래스:', tab.className);
+                    tab.classList.remove('active');
+                    tab.style.display = 'none';
+                });
+                
+                // 2. 모든 탭 버튼 비활성화
+                const allNavTabs = document.querySelectorAll('.nav-tab');
+                allNavTabs.forEach(tab => {
+                    tab.classList.remove('active');
+                });
+                
+                // 3. 선택된 탭 콘텐츠 표시
+                const targetTab = document.getElementById(tabName + '-tab');
+                console.log('대상 탭:', targetTab);
+                
+                if (targetTab) {
+                    targetTab.classList.add('active');
+                    targetTab.style.display = 'block';
+                    console.log('✅ 탭 표시 성공:', tabName);
+                } else {
+                    console.error('❌ 탭을 찾을 수 없음:', tabName + '-tab');
+                    return;
+                }
+                
+                // 4. 선택된 탭 버튼 활성화
+                const targetNavTab = document.querySelector(`[onclick="switchTab('${tabName}')"]`);
+                if (targetNavTab) {
+                    targetNavTab.classList.add('active');
+                    console.log('✅ 탭 버튼 활성화 성공');
+                } else {
+                    console.error('❌ 탭 버튼을 찾을 수 없음');
+                }
+                
+                // 5. 탭별 초기화 함수 호출
+                console.log('탭 초기화 함수 호출:', tabName);
+                switch(tabName) {
+                    case 'access':
+                        console.log('접속기록 탭 초기화 시작');
+                        if (typeof displayAccessLog === 'function') {
+                            displayAccessLog();
+                        } else {
+                            console.error('displayAccessLog 함수가 정의되지 않음');
+                        }
+                        break;
+                    case 'notification':
+                        if (typeof refreshNotifications === 'function') {
+                            refreshNotifications();
+                        }
+                        break;
+                    case 'refund':
+                        // 환불요청 탭 초기화
+                        break;
+                    case 'location':
+                        // 위치기록 탭 초기화
+                        break;
+                    case 'blocking':
+                        if (typeof displayBlockedIPs === 'function') {
+                            displayBlockedIPs();
+                        }
+                        break;
+                    case 'fraud-warning':
+                        // 부정접속경고 탭 초기화
+                        break;
+                    case 'test':
+                        // 테스트 페이지 탭 초기화
+                        break;
+                    case 'settings':
+                        // 환경설정 탭 초기화
+                        break;
+                    default:
+                        console.log('특별한 초기화가 필요하지 않은 탭:', tabName);
+                }
+                
+                console.log('=== 탭 전환 완료 ===');
+                
+            } catch (error) {
+                console.error('탭 전환 중 오류:', error);
             }
         }
         
@@ -388,8 +450,8 @@
                 console.log('체크박스 이벤트 리스너 추가됨');
             }
             
-            // 기본 탭 설정 (알림기록 탭)
-            switchTab('notification');
+            // 기본 탭 설정 (접속기록 탭)
+            switchTab('access');
         });
         
         // 추가 안전장치: DOMContentLoaded 이벤트도 사용
@@ -610,72 +672,7 @@
             font-weight: 500;
         }
         
-        /* 중복접속 경고 스타일 */
-        .duplicate-warning-badge {
-            display: inline-block;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-size: 0.75em;
-            font-weight: bold;
-            margin-left: 8px;
-            animation: pulse-warning 2s infinite;
-        }
-        
-        .duplicate-warning-critical {
-            background: #dc3545;
-            color: white;
-            border: 1px solid #c82333;
-        }
-        
-        .duplicate-warning-high {
-            background: #fd7e14;
-            color: white;
-            border: 1px solid #e55a00;
-        }
-        
-        .duplicate-warning-medium {
-            background: #ffc107;
-            color: #212529;
-            border: 1px solid #e0a800;
-        }
-        
-        .duplicate-warning-low {
-            background: #28a745;
-            color: white;
-            border: 1px solid #1e7e34;
-        }
-        
-        .duplicate-warning-badge:hover {
-            transform: scale(1.1);
-            transition: transform 0.2s ease;
-        }
-        
-        @keyframes pulse-warning {
-            0% { opacity: 1; }
-            50% { opacity: 0.7; }
-            100% { opacity: 1; }
-        }
-        
-        /* 중복접속 링크 스타일 */
-        .ip-link.duplicate-warning-critical {
-            color: #dc3545 !important;
-            font-weight: bold;
-        }
-        
-        .ip-link.duplicate-warning-high {
-            color: #fd7e14 !important;
-            font-weight: bold;
-        }
-        
-        .ip-link.duplicate-warning-medium {
-            color: #ffc107 !important;
-            font-weight: bold;
-        }
-        
-        .ip-link.duplicate-warning-low {
-            color: #28a745 !important;
-            font-weight: bold;
-        }
+        /* 중복접속 경고 스타일 - 제거됨 */
         
         /* 중복접속 팝업 스타일 */
         .duplicate-access-popup {
@@ -3400,7 +3397,7 @@
                 <div class="tab-navigation">
                     <button class="nav-tab" onclick="switchTab('notification')">알림기록</button>
                     <button class="nav-tab" onclick="switchTab('refund')">환불요청</button>
-                    <button class="nav-tab" onclick="switchTab('access')">접속기록</button>
+                                            <button class="nav-tab active" onclick="switchTab('access')">접속기록</button>
                     <button class="nav-tab" onclick="switchTab('location')">위치기록(BETA)</button>
                     <button class="nav-tab" onclick="switchTab('blocking')">차단관리</button>
                     <button class="nav-tab" onclick="switchTab('fraud-warning')">부정접속경고</button>
@@ -3409,7 +3406,7 @@
                 </div>
 
                 <!-- 알림기록 탭 콘텐츠 -->
-                <div id="notification-tab" class="tab-content active">
+                <div id="notification-tab" class="tab-content">
                     <div class="notification-content">
                         <div class="notification-header">
                             <h3>부정클릭 알림 기록</h3>
@@ -3443,67 +3440,146 @@
                 <div id="refund-tab" class="tab-content">
                     <div class="refund-content">
                         <div class="refund-header">
-                            <h3>환불요청 절차</h3>
+                            <h3>네이버 검색광고 환불요청 절차</h3>
+                            <p class="refund-subtitle">부정클릭으로 인한 광고비 환불을 위한 체계적인 절차입니다</p>
                         </div>
                         
                         <div class="refund-steps">
                             <div class="step-item">
-                                <span class="step-number">1)</span>
-                                <span class="step-text">CSV 다운로드 버튼을 클릭하여 파일을 다운로드 합니다.</span>
+                                <span class="step-number">1</span>
+                                <div class="step-content">
+                                    <h4>📊 중복접속 데이터 수집</h4>
+                                    <p>중복접속자 정보보기에서 환불 대상 데이터를 확인하고 CSV 파일을 다운로드합니다.</p>
+                                    <div class="step-actions">
+                                        <button class="btn btn-outline-primary" onclick="viewRefundHistory()">
+                                            <i class="fas fa-eye"></i> 중복접속자 정보보기
+                                        </button>
+                                        <button class="btn btn-primary" onclick="downloadRefundFile()">
+                                            <i class="fas fa-download"></i> 환불요청 신청파일 다운로드 (CSV)
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
+                            
                             <div class="step-item">
-                                <span class="step-number">2)</span>
-                                <span class="step-text">'네이버 환불요청 신청페이지 이동'을 클릭하여 페이지 이동 후에 '무효클릭 문의하기' 클릭</span>
-                                <div class="sub-steps">
-                                    <p>• 제목/문의 사유에 '부정클릭 문의' 입력, 이메일 입력, 광고 유형에 '검색광고' 선택</p>
-                                    <p>• '2) 템플릿을 첨부하여 접수' 항목에서 '파일첨부' 클릭하여 다운로드한 파일 업로드</p>
-                                    <p>• '동의합니다' 체크 후 '문의하기' 클릭</p>
+                                <span class="step-number">2</span>
+                                <div class="step-content">
+                                    <h4>🌐 네이버 비즈니스 센터 접속</h4>
+                                    <p>네이버 비즈니스 센터에 로그인하여 무효클릭 문의하기를 통해 환불을 신청합니다.</p>
+                                    <div class="step-actions">
+                                        <button class="btn btn-info" onclick="goToNaverRefund()">
+                                            <i class="fas fa-external-link-alt"></i> 네이버 환불요청 신청페이지 이동
+                                        </button>
+                                    </div>
+                                    <div class="sub-steps">
+                                        <h5>📝 무효클릭 문의하기 작성 방법:</h5>
+                                        <ol>
+                                            <li><strong>제목:</strong> "부정클릭 의심으로 인한 광고비 환불 요청"</li>
+                                            <li><strong>문의 사유:</strong> "검색광고에서 의심스러운 클릭 패턴이 감지되어 부정클릭으로 판단됩니다."</li>
+                                            <li><strong>이메일:</strong> 광고주 이메일 주소 입력</li>
+                                            <li><strong>광고 유형:</strong> "검색광고" 선택</li>
+                                            <li><strong>첨부파일:</strong> 다운로드한 CSV 파일 업로드</li>
+                                            <li><strong>개인정보 수집 동의:</strong> "동의합니다" 체크</li>
+                                        </ol>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="step-item">
+                                <span class="step-number">3</span>
+                                <div class="step-content">
+                                    <h4>⏳ 환불 진행 상황 확인</h4>
+                                    <p>문의 접수 후 네이버에서 검토하여 환불 여부를 결정하고 답글로 결과를 통보합니다.</p>
+                                    <div class="step-actions">
+                                        <button class="btn btn-outline-info" onclick="checkRefundStatus()">
+                                            <i class="fas fa-sync-alt"></i> 환불 진행상황 확인
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         
                         <div class="refund-actions">
-                            <button class="btn btn-primary" onclick="downloadRefundFile()">환불요청 신청파일 다운로드 (CSV)</button>
-                            <button class="btn btn-info" onclick="viewRefundHistory()">지난 이력 보기</button>
-                            <button class="btn btn-info" onclick="goToNaverRefund()">네이버 환불요청 신청페이지 이동</button>
+                            <div class="action-group">
+                                <h4>🚀 빠른 실행</h4>
+                                <div class="action-buttons">
+                                    <button class="btn btn-primary" onclick="downloadRefundFile()">
+                                        <i class="fas fa-file-csv"></i> CSV 다운로드
+                                    </button>
+                                    <button class="btn btn-info" onclick="goToNaverRefund()">
+                                        <i class="fas fa-external-link-alt"></i> 네이버 환불페이지
+                                    </button>
+                                    <button class="btn btn-success" onclick="viewRefundHistory()">
+                                        <i class="fas fa-history"></i> 환불 이력 보기
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                         
                         <div class="refund-notes">
-                            <h4>환불 요청 안내</h4>
-                            <ul>
-                                <li>중복 발생 시 환불 요청 내역 확인 가능</li>
-                                <li>네이버 환불 신청 가능 시 '대기' 상태로 등록</li>
-                                <li>네이버 환불 신청은 최근 3개월 내 접속 기록만 접수 가능</li>
-                                <li>등록 후 문의하기 목록에서 작성된 글 확인 및 환불 결과는 답글로 표시</li>
-                                <li>월 1~2회 신청 권장</li>
-                                <li>환불 요청은 광고비를 집행하는 네이버 계정에서 진행해야 함</li>
-                            </ul>
+                            <h4>📋 환불 요청 안내사항</h4>
+                            <div class="notes-grid">
+                                <div class="note-item">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    <h5>신청 기간</h5>
+                                    <p>최근 3개월 내 접속 기록만 접수 가능</p>
+                                </div>
+                                <div class="note-item">
+                                    <i class="fas fa-clock"></i>
+                                    <h5>신청 빈도</h5>
+                                    <p>월 1~2회 신청 권장 (과도한 신청 시 제한될 수 있음)</p>
+                                </div>
+                                <div class="note-item">
+                                    <i class="fas fa-user-check"></i>
+                                    <h5>신청 자격</h5>
+                                    <p>광고비를 집행하는 네이버 계정에서만 진행 가능</p>
+                                </div>
+                                <div class="note-item">
+                                    <i class="fas fa-file-alt"></i>
+                                    <h5>필수 서류</h5>
+                                    <p>중복접속 증거자료(CSV)와 상세한 의심사유 설명 필요</p>
+                                </div>
+                                <div class="note-item">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    <h5>주의사항</h5>
+                                    <p>허위 신청 시 계정 제재 및 향후 환불 신청 제한 가능</p>
+                                </div>
+                                <div class="note-item">
+                                    <i class="fas fa-comments"></i>
+                                    <h5>결과 확인</h5>
+                                    <p>문의하기 목록에서 작성된 글 확인 및 환불 결과는 답글로 표시</p>
+                                </div>
+                            </div>
                         </div>
                         
                         <div class="refund-history-table">
-                            <h3>중복접속자 정보보기</h3>
-                            <table id="refundHistoryTable" class="dashboard-table">
-                                <thead>
-                                    <tr>
-                                        <th>IP정보/차단메모</th>
-                                        <th>등록일시</th>
-                                        <th>대표 IP</th>
-                                        <th>대표 키워드</th>
-                                        <th>상태</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="refundHistoryTableBody">
-                                    <tr>
-                                        <td colspan="5" class="no-data">환불요청 작업이 존재하지 않습니다.</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            <h3>📊 중복접속자 정보보기</h3>
+                            <p class="table-description">환불 요청 대상이 될 수 있는 중복접속 패턴을 분석하여 표시합니다.</p>
+                            <div class="refund-table-container">
+                                <table id="refundHistoryTable" class="dashboard-table">
+                                    <thead>
+                                        <tr>
+                                            <th>IP정보/차단메모</th>
+                                            <th>등록일시</th>
+                                            <th>대표 IP</th>
+                                            <th>대표 키워드</th>
+                                            <th>상태</th>
+                                            <th>액션</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="refundHistoryTableBody">
+                                        <tr>
+                                            <td colspan="6" class="no-data">환불요청 작업이 존재하지 않습니다.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- 접속기록 탭 콘텐츠 -->
-                <div id="access-tab" class="tab-content">
+                <div id="access-tab" class="tab-content active">
                     <div class="tab-header">
                         <div class="date-range-display">
                             <span id="currentDateRange">2025.08.05 - 2025.08.11</span>
@@ -3564,7 +3640,7 @@
                                     <th>접속시간</th>
                                     <th>접속 IP</th>
                                     <th>접속위치</th>
-                                    <th>중복 접속 횟수</th>
+                                    <th class="sortable-header" onclick="sortTable('duplicate-count')" style="cursor: pointer; user-select: none; position: relative; background: #f8f9fa; padding: 16px 12px; text-align: left; font-weight: 600; color: #495057; border-bottom: 2px solid #dee2e6; white-space: nowrap; position: sticky; top: 0; z-index: 10;">중복 접속 횟수 <span style="position: absolute; right: 8px; color: #6c757d; font-size: 12px;">↕</span></th>
                                     <th>알림 횟수</th>
                                     <th>단말 종류</th>
                                     <th>시간(초)</th>
@@ -4630,23 +4706,36 @@
         // 실시간 활동 차트 초기화
         function initializeActivityChart() {
             const chartContainer = document.getElementById('activityChart');
-            if (!chartContainer) return;
+            if (!chartContainer) {
+                console.error('차트 컨테이너를 찾을 수 없습니다.');
+                return;
+            }
             
-            // 차트 컨테이너 스타일 설정
-            chartContainer.style.cssText = `
-                width: 100%;
-                height: 300px;
-                background: #f8f9fa;
-                border-radius: 10px;
-                padding: 20px;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-            `;
-            
-            // 차트 데이터 생성 및 표시
-            updateActivityChart();
+            try {
+                // 차트 컨테이너 스타일 설정
+                chartContainer.style.cssText = `
+                    width: 100%;
+                    height: 300px;
+                    background: #f8f9fa;
+                    border-radius: 10px;
+                    padding: 20px;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                `;
+                
+                // 차트 데이터 생성 및 표시
+                updateActivityChart();
+            } catch (error) {
+                console.error('차트 초기화 중 오류:', error);
+                chartContainer.innerHTML = `
+                    <div style="color: #dc3545; text-align: center; padding: 40px;">
+                        <div>차트 초기화 중 오류가 발생했습니다.</div>
+                        <button onclick="initializeActivityChart()" style="margin-top: 10px; padding: 8px 16px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">다시 시도</button>
+                    </div>
+                `;
+            }
         }
         
         // 실시간 활동 차트 업데이트
@@ -4666,13 +4755,15 @@
                 let chartTitle = '최근 24시간 활동 현황';
                 let timeUnit = 'hour';
                 
+                let daysDiff = 1; // 기본값 설정
+                
                 if (startDate && endDate) {
                     // 선택된 날짜 범위 사용
                     start = new Date(startDate);
                     end = new Date(endDate);
                     end.setHours(23, 59, 59, 999);
                     
-                    const daysDiff = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+                    daysDiff = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
                     
                     if (daysDiff <= 1) {
                         // 1일 이하: 시간별 차트
@@ -4780,6 +4871,12 @@
         // 차트 HTML 생성
         function generateChartHTML(timeData, chartTitle, timeUnit) {
             const timeKeys = Object.keys(timeData);
+            
+            // 데이터가 없는 경우 처리
+            if (timeKeys.length === 0) {
+                return '<div style="color: #6c757d; text-align: center; padding: 40px;">차트 데이터가 없습니다.</div>';
+            }
+            
             const maxClicks = Math.max(...Object.values(timeData).map(d => d.clicks), 1);
             const maxSuspicious = Math.max(...Object.values(timeData).map(d => d.suspicious), 1);
             
@@ -5065,9 +5162,8 @@
                     activity.duplicateCount = ipCounts[ip];
                     activity.duplicateDetails = ipDetails[ip];
                     
-                    // 중복접속 경고 표시를 위한 플래그 추가
+                    // 중복접속 경고 표시를 위한 플래그 추가 (초록색 박스 제거)
                     if (ipCounts[ip] >= 5) {
-                        activity.showDuplicateWarning = true;
                         activity.duplicateWarningLevel = ipDetails[ip].riskLevel;
                     }
                 });
@@ -5407,6 +5503,11 @@
                 
                 alert(`테스트 데이터가 생성되었습니다!\n클릭: ${testClickData.length}개\n의심활동: ${testSuspiciousData.length}개\n중복접속: ${duplicateAccessData.length}개\n동시접속: ${simultaneousAccessData.length}개\n차단IP: ${testBlockedData.length}개`);
                 
+                // 차트 업데이트
+                setTimeout(() => {
+                    updateActivityChart();
+                }, 100);
+                
                 // 데이터 새로고침
                 refreshData();
                 
@@ -5476,6 +5577,11 @@
                 }
                 
                 alert('모든 테스트 데이터가 삭제되었습니다.');
+                
+                // 차트 업데이트
+                setTimeout(() => {
+                    updateActivityChart();
+                }, 100);
                 
                 // 데이터 새로고침
                 if (typeof refreshData === 'function') {
@@ -5631,37 +5737,7 @@
             }
         }
         
-        // 탭 전환 함수
-        function switchTab(tabName) {
-            // 모든 탭 콘텐츠 숨기기
-            const tabContents = document.querySelectorAll('.tab-content');
-            tabContents.forEach(content => content.classList.remove('active'));
-            
-            // 모든 탭 버튼 비활성화
-            const navTabs = document.querySelectorAll('.nav-tab');
-            navTabs.forEach(tab => tab.classList.remove('active'));
-            
-            // 선택된 탭 활성화
-            const selectedTab = document.getElementById(tabName + '-tab');
-            const selectedNavTab = document.querySelector(`[onclick="switchTab('${tabName}')"]`);
-            
-            if (selectedTab) selectedTab.classList.add('active');
-            if (selectedNavTab) selectedNavTab.classList.add('active');
-            
-            // 접속기록 탭인 경우 데이터 표시
-            if (tabName === 'access') {
-                displayAccessLog();
-            }
-            // 알림기록 탭인 경우 데이터 표시
-            else if (tabName === 'notification') {
-                displayNotifications();
-            }
-            // 테스트 페이지 탭인 경우 초기화
-            else if (tabName === 'test') {
-                // 테스트 페이지 특별한 초기화가 필요한 경우 여기에 추가
-                console.log('테스트 페이지 탭이 활성화되었습니다.');
-            }
-        }
+        // 중복된 switchTab 함수 제거됨
         
 
         
@@ -6077,17 +6153,12 @@
                         <td>${new Date(activity.timestamp).toLocaleDateString('ko-KR', {year: '2-digit', month: '2-digit', day: '2-digit'})} (${new Date(activity.timestamp).toLocaleTimeString('ko-KR', {hour: '2-digit', minute: '2-digit', second: '2-digit'})})</td>
                         <td>
                             ${activity.clicks > 1 ? 
-                                `<a href="#" class="ip-link duplicate-warning-${activity.duplicateWarningLevel || 'low'}" onclick="showDuplicateAccessPopup('${activity.ipAddress}', '${activity.ipInfo || ''}', ${activity.clicks}, ${activity.notificationCount || 0})" title="중복접속자 정보보기">${activity.ipAddress || '알 수 없음'}</a>` : 
+                                `<a href="#" class="ip-link" onclick="showDuplicateAccessPopup('${activity.ipAddress}', '${activity.ipInfo || ''}', ${activity.clicks}, ${activity.notificationCount || 0})" title="중복접속자 정보보기">${activity.ipAddress || '알 수 없음'}</a>` : 
                                 `${activity.ipAddress || '알 수 없음'}`
                             }
-                            ${activity.ipInfo ? `(${activity.ipInfo})` : ''}
-                            ${activity.showDuplicateWarning ? 
-                                `<span class="duplicate-warning-badge duplicate-warning-${activity.duplicateWarningLevel || 'low'}">⚠️ ${activity.duplicateCount}회 중복</span>` : 
-                                ''
-                            }
                         </td>
-                        <td>-</td>
-                        <td>${activity.clicks > 1 ? activity.clicks : ''}</td>
+                        <td>${activity.ipInfo || '-'}</td>
+                        <td>${activity.clicks > 1 ? `<a href="#" class="duplicate-count-link" onclick="showDuplicateAccessPopup('${activity.ipAddress}', '${activity.ipInfo || ''}', ${activity.clicks}, ${activity.notificationCount || 0})">${activity.clicks}</a>` : ''}</td>
                         <td>${activity.notificationCount || ''}</td>
                         <td>모바일</td>
                         <td>${accessTime}초</td>
@@ -6095,7 +6166,7 @@
                         <td>${activity.keyword || '평택렌트카'}</td>
                         <td>${activity.userSearchTerm || activity.keyword || '평택렌트카'}</td>
                         <td>네이버</td>
-                        <td>${activity.adType || '광고/통합검색 - 모바일'}</td>
+                        <td>${activity.adType ? `<a href="#" class="ad-referrer-link" onclick="showAdReferrerPopup('${activity.referrerUrl || ''}')">${activity.adType}</a>` : '광고/통합검색 - 모바일'}</td>
                         <td>${Math.floor(Math.random() * 4) + 1}</td>
                         <td>${userActivity}</td>
                     `;
@@ -7622,68 +7693,7 @@
             }
         }
 
-        // 탭 전환 함수
-        function switchTab(tabName) {
-            try {
-                // 모든 탭 콘텐츠 숨기기
-                const tabContents = document.querySelectorAll('.tab-content');
-                tabContents.forEach(content => {
-                    content.style.display = 'none';
-                });
-                
-                // 모든 탭 버튼 비활성화
-                const tabButtons = document.querySelectorAll('.nav-tab');
-                tabButtons.forEach(button => {
-                    button.classList.remove('active');
-                });
-                
-                // 선택된 탭 콘텐츠 표시
-                const selectedTab = document.getElementById(tabName + '-tab');
-                if (selectedTab) {
-                    selectedTab.style.display = 'block';
-                }
-                
-                // 선택된 탭 버튼 활성화
-                const selectedButton = document.querySelector(`[onclick="switchTab('${tabName}')"]`);
-                if (selectedButton) {
-                    selectedButton.classList.add('active');
-                }
-                
-                // 탭별 초기화 함수 호출
-                switch(tabName) {
-                    case 'notification':
-                        refreshNotifications();
-                        break;
-                    case 'refund':
-                        // 환불요청 탭 초기화
-                        break;
-                    case 'access':
-                        // 접속기록 탭 초기화
-                        break;
-                    case 'location':
-                        // 위치기록 탭 초기화
-                        break;
-                    case 'blocking':
-                        // 차단관리 탭 초기화
-                        displayBlockedIPs();
-                        break;
-                    case 'fraud-warning':
-                        // 부정접속경고 탭 초기화
-                        break;
-                    case 'test':
-                        // 테스트 페이지 탭 초기화
-                        break;
-                    case 'settings':
-                        // 환경설정 탭 초기화
-                        break;
-                }
-                
-                console.log(`탭 전환 완료: ${tabName}`);
-                
-            } catch (error) {
-                console.error('탭 전환 중 오류:', error);
-            }
-        }
+        // 중복된 switchTab 함수 제거됨
 
         // 테스트 경고 함수
         function testWarning(testType) {
@@ -8154,6 +8164,301 @@
         setTimeout(() => {
             notification.remove();
         }, 3000);
+    }
+
+    // 테이블 정렬 함수 - 개선됨
+    function sortTable(column) {
+        const table = document.getElementById('suspiciousTable');
+        const tbody = table.querySelector('tbody');
+        const rows = Array.from(tbody.querySelectorAll('tr'));
+        
+        // 빈 데이터 행 제외
+        const dataRows = rows.filter(row => !row.cells[0].textContent.includes('데이터가 없습니다'));
+        
+        if (dataRows.length === 0) return;
+        
+        // 정렬 방향 결정
+        const header = table.querySelector(`th[onclick*="${column}"]`);
+        const isAsc = !header.classList.contains('sort-asc');
+        
+        // 모든 헤더의 정렬 상태 초기화
+        table.querySelectorAll('.sortable-header').forEach(h => {
+            h.classList.remove('sort-asc', 'sort-desc');
+        });
+        
+        // 현재 헤더에 정렬 상태 표시
+        if (isAsc) {
+            header.classList.add('sort-asc');
+        } else {
+            header.classList.add('sort-desc');
+        }
+        
+        // 데이터 정렬
+        dataRows.sort((a, b) => {
+            let aValue, bValue;
+            
+            if (column === 'duplicate-count') {
+                // 중복 접속 횟수 정렬 (4번째 컬럼)
+                const aText = a.cells[3].textContent;
+                const bText = b.cells[3].textContent;
+                
+                // 링크가 있는 경우 숫자만 추출
+                aValue = parseInt(aText.match(/\d+/)?.[0] || '0');
+                bValue = parseInt(bText.match(/\d+/)?.[0] || '0');
+                
+                console.log(`정렬: ${aText} -> ${aValue}, ${bText} -> ${bValue}`);
+            }
+            
+            if (isAsc) {
+                return aValue - bValue;
+            } else {
+                return bValue - aValue;
+            }
+        });
+        
+        // 정렬된 행들을 테이블에 다시 추가
+        dataRows.forEach(row => tbody.appendChild(row));
+        
+        console.log(`${column} 컬럼으로 ${isAsc ? '오름차순' : '내림차순'} 정렬 완료`);
+    }
+
+    // 광고여부/광고상품 팝업 표시 함수
+    function showAdReferrerPopup(referrerUrl) {
+        const popup = document.getElementById('adReferrerPopup');
+        const urlElement = document.getElementById('adReferrerUrl');
+        
+        if (referrerUrl && referrerUrl !== 'undefined' && referrerUrl !== 'null') {
+            urlElement.textContent = referrerUrl;
+            urlElement.style.color = '#007bff';
+        } else {
+            urlElement.textContent = '직접 접속 (광고 링크 없음)';
+            urlElement.style.color = '#6c757d';
+        }
+        
+        popup.style.display = 'flex';
+        
+        // ESC 키로 팝업 닫기
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeAdReferrerPopup();
+            }
+        });
+    }
+
+    // 광고여부/광고상품 팝업 닫기 함수
+    function closeAdReferrerPopup() {
+        const popup = document.getElementById('adReferrerPopup');
+        popup.style.display = 'none';
+    }
+
+    // 광고여부/광고상품 링크로 이동 함수
+    function openAdReferrerUrl() {
+        const urlElement = document.getElementById('adReferrerUrl');
+        const url = urlElement.textContent;
+        
+        if (url && url !== '직접 접속 (광고 링크 없음)' && url !== '정보 없음') {
+            window.open(url, '_blank');
+        } else {
+            alert('이동할 수 있는 링크가 없습니다.');
+        }
+    }
+
+    // ESC 키 이벤트 리스너 추가
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeAdReferrerPopup();
+        }
+    });
+
+    // 환불 관련 함수들
+    function downloadRefundFile() {
+        try {
+            // 중복접속 데이터 가져오기
+            const suspiciousActivities = JSON.parse(localStorage.getItem('suspiciousActivities') || '[]');
+            
+            if (suspiciousActivities.length === 0) {
+                alert('다운로드할 환불 데이터가 없습니다. 먼저 테스트 데이터를 생성해주세요.');
+                return;
+            }
+
+            // 환불 대상 데이터 필터링 (중복접속 4회 이상)
+            const refundData = suspiciousActivities.filter(activity => 
+                activity.clicks && activity.clicks >= 4
+            );
+
+            if (refundData.length === 0) {
+                alert('환불 대상 데이터가 없습니다. 중복접속 4회 이상인 데이터만 환불 대상입니다.');
+                return;
+            }
+
+            // CSV 헤더
+            let csvContent = 'IP주소,접속위치,중복접속횟수,알림횟수,접속시간,키워드,매체,의심도\n';
+
+            // CSV 데이터
+            refundData.forEach(activity => {
+                const row = [
+                    activity.ipAddress || '알 수 없음',
+                    activity.ipInfo || '-',
+                    activity.clicks || 0,
+                    activity.notificationCount || 0,
+                    new Date(activity.timestamp).toLocaleString('ko-KR'),
+                    activity.keyword || '평택렌트카',
+                    '네이버 검색광고',
+                    activity.clicks >= 10 ? '높음' : activity.clicks >= 6 ? '보통' : '낮음'
+                ];
+                csvContent += row.join(',') + '\n';
+            });
+
+            // CSV 파일 다운로드
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', `네이버_환불요청_데이터_${new Date().toISOString().split('T')[0]}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            alert(`환불요청 데이터 ${refundData.length}건이 CSV 파일로 다운로드되었습니다.`);
+            
+        } catch (error) {
+            console.error('환불 파일 다운로드 중 오류:', error);
+            alert('파일 다운로드 중 오류가 발생했습니다.');
+        }
+    }
+
+    function goToNaverRefund() {
+        // 네이버 비즈니스 센터 무효클릭 문의하기 페이지로 이동
+        const naverRefundUrl = 'https://business.naver.com/support/refund';
+        
+        if (confirm('네이버 비즈니스 센터 환불요청 페이지로 이동하시겠습니까?\n\n새 창에서 열립니다.')) {
+            window.open(naverRefundUrl, '_blank', 'width=1200,height=800');
+        }
+    }
+
+    function viewRefundHistory() {
+        try {
+            const suspiciousActivities = JSON.parse(localStorage.getItem('suspiciousActivities') || '[]');
+            const tableBody = document.getElementById('refundHistoryTableBody');
+            
+            if (suspiciousActivities.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="6" class="no-data">환불요청 작업이 존재하지 않습니다.</td></tr>';
+                return;
+            }
+
+            // 환불 대상 데이터 필터링 (중복접속 4회 이상)
+            const refundData = suspiciousActivities.filter(activity => 
+                activity.clicks && activity.clicks >= 4
+            );
+
+            if (refundData.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="6" class="no-data">환불 대상 데이터가 없습니다. 중복접속 4회 이상인 데이터만 환불 대상입니다.</td></tr>';
+                return;
+            }
+
+            // 테이블 내용 생성
+            tableBody.innerHTML = '';
+            refundData.forEach(activity => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>
+                        <div class="ip-info">
+                            <strong>${activity.ipAddress || '알 수 없음'}</strong>
+                            <small>${activity.ipInfo || '-'}</small>
+                        </div>
+                    </td>
+                    <td>${new Date(activity.timestamp).toLocaleString('ko-KR')}</td>
+                    <td>${activity.ipAddress || '알 수 없음'}</td>
+                    <td>${activity.keyword || '평택렌트카'}</td>
+                    <td>
+                        <span class="status-badge ${activity.clicks >= 10 ? 'status-high' : activity.clicks >= 6 ? 'status-medium' : 'status-low'}">
+                            ${activity.clicks >= 10 ? '높음' : activity.clicks >= 6 ? '보통' : '낮음'}
+                        </span>
+                    </td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary" onclick="viewRefundDetail('${activity.ipAddress}')">
+                            <i class="fas fa-eye"></i> 상세보기
+                        </button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+        } catch (error) {
+            console.error('환불 이력 조회 중 오류:', error);
+            alert('환불 이력 조회 중 오류가 발생했습니다.');
+        }
+    }
+
+    function checkRefundStatus() {
+        alert('환불 진행상황 확인 기능입니다.\n\n네이버 비즈니스 센터 > 문의하기 > 내 문의내역에서 확인할 수 있습니다.');
+    }
+
+    function viewRefundDetail(ipAddress) {
+        try {
+            const suspiciousActivities = JSON.parse(localStorage.getItem('suspiciousActivities') || '[]');
+            const activity = suspiciousActivities.find(a => a.ipAddress === ipAddress);
+            
+            if (!activity) {
+                alert('해당 IP의 상세 정보를 찾을 수 없습니다.');
+                return;
+            }
+
+            const detailHtml = `
+                <div class="refund-detail-popup">
+                    <h4>📊 환불 대상 상세정보</h4>
+                    <div class="detail-content">
+                        <div class="detail-item">
+                            <strong>IP 주소:</strong> ${activity.ipAddress || '알 수 없음'}
+                        </div>
+                        <div class="detail-item">
+                            <strong>접속 위치:</strong> ${activity.ipInfo || '-'}
+                        </div>
+                        <div class="detail-item">
+                            <strong>중복접속 횟수:</strong> ${activity.clicks || 0}회
+                        </div>
+                        <div class="detail-item">
+                            <strong>알림 횟수:</strong> ${activity.notificationCount || 0}회
+                        </div>
+                        <div class="detail-item">
+                            <strong>접속 시간:</strong> ${new Date(activity.timestamp).toLocaleString('ko-KR')}
+                        </div>
+                        <div class="detail-item">
+                            <strong>키워드:</strong> ${activity.keyword || '평택렌트카'}
+                        </div>
+                        <div class="detail-item">
+                            <strong>매체:</strong> 네이버 검색광고
+                        </div>
+                        <div class="detail-item">
+                            <strong>의심도:</strong> ${activity.clicks >= 10 ? '높음' : activity.clicks >= 6 ? '보통' : '낮음'}
+                        </div>
+                    </div>
+                    <div class="detail-actions">
+                        <button class="btn btn-primary" onclick="downloadRefundFile()">CSV 다운로드</button>
+                        <button class="btn btn-info" onclick="goToNaverRefund()">네이버 환불페이지</button>
+                        <button class="btn btn-secondary" onclick="closeRefundDetail()">닫기</button>
+                    </div>
+                </div>
+            `;
+
+            // 팝업 표시
+            const popup = document.createElement('div');
+            popup.className = 'refund-detail-overlay';
+            popup.innerHTML = detailHtml;
+            document.body.appendChild(popup);
+
+        } catch (error) {
+            console.error('환불 상세정보 조회 중 오류:', error);
+            alert('환불 상세정보 조회 중 오류가 발생했습니다.');
+        }
+    }
+
+    function closeRefundDetail() {
+        const overlay = document.querySelector('.refund-detail-overlay');
+        if (overlay) {
+            overlay.remove();
+        }
     }
     </script>
     
@@ -8731,5 +9036,25 @@
             background: #5a6268;
         }
     </style>
+
+    <!-- 광고여부/광고상품 팝업 -->
+    <div id="adReferrerPopup" class="ad-referrer-popup" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); display: none; z-index: 10000; justify-content: center; align-items: center;">
+        <div class="ad-referrer-popup-content" style="background: white; border-radius: 12px; padding: 24px; max-width: 500px; width: 90%; max-height: 80vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);">
+            <div class="ad-referrer-popup-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid #e9ecef;">
+                <h3 class="ad-referrer-popup-title" style="font-size: 18px; font-weight: 600; color: #2c3e50; margin: 0;">광고 접속 정보</h3>
+                <button class="ad-referrer-popup-close" onclick="closeAdReferrerPopup()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #6c757d; padding: 0; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: all 0.2s ease;">&times;</button>
+            </div>
+            <div class="ad-referrer-popup-body" style="margin-bottom: 20px;">
+                <div class="ad-referrer-info" style="background: #f8f9fa; padding: 16px; border-radius: 8px; margin-bottom: 16px;">
+                    <h4 style="margin: 0 0 8px 0; color: #2c3e50; font-size: 14px; font-weight: 600;">접속 경로</h4>
+                    <p id="adReferrerUrl" style="margin: 0; color: #6c757d; font-size: 13px; word-break: break-all;">정보 없음</p>
+                </div>
+            </div>
+            <div class="ad-referrer-popup-footer" style="display: flex; gap: 12px; justify-content: flex-end;">
+                <button class="btn btn-secondary" onclick="closeAdReferrerPopup()" style="padding: 10px 20px; border-radius: 6px; border: 1px solid #6c757d; background: #6c757d; color: white; cursor: pointer; font-size: 14px; transition: background 0.2s ease;">닫기</button>
+                <button class="btn btn-primary" onclick="openAdReferrerUrl()" style="padding: 10px 20px; border-radius: 6px; border: 1px solid #007bff; background: #007bff; color: white; cursor: pointer; font-size: 14px; transition: background 0.2s ease;">링크로 이동</button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

@@ -32,7 +32,7 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="평택안성 1등렌트카 에스엔엠렌트카 평택점 | 안전하고 편리한 차량 대여">
     <meta name="twitter:description" content="평택,송탄,안성 일반대여 문의 환영! 평택1등렌트카 에스엔엠렌트카에서 경제형부터 럭셔리까지, 다양한 차량을 합리적인 가격으로 대여하세요. 카카오톡 실시간 문의 가능!">
-    <meta name="twitter:image" content="https://에스엔엠렌트카.kr/images/명함.png">
+    <meta name="twitter:image" content="https://smrentcar.kr/images/명함.png">
     
     <!-- 추가 네이버 SEO 메타 태그 -->
     <meta name="format-detection" content="telephone=no">
@@ -42,16 +42,16 @@
     <meta name="apple-mobile-web-app-title" content="에스엔엠 렌트카">
     
     <!-- RSS 피드 링크 -->
-    <link rel="alternate" type="application/rss+xml" title="에스엔엠 렌트카 RSS" href="https://에스엔엠렌트카.kr/rss.xml">
+    <link rel="alternate" type="application/rss+xml" title="에스엔엠 렌트카 RSS" href="https://smrentcar.kr/rss.xml">
     
     <!-- 캐노니컬 URL -->
-    <link rel="canonical" href="https://에스엔엠렌트카.kr/">
+    <link rel="canonical" href="https://smrentcar.kr/">
     
     <!-- 네이버 광고 부정클릭 방지 시스템 -->
     <script src="click-protection.js"></script>
     
     <!-- 언어 설정 -->
-    <link rel="alternate" hreflang="ko" href="https://에스엔엠렌트카.kr/">
+    <link rel="alternate" hreflang="ko" href="https://smrentcar.kr/">
     
     <!-- 구조화된 데이터 (JSON-LD) - 네이버 검색결과 최적화 -->
     <script type="application/ld+json">
@@ -60,7 +60,7 @@
         "@type": "LocalBusiness",
         "name": "평택안성 1등렌트카 에스엔엠렌트카 평택점",
         "description": "평택,송탄,안성 일반대여 문의 환영! 평택1등렌트카 에스엔엠렌트카에서 안전하고 편리한 차량 대여 서비스를 제공합니다.",
-        "url": "https://에스엔엠렌트카.kr/",
+        "url": "https://smrentcar.kr/",
         "telephone": "카카오톡 문의",
         "address": {
             "@type": "PostalAddress",
@@ -75,7 +75,7 @@
         },
         "openingHours": "Mo-Su 09:00-18:00",
         "priceRange": "$$",
-        "image": "https://에스엔엠렌트카.kr/images/명함.png",
+        "image": "https://smrentcar.kr/images/명함.png",
         "sameAs": [
             "https://map.naver.com/p/search/%ED%8F%89%ED%83%9D%EB%A0%8C%ED%8A%B8%EC%B9%B4/place/1889534992"
         ],
@@ -126,9 +126,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- 네이버 검색 최적화를 위한 추가 링크 -->
-    <link rel="canonical" href="https://에스엔엠렌트카.kr/">
-    <link rel="alternate" hreflang="ko" href="https://에스엔엠렌트카.kr/">
-    <link rel="alternate" type="application/rss+xml" title="에스엔엠 렌트카 RSS" href="https://에스엔엠렌트카.kr/rss.xml">
+    <link rel="canonical" href="https://smrentcar.kr/">
+    <link rel="alternate" hreflang="ko" href="https://smrentcar.kr/">
+    <link rel="alternate" type="application/rss+xml" title="에스엔엠 렌트카 RSS" href="https://smrentcar.kr/rss.xml">
 </head>
 <body>
     <!-- 헤더 -->
@@ -504,6 +504,93 @@
         </a>
     </div>
 
+    <!-- 부정클릭 팝업 테스트 버튼 (개발자용) - 테스트 페이지에서만 표시 -->
+    <div class="test-popup-button" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: none;">
+        <button onclick="showTestPopup()" style="background: #ff6b6b; color: white; border: none; padding: 15px; border-radius: 50%; cursor: pointer; font-size: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
+            🧪
+        </button>
+        <div class="test-tooltip" style="position: absolute; bottom: 100%; right: 0; background: #333; color: white; padding: 8px 12px; border-radius: 6px; font-size: 12px; white-space: nowrap; margin-bottom: 8px; display: none;">
+            부정클릭 팝업 테스트
+        </div>
+    </div>
+
     <script src="script.js"></script>
+    
+    <!-- 부정클릭 팝업 테스트 스크립트 -->
+    <script>
+        // 테스트 버튼 툴팁 표시/숨김
+        const testButton = document.querySelector('.test-popup-button');
+        const tooltip = document.querySelector('.test-tooltip');
+        
+        testButton.addEventListener('mouseenter', () => {
+            tooltip.style.display = 'block';
+        });
+        
+        testButton.addEventListener('mouseleave', () => {
+            tooltip.style.display = 'none';
+        });
+        
+        // 부정클릭 팝업 테스트 함수
+        function showTestPopup() {
+            // click-protection.js의 테스트 모드 활성화
+            if (window.clickProtectionSystem && window.clickProtectionSystem.checkAndActivateTestMode) {
+                window.clickProtectionSystem.checkAndActivateTestMode();
+                console.log('🧪 부정클릭 팝업 테스트 모드 활성화됨');
+            } else {
+                // fallback: 직접 팝업 표시
+                showFallbackPopup();
+            }
+        }
+        
+        // fallback 팝업 (click-protection.js가 로드되지 않은 경우)
+        function showFallbackPopup() {
+            const popup = document.createElement('div');
+            popup.style.cssText = `
+                position: fixed;
+                top: 20px;
+                left: 20px;
+                max-width: 400px;
+                background: white;
+                border: 3px solid #ff6b35;
+                border-radius: 16px;
+                padding: 20px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                z-index: 10000;
+                font-family: Arial, sans-serif;
+            `;
+            
+            popup.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h3 style="margin: 0; color: #333;">🧪 테스트 팝업</h3>
+                    <button onclick="this.parentElement.parentElement.remove()" style="background: none; border: none; font-size: 20px; cursor: pointer; color: #666;">×</button>
+                </div>
+                <p style="margin: 0; color: #666; line-height: 1.5;">
+                    부정클릭 방지 시스템이 정상적으로 작동하고 있습니다.<br>
+                    이 팝업은 테스트용입니다.
+                </p>
+            `;
+            
+            document.body.appendChild(popup);
+            
+            // 5초 후 자동 제거
+            setTimeout(() => popup.remove(), 5000);
+        }
+        
+        // 페이지 로드 시 테스트 모드 확인
+        window.addEventListener('load', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const testMode = urlParams.get('test');
+            
+            if (testMode) {
+                console.log('🧪 URL 테스트 모드 감지:', testMode);
+                // 테스트 버튼 표시
+                document.querySelector('.test-popup-button').style.display = 'block';
+                // 3초 후 테스트 팝업 표시
+                setTimeout(() => {
+                    showTestPopup();
+                }, 3000);
+            }
+        });
+    </script>
 </body>
 </html> 

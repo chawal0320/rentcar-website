@@ -6216,30 +6216,13 @@ body {
     box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
 }
 
-/* 탭 콘텐츠 - 강제 표시 */
+/* 탭 콘텐츠 */
 .tab-content {
-    display: none !important;
-    visibility: hidden !important;
-    opacity: 0 !important;
-    height: 0 !important;
-    overflow: hidden !important;
+    display: none;
 }
 
 .tab-content.active {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    height: auto !important;
-    overflow: visible !important;
-}
-
-/* 접속기록 탭 강제 표시 */
-#access-tab {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    height: auto !important;
-    overflow: visible !important;
+    display: block;
 }
 
 /* 테이블 컨테이너 */
@@ -6307,7 +6290,6 @@ body {
     right: 8px;
     color: #6c757d;
     font-size: 12px;
-    transition: all 0.2s ease;
 }
 
 .sortable-header.sort-asc::after {
@@ -6348,7 +6330,7 @@ body {
     text-decoration: underline;
 }
 
-/* 광고여부/광고상품 팝업 - 수정됨 */
+/* 광고여부/광고상품 팝업 */
 .ad-referrer-popup {
     position: fixed;
     top: 0;
@@ -6361,7 +6343,7 @@ body {
 }
 
 .ad-referrer-popup.show {
-    display: flex;
+    display: flex !important;
     justify-content: center;
     align-items: center;
 }
@@ -6575,363 +6557,15 @@ body {
     overflow-x: auto;
 }
 
-/* 환불요청 탭 스타일 - 개선됨 */
+/* 환불요청 탭 스타일 */
 .refund-content {
     max-width: 100%;
     overflow-x: hidden;
-    padding: 24px;
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.refund-header h3 {
-    color: #2c3e50;
-    margin-bottom: 8px;
-    font-size: 24px;
-    font-weight: 600;
-}
-
-.refund-subtitle {
-    color: #6c757d;
-    font-size: 16px;
-    margin-bottom: 24px;
-}
-
-.refund-steps {
-    margin: 32px 0;
-}
-
-.step-item {
-    display: flex;
-    align-items: flex-start;
-    margin-bottom: 32px;
-    padding: 24px;
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    border-radius: 12px;
-    border-left: 4px solid #007bff;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-    transition: all 0.3s ease;
-}
-
-.step-item:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
-}
-
-.step-number {
-    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
-    color: white;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 600;
-    font-size: 18px;
-    margin-right: 24px;
-    flex-shrink: 0;
-    box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
-}
-
-.step-content h4 {
-    color: #2c3e50;
-    margin: 0 0 12px 0;
-    font-size: 18px;
-    font-weight: 600;
-}
-
-.step-content p {
-    color: #495057;
-    line-height: 1.6;
-    margin: 0 0 16px 0;
-    font-size: 15px;
-}
-
-.step-actions {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-}
-
-.step-actions .btn {
-    padding: 8px 16px;
-    font-size: 14px;
-    border-radius: 6px;
-    transition: all 0.2s ease;
-}
-
-.sub-steps {
-    margin-top: 20px;
-    padding: 16px;
-    background: white;
-    border-radius: 8px;
-    border: 1px solid #dee2e6;
-}
-
-.sub-steps h5 {
-    color: #495057;
-    margin: 0 0 12px 0;
-    font-size: 16px;
-    font-weight: 600;
-}
-
-.sub-steps ol {
-    margin: 0;
-    padding-left: 20px;
-}
-
-.sub-steps li {
-    margin: 8px 0;
-    color: #6c757d;
-    font-size: 14px;
-    line-height: 1.5;
-}
-
-.refund-actions {
-    margin: 32px 0;
-    padding: 24px;
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    border-radius: 12px;
-    border: 1px solid #dee2e6;
-}
-
-.action-group h4 {
-    color: #2c3e50;
-    margin-bottom: 16px;
-    font-size: 18px;
-    font-weight: 600;
-    text-align: center;
-}
-
-.action-buttons {
-    display: flex;
-    gap: 16px;
-    justify-content: center;
-    flex-wrap: wrap;
-}
-
-.action-buttons .btn {
-    padding: 12px 24px;
-    font-size: 16px;
-    border-radius: 8px;
-    transition: all 0.3s ease;
-    min-width: 140px;
-}
-
-.action-buttons .btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.refund-notes {
-    margin: 32px 0;
-    padding: 24px;
-    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
-    border-radius: 12px;
-    border-left: 4px solid #2196f3;
-}
-
-.refund-notes h4 {
-    color: #1976d2;
-    margin-bottom: 20px;
-    font-size: 18px;
-    font-weight: 600;
-}
-
-.notes-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 20px;
-}
-
-.note-item {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    border: 1px solid #e3f2fd;
-    text-align: center;
-    transition: all 0.3s ease;
-}
-
-.note-item:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(33, 150, 243, 0.15);
-}
-
-.note-item i {
-    font-size: 24px;
-    color: #2196f3;
-    margin-bottom: 12px;
-}
-
-.note-item h5 {
-    color: #1976d2;
-    margin: 0 0 8px 0;
-    font-size: 16px;
-    font-weight: 600;
-}
-
-.note-item p {
-    color: #1565c0;
-    margin: 0;
-    font-size: 14px;
-    line-height: 1.5;
-}
-
-.refund-history-table {
-    margin-top: 32px;
-}
-
-.refund-history-table h3 {
-    color: #2c3e50;
-    margin-bottom: 8px;
-    font-size: 20px;
-    font-weight: 600;
-}
-
-.table-description {
-    color: #6c757d;
-    margin-bottom: 20px;
-    font-size: 14px;
 }
 
 .refund-table-container {
     max-width: 100%;
     overflow-x: auto;
-    border-radius: 8px;
-    border: 1px solid #dee2e6;
-}
-
-.refund-table-container::-webkit-scrollbar {
-    height: 12px;
-}
-
-.refund-table-container::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 6px;
-}
-
-.refund-table-container::-webkit-scrollbar-thumb {
-    background: #c1c1c1;
-    border-radius: 6px;
-}
-
-.refund-table-container::-webkit-scrollbar-thumb:hover {
-    background: #a8a8a8;
-}
-
-/* 상태 배지 스타일 */
-.status-badge {
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-    text-transform: uppercase;
-}
-
-.status-high {
-    background: #ffebee;
-    color: #c62828;
-    border: 1px solid #ffcdd2;
-}
-
-.status-medium {
-    background: #fff3e0;
-    color: #ef6c00;
-    border: 1px solid #ffcc02;
-}
-
-.status-low {
-    background: #e8f5e8;
-    color: #2e7d32;
-    border: 1px solid #c8e6c9;
-}
-
-/* IP 정보 스타일 */
-.ip-info {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.ip-info strong {
-    color: #2c3e50;
-    font-size: 14px;
-}
-
-.ip-info small {
-    color: #6c757d;
-    font-size: 12px;
-}
-
-/* 환불 상세정보 팝업 스타일 */
-.refund-detail-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 10000;
-}
-
-.refund-detail-popup {
-    background: white;
-    border-radius: 12px;
-    padding: 32px;
-    max-width: 600px;
-    width: 90%;
-    max-height: 80vh;
-    overflow-y: auto;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-}
-
-.refund-detail-popup h4 {
-    color: #2c3e50;
-    margin: 0 0 24px 0;
-    font-size: 20px;
-    font-weight: 600;
-    text-align: center;
-}
-
-.detail-content {
-    margin-bottom: 24px;
-}
-
-.detail-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 0;
-    border-bottom: 1px solid #e9ecef;
-}
-
-.detail-item:last-child {
-    border-bottom: none;
-}
-
-.detail-item strong {
-    color: #2c3e50;
-    font-weight: 600;
-}
-
-.detail-actions {
-    display: flex;
-    gap: 12px;
-    justify-content: center;
-    flex-wrap: wrap;
-}
-
-.detail-actions .btn {
-    padding: 10px 20px;
-    border-radius: 6px;
-    font-size: 14px;
-    min-width: 120px;
 }
 
 /* 날짜 범위 선택기 */

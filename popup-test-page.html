@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>부정클릭 팝업 테스트 페이지</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: white;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .test-section {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .test-button {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .test-button:hover {
+            background: #ee5a24;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .info-box {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #ff6b6b;
+        }
+
+        /* 부정클릭 경고 팝업 스타일 */
+        .warning-popup {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            max-width: 480px;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.15);
+            z-index: 10000;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            animation: slideInLeft 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            border: 3px solid;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .warning-level-1 {
+            border-color: #ff6b35;
+            background: linear-gradient(135deg, #fff8e1, #ffecb3);
+        }
+
+        .warning-level-2 {
+            border-color: #ff5722;
+            background: linear-gradient(135deg, #ffebee, #ffcdd2);
+        }
+
+        .warning-level-3 {
+            border-color: #d32f2f;
+            background: linear-gradient(135deg, #ffebee, #ef9a9a);
+        }
+
+        .warning-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 24px 28px 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            position: relative;
+        }
+
+        .warning-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            transition: background 0.3s ease;
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .warning-content {
+            padding: 25px;
+            color: #333;
+        }
+
+        .warning-message {
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .progress-bar {
+            background: #e9ecef;
+            border-radius: 10px;
+            height: 20px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #ff6b35, #ff5722, #d32f2f);
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.3s ease;
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 25px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #545b62;
+            transform: translateY(-2px);
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .access-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: #f8f9fa;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .access-table th,
+        .access-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .access-table th {
+            background: #e9ecef;
+            font-weight: bold;
+            color: #495057;
+        }
+
+        .access-table tr:hover {
+            background: #f1f3f4;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 부정클릭 팝업 테스트 페이지</h1>
+        
+        <div class="test-section">
+            <h3>테스트 유형 선택</h3>
+            <button class="test-button" onclick="showTestPopup('duplicate', 1)">1단계: 중복접속 경고</button>
+            <button class="test-button" onclick="showTestPopup('excessive', 2)">2단계: 과도한 클릭 경고</button>
+            <button class="test-button" onclick="showTestPopup('suspicious', 3)">3단계: 의심스러운 패턴 경고</button>
+            <button class="test-button" onclick="showTestPopup('bot', 3)">봇 행동 패턴 경고</button>
+        </div>
+        
+        <div class="info-box">
+            <h4>📋 테스트 방법</h4>
+            <p>위의 버튼을 클릭하여 각각의 부정클릭 경고 팝업을 확인할 수 있습니다.</p>
+            <p>팝업은 <strong>좌측상단</strong>에 나타나며, 각 단계별로 다른 경고 레벨을 보여줍니다.</p>
+        </div>
+        
+        <div class="info-box">
+            <h4>🔍 팝업 확인 사항</h4>
+            <ul>
+                <li>팝업이 좌측상단에 올바르게 표시되는가?</li>
+                <li>애니메이션이 부드럽게 작동하는가?</li>
+                <li>닫기 버튼이 정상적으로 작동하는가?</li>
+                <li>내용이 읽기 쉽게 표시되는가?</li>
+                <li>진행바가 올바르게 작동하는가?</li>
+            </ul>
+        </div>
+
+        <div class="info-box">
+            <h4>🚨 경고 레벨별 특징</h4>
+            <ul>
+                <li><strong>1단계 (노란색):</strong> 중복접속 경고 - 경미한 의심</li>
+                <li><strong>2단계 (주황색):</strong> 과도한 클릭 경고 - 중간 수준 의심</li>
+                <li><strong>3단계 (빨간색):</strong> 심각한 패턴 경고 - 높은 수준 의심</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // 부정클릭 경고 팝업 표시 함수
+        function showTestPopup(type, level) {
+            // 기존 팝업 제거
+            const existingPopup = document.querySelector('.warning-popup');
+            if (existingPopup) {
+                existingPopup.remove();
+            }
+            
+            // 팝업 내용 설정
+            let title, message, progressWidth;
+            
+            switch(type) {
+                case 'duplicate':
+                    title = '🚨 중복접속 경고 (1단계)';
+                    message = '동일한 IP에서 중복으로 접속이 감지되었습니다. 이는 부정클릭으로 의심됩니다.';
+                    progressWidth = 30;
+                    break;
+                case 'excessive':
+                    title = '⚠️ 과도한 클릭 경고 (2단계)';
+                    message = '짧은 시간 내에 과도한 클릭이 감지되었습니다. 정상적인 사용자 행동이 아닙니다.';
+                    progressWidth = 60;
+                    break;
+                case 'suspicious':
+                    title = '🔍 의심스러운 패턴 경고 (3단계)';
+                    message = '의심스러운 클릭 패턴이 감지되었습니다. 자동화된 도구 사용 가능성이 있습니다.';
+                    progressWidth = 80;
+                    break;
+                case 'bot':
+                    title = '🤖 봇 행동 패턴 경고 (3단계)';
+                    message = '봇과 유사한 행동 패턴이 감지되었습니다. 인공지능 도구 사용이 의심됩니다.';
+                    progressWidth = 100;
+                    break;
+                default:
+                    title = '⚠️ 경고';
+                    message = '부정클릭 의심 행동이 감지되었습니다.';
+                    progressWidth = 50;
+            }
+            
+            // 팝업 생성
+            const popup = document.createElement('div');
+            popup.className = `warning-popup warning-level-${level}`;
+            popup.innerHTML = `
+                <div class="warning-header">
+                    <h2 class="warning-title">${title}</h2>
+                    <button class="close-btn" onclick="this.closest('.warning-popup').remove()">×</button>
+                </div>
+                <div class="warning-content">
+                    <p class="warning-message">${message}</p>
+                    
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${progressWidth}%"></div>
+                    </div>
+                    
+                    <table class="access-table">
+                        <thead>
+                            <tr>
+                                <th>IP 주소</th>
+                                <th>접속 시간</th>
+                                <th>키워드</th>
+                                <th>중복 횟수</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>192.168.1.100</td>
+                                <td>${new Date().toLocaleString('ko-KR')}</td>
+                                <td>평택렌트카</td>
+                                <td>3회</td>
+                            </tr>
+                            <tr>
+                                <td>192.168.1.100</td>
+                                <td>${new Date(Date.now() - 60000).toLocaleString('ko-KR')}</td>
+                                <td>평택렌트카</td>
+                                <td>2회</td>
+                            </tr>
+                            <tr>
+                                <td>192.168.1.100</td>
+                                <td>${new Date(Date.now() - 120000).toLocaleString('ko-KR')}</td>
+                                <td>평택렌트카</td>
+                                <td>1회</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" onclick="alert('즐겨찾기에 추가되었습니다!')">즐겨찾기 추가</button>
+                        <button class="btn btn-secondary" onclick="this.closest('.warning-popup').remove()">닫기</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(popup);
+            
+            // ESC 키로 팝업 닫기
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    popup.remove();
+                }
+            });
+            
+            // 팝업 외부 클릭으로 닫기
+            popup.addEventListener('click', function(e) {
+                if (e.target === popup) {
+                    popup.remove();
+                }
+            });
+            
+            console.log(`🧪 ${type} 팝업이 좌측상단에 표시되었습니다. (레벨: ${level})`);
+        }
+        
+        // 페이지 로드 시 테스트 모드 확인
+        window.addEventListener('load', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const testMode = urlParams.get('test');
+            
+            if (testMode) {
+                console.log('🧪 테스트 모드 활성화:', testMode);
+                
+                // 3초 후 자동으로 해당 테스트 팝업 표시
+                setTimeout(() => {
+                    if (testMode.includes('duplicate')) {
+                        showTestPopup('duplicate', 1);
+                    } else if (testMode.includes('excessive')) {
+                        showTestPopup('excessive', 2);
+                    } else if (testMode.includes('suspicious')) {
+                        showTestPopup('suspicious', 3);
+                    } else if (testMode.includes('bot')) {
+                        showTestPopup('bot', 3);
+                    } else {
+                        showTestPopup('duplicate', 1); // 기본값
+                    }
+                }, 3000);
+            }
+        });
+        
+        // 페이지 로드 완료 메시지
+        console.log('🧪 부정클릭 팝업 테스트 페이지가 로드되었습니다.');
+        console.log('📱 팝업 테스트를 위해 위의 버튼을 클릭하세요.');
+    </script>
+</body>
+</html>
