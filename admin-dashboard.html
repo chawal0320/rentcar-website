@@ -8,6 +8,400 @@
     <!-- 네이버 광고 부정클릭 방지 시스템 -->
     <script src="click-protection.js"></script>
     
+    <!-- 테스트 페이지 관련 JavaScript 함수들 -->
+    <script>
+        // 테스트 링크 업데이트 함수
+        function updateTestLinks() {
+            const selectedStage = document.querySelector('input[name="stage"]:checked');
+            if (!selectedStage) return;
+            
+            const stage = selectedStage.value;
+            const testLinks = document.querySelectorAll('.test-link');
+            
+            testLinks.forEach(link => {
+                if (link.href.includes('duplicate_pc')) {
+                    link.href = `https://에스엔엠렌트카.kr?test=duplicate_pc&stage=${stage}`;
+                } else if (link.href.includes('duplicate_mobile')) {
+                    link.href = `https://에스엔엠렌트카.kr?test=duplicate_mobile&stage=${stage}`;
+                }
+            });
+        }
+        
+        // 테스트 페이지 열기 함수
+        function openTestPage() {
+            const selectedStage = document.querySelector('input[name="stage"]:checked');
+            if (!selectedStage) {
+                alert('먼저 테스트 단계를 선택해주세요.');
+                return;
+            }
+            
+            const stage = selectedStage.value;
+            const testUrl = `https://에스엔엠렌트카.kr?test=duplicate_pc&stage=${stage}`;
+            window.open(testUrl, '_blank');
+        }
+        
+        // 테스트 링크 복사 함수
+        function copyTestLink() {
+            const selectedStage = document.querySelector('input[name="stage"]:checked');
+            if (!selectedStage) {
+                alert('먼저 테스트 단계를 선택해주세요.');
+                return;
+            }
+            
+            const stage = selectedStage.value;
+            const testUrl = `https://에스엔엠렌트카.kr?test=duplicate_pc&stage=${stage}`;
+            
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(testUrl).then(() => {
+                    alert('테스트 링크가 클립보드에 복사되었습니다.');
+                }).catch(() => {
+                    fallbackCopyTextToClipboard(testUrl);
+                });
+            } else {
+                fallbackCopyTextToClipboard(testUrl);
+            }
+        }
+        
+        // 클립보드 복사 폴백 함수
+        function fallbackCopyTextToClipboard(text) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            textArea.style.top = '-999999px';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                document.execCommand('copy');
+                alert('테스트 링크가 클립보드에 복사되었습니다.');
+            } catch (err) {
+                alert('링크 복사에 실패했습니다. 수동으로 복사해주세요.');
+            }
+            
+            document.body.removeChild(textArea);
+        }
+        
+        // 팝업 미리보기 함수
+        function showTestPreview() {
+            const selectedStage = document.querySelector('input[name="stage"]:checked');
+            if (!selectedStage) {
+                alert('먼저 테스트 단계를 선택해주세요.');
+                return;
+            }
+            
+            const stage = selectedStage.value;
+            const stageElement = document.querySelector(`.warning-stage.stage-${stage}`);
+            
+            if (stageElement) {
+                // 스크롤을 해당 단계로 이동
+                stageElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                
+                // 하이라이트 효과
+                stageElement.style.transform = 'scale(1.02)';
+                stageElement.style.boxShadow = '0 12px 35px rgba(0,0,0,0.25)';
+                
+                setTimeout(() => {
+                    stageElement.style.transform = 'scale(1)';
+                    stageElement.style.boxShadow = '0 8px 25px rgba(0,0,0,0.15)';
+                }, 1000);
+                
+                alert(`${stage}단계 경고 팝업 미리보기를 확인하세요.`);
+            }
+        }
+        
+        // 테스트 모드 도움말 함수
+        function showTestModeHelp() {
+            const helpMessage = `
+테스트 모드 문제 해결 방법:
+
+1. 브라우저 새로고침 후 다시 시도
+2. 팝업 차단 설정 확인
+3. JavaScript 활성화 확인
+4. 쿠키 및 캐시 삭제
+5. 다른 브라우저로 테스트
+
+문제가 지속되면 관리자에게 문의하세요.
+            `;
+            
+            alert(helpMessage);
+        }
+        
+        // 간단한 체크박스 토글 함수
+        function toggleTestLinks() {
+            const testCheck = document.getElementById('test-check');
+            const testOptions = document.querySelector('.test-options');
+            
+            if (testCheck && testOptions) {
+                if (testCheck.checked) {
+                    // 테스트 링크 HTML 생성 및 표시
+                    if (!document.getElementById('test-links')) {
+                        const testLinksHTML = `
+                            <div class="test-links" id="test-links">
+                                <h4>테스트 링크</h4>
+                                <div class="link-item">
+                                    <strong>PC용 테스트 링크:</strong>
+                                    <input type="text" value="https://에스엔엠렌트카.kr?test=duplicate_pc" readonly class="link-input">
+                                    <button onclick="copyToClipboard('https://에스엔엠렌트카.kr?test=duplicate_pc')" class="copy-btn">복사</button>
+                                    <a href="https://에스엔엠렌트카.kr?test=duplicate_pc" target="_blank" class="test-btn">테스트</a>
+                                </div>
+                                
+                                <div class="link-item">
+                                    <strong>모바일용 테스트 링크:</strong>
+                                    <input type="text" value="https://에스엔엠렌트카.kr?test=duplicate_mobile" readonly class="link-input">
+                                    <button onclick="copyToClipboard('https://에스엔엠렌트카.kr?test=duplicate_mobile')" class="copy-btn">복사</button>
+                                    <a href="https://에스엔엠렌트카.kr?test=duplicate_mobile" target="_blank" class="test-btn">테스트</a>
+                                </div>
+                                
+                                                                    <div class="test-info">
+                                        <p><strong>테스트 방법:</strong></p>
+                                        <ol>
+                                            <li>위 링크를 복사하여 다른 PC나 모바일에서 접속</li>
+                                            <li>중복접속 했다고 가정하고 팝업이 뜨는지 확인</li>
+                                            <li>팝업 내용과 디자인이 올바른지 확인</li>
+                                        </ol>
+                                        
+                                        <div class="test-debug">
+                                            <p><strong>디버깅:</strong></p>
+                                            <button onclick="testPopupDirectly()" class="debug-btn">팝업 직접 테스트</button>
+                                            <button onclick="checkClickProtection()" class="debug-btn">부정클릭방지 상태 확인</button>
+                                        </div>
+                                    </div>
+                            </div>
+                        `;
+                        testOptions.insertAdjacentHTML('beforeend', testLinksHTML);
+                    }
+                    document.getElementById('test-links').style.display = 'block';
+                } else {
+                    // 테스트 링크 숨기기
+                    const testLinks = document.getElementById('test-links');
+                    if (testLinks) {
+                        testLinks.style.display = 'none';
+                    }
+                }
+            }
+        }
+        
+        // 링크 복사 함수
+        function copyToClipboard(text) {
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(text).then(() => {
+                    alert('링크가 클립보드에 복사되었습니다!');
+                }).catch(() => {
+                    fallbackCopyTextToClipboard(text);
+                });
+            } else {
+                fallbackCopyTextToClipboard(text);
+            }
+        }
+        
+        // 팝업 직접 테스트 함수
+        function testPopupDirectly() {
+            console.log('팝업 직접 테스트 시작');
+            
+            // 간단한 테스트 팝업 직접 생성
+            createSimpleTestPopup();
+            
+            if (window.clickProtection) {
+                console.log('clickProtection 객체 발견:', window.clickProtection);
+                
+                try {
+                    // 테스트 경고 팝업 직접 호출
+                    if (window.clickProtection.showTestWarning) {
+                        window.clickProtection.showTestWarning(1, 'duplicate');
+                        console.log('showTestWarning 함수 호출됨');
+                    } else {
+                        console.error('showTestWarning 함수가 없습니다');
+                    }
+                    
+                    // 또는 일반 경고 팝업 호출
+                    if (window.clickProtection.showWarningPopup) {
+                        window.clickProtection.showWarningPopup(1, 'duplicate');
+                        console.log('showWarningPopup 함수 호출됨');
+                    } else {
+                        console.error('showWarningPopup 함수가 없습니다');
+                    }
+                    
+                } catch (error) {
+                    console.error('팝업 테스트 중 오류 발생:', error);
+                    alert('팝업 테스트 중 오류가 발생했습니다: ' + error.message);
+                }
+            } else {
+                console.error('clickProtection 객체를 찾을 수 없습니다');
+                alert('부정클릭방지 시스템이 로드되지 않았습니다. 페이지를 새로고침해주세요.');
+            }
+        }
+        
+        // 간단한 테스트 팝업 생성 함수
+        function createSimpleTestPopup() {
+            console.log('간단한 테스트 팝업 생성');
+            
+            // 기존 팝업 제거
+            const existingPopup = document.getElementById('simple-test-popup');
+            if (existingPopup) {
+                existingPopup.remove();
+            }
+            
+            const popup = document.createElement('div');
+            popup.id = 'simple-test-popup';
+            popup.style.cssText = `
+                position: fixed;
+                top: 50px;
+                right: 50px;
+                width: 400px;
+                background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+                color: white;
+                padding: 25px;
+                border-radius: 15px;
+                box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+                z-index: 999999;
+                font-family: 'Segoe UI', sans-serif;
+                animation: slideIn 0.3s ease-out;
+            `;
+            
+            popup.innerHTML = `
+                <div style="display: flex; align-items: center; margin-bottom: 20px;">
+                    <span style="font-size: 28px; margin-right: 15px;">🚨</span>
+                    <h3 style="margin: 0; font-size: 20px; color: white;">테스트 경고 팝업</h3>
+                </div>
+                <p style="margin: 0 0 20px 0; line-height: 1.5; font-size: 16px;">
+                    <strong>중복접속 경고</strong><br>
+                    이것은 테스트용 경고 팝업입니다.<br>
+                    부정클릭 방지 시스템이 정상 작동하고 있습니다.
+                </p>
+                <div style="display: flex; gap: 15px;">
+                    <button onclick="this.parentElement.parentElement.remove()" style="
+                        background: rgba(255,255,255,0.2);
+                        border: 2px solid rgba(255,255,255,0.4);
+                        color: white;
+                        padding: 12px 24px;
+                        border-radius: 8px;
+                        cursor: pointer;
+                        font-size: 14px;
+                        font-weight: bold;
+                        transition: all 0.2s;
+                    " onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                        닫기
+                    </button>
+                    <button onclick="alert('즐겨찾기에 추가되었습니다!')" style="
+                        background: rgba(255,255,255,0.2);
+                        border: 2px solid rgba(255,255,255,0.4);
+                        color: white;
+                        padding: 12px 24px;
+                        border-radius: 8px;
+                        cursor: pointer;
+                        font-size: 14px;
+                        font-weight: bold;
+                        transition: all 0.2s;
+                    " onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                        즐겨찾기 추가
+                    </button>
+                </div>
+            `;
+            
+            // CSS 애니메이션 추가
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes slideIn {
+                    from {
+                        transform: translateX(100%);
+                        opacity: 0;
+                    }
+                    to {
+                        transform: translateX(0);
+                        opacity: 1;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            document.body.appendChild(popup);
+            console.log('간단한 테스트 팝업 생성 완료');
+            
+            // 15초 후 자동 제거
+            setTimeout(() => {
+                if (popup.parentNode) {
+                    popup.remove();
+                    console.log('테스트 팝업 자동 제거됨');
+                }
+            }, 15000);
+        }
+        
+        // 부정클릭방지 상태 확인 함수
+        function checkClickProtection() {
+            console.log('부정클릭방지 상태 확인 시작');
+            
+            if (window.clickProtection) {
+                console.log('clickProtection 객체:', window.clickProtection);
+                console.log('사용 가능한 메서드들:', Object.getOwnPropertyNames(window.clickProtection));
+                
+                alert(`부정클릭방지 시스템이 로드되었습니다.\n\n사용 가능한 메서드:\n${Object.getOwnPropertyNames(window.clickProtection).join('\n')}`);
+            } else {
+                console.error('clickProtection 객체를 찾을 수 없습니다');
+                alert('부정클릭방지 시스템이 로드되지 않았습니다.');
+            }
+        }
+        
+        // 탭 전환 함수
+        function switchTab(tabName) {
+            console.log('탭 전환:', tabName);
+            
+            // 모든 탭 콘텐츠 숨기기
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(content => {
+                content.classList.remove('active');
+                content.style.display = 'none';
+            });
+            
+            // 모든 탭 버튼 비활성화
+            const navTabs = document.querySelectorAll('.nav-tab');
+            navTabs.forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // 선택된 탭 콘텐츠 표시
+            const selectedTab = document.getElementById(tabName + '-tab');
+            if (selectedTab) {
+                selectedTab.classList.add('active');
+                selectedTab.style.display = 'block';
+                console.log('탭 콘텐츠 표시됨:', tabName);
+            } else {
+                console.error('탭 콘텐츠를 찾을 수 없음:', tabName);
+            }
+            
+            // 선택된 탭 버튼 활성화
+            const selectedNavTab = document.querySelector(`[onclick="switchTab('${tabName}')"]`);
+            if (selectedNavTab) {
+                selectedNavTab.classList.add('active');
+                console.log('탭 버튼 활성화됨:', tabName);
+            } else {
+                console.error('탭 버튼을 찾을 수 없음:', tabName);
+            }
+        }
+        
+        // 페이지 로드 완료 후 테스트 체크박스 이벤트 설정
+        window.addEventListener('load', function() {
+            const testCheck = document.getElementById('test-check');
+            if (testCheck) {
+                testCheck.addEventListener('change', toggleTestLinks);
+                console.log('체크박스 이벤트 리스너 추가됨');
+            }
+            
+            // 기본 탭 설정 (알림기록 탭)
+            switchTab('notification');
+        });
+        
+        // 추가 안전장치: DOMContentLoaded 이벤트도 사용
+        document.addEventListener('DOMContentLoaded', function() {
+            const testCheck = document.getElementById('test-check');
+            if (testCheck) {
+                testCheck.addEventListener('change', toggleTestLinks);
+                console.log('DOMContentLoaded에서 체크박스 이벤트 리스너 추가됨');
+            }
+        });
+    </script>
+    
     <style>
         * {
             margin: 0;
@@ -1563,6 +1957,576 @@
             }
         }
 
+        /* 테스트 페이지 탭 스타일 */
+        .test-content {
+            padding: 20px;
+        }
+
+        .test-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+        }
+
+        .test-header h3 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .test-description {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .test-categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .test-category {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .test-category:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            border-color: #007bff;
+        }
+
+        .test-category h4 {
+            color: #2c3e50;
+            font-size: 18px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        /* 팝업 미리보기 스타일 */
+        .popup-preview-section {
+            margin: 30px 0;
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .popup-preview-section h3 {
+            color: #2c3e50;
+            font-size: 20px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        
+        .warning-stage {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            margin-bottom: 25px;
+            overflow: hidden;
+            border: 3px solid;
+            width: 380px;
+            flex-shrink: 0;
+        }
+        
+        .warning-stage.stage-1 {
+            border-color: #007bff;
+        }
+        
+        .warning-stage.stage-2 {
+            border-color: #ff8c00;
+        }
+        
+        .warning-stage.stage-3 {
+            border-color: #dc3545;
+        }
+        
+        .stage-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: #495057;
+            color: white;
+        }
+        
+        .stage-number {
+            font-weight: 600;
+            font-size: 16px;
+        }
+        
+        .stage-header .close-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .stage-content {
+            display: flex;
+            padding: 25px;
+            gap: 20px;
+            align-items: flex-start;
+        }
+        
+        .stage-icon {
+            font-size: 40px;
+            min-width: 60px;
+            text-align: center;
+        }
+        
+        .stage-text {
+            flex: 1;
+        }
+        
+        .stage-text h4 {
+            color: #2c3e50;
+            font-size: 18px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .stage-text p {
+            color: #495057;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        
+        .visit-count {
+            color: #495057;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .favorites-btn {
+            background: linear-gradient(135deg, #4caf50, #45a049);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .favorites-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+        
+        .access-table {
+            padding: 0 25px 25px;
+        }
+        
+        .access-table table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #f8f9fa;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .access-table th {
+            background: #495057;
+            color: white;
+            padding: 12px 8px;
+            font-size: 13px;
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        .access-table td {
+            padding: 10px 8px;
+            font-size: 12px;
+            text-align: center;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .access-table tbody tr:nth-child(even) {
+            background: #f1f3f4;
+        }
+        
+        /* 모바일 정보 스타일 */
+        .mobile-info {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 30px 0;
+            border-left: 4px solid #6c757d;
+        }
+        
+        .mobile-info h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .mobile-info p {
+            color: #6c757d;
+            margin: 0;
+        }
+        
+        /* 테스트 섹션 스타일 */
+        .test-section {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin: 30px 0;
+        }
+        
+        .test-section h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        
+        .test-options {
+            margin-top: 20px;
+        }
+        
+        .test-options label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .test-instructions {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .test-instructions p {
+            margin: 10px 0;
+            color: #495057;
+        }
+        
+        .test-instructions input[type="text"] {
+            background: #e9ecef;
+            border: 1px solid #ced4da;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            width: 120px;
+        }
+        
+        .test-instructions .test-link {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .test-instructions .test-link:hover {
+            text-decoration: underline;
+        }
+        
+        .stage-selection {
+            margin: 20px 0;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .stage-selection label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            color: #495057;
+        }
+        
+        .test-procedure {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .test-procedure p {
+            margin: 10px 0;
+            color: #856404;
+        }
+        
+        .test-procedure strong {
+            color: #d63031;
+        }
+
+        .test-links {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .test-link-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border: 1px solid #e9ecef;
+        }
+
+        .device-icon {
+            font-size: 24px;
+            min-width: 30px;
+        }
+
+        .device-label {
+            font-weight: 600;
+            color: #495057;
+            min-width: 80px;
+        }
+
+        .test-link {
+            flex: 1;
+            padding: 10px 15px;
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .test-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,123,255,0.3);
+            color: white;
+        }
+
+        .pc-link {
+            background: linear-gradient(135deg, #28a745, #1e7e34);
+        }
+
+        .pc-link:hover {
+            box-shadow: 0 5px 15px rgba(40,167,69,0.3);
+        }
+
+        .mobile-link {
+            background: linear-gradient(135deg, #ffc107, #e0a800);
+            color: #212529;
+        }
+
+        .mobile-link:hover {
+            box-shadow: 0 5px 15px rgba(255,193,7,0.3);
+        }
+
+        .copy-btn {
+            padding: 8px 12px;
+            background: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            min-width: 60px;
+        }
+
+        .copy-btn:hover {
+            background: #5a6268;
+            transform: scale(1.05);
+        }
+
+        .test-instructions {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .test-instructions h4 {
+            color: #2c3e50;
+            font-size: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .instruction-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #007bff;
+        }
+
+        .step-number {
+            background: #007bff;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .step p {
+            margin: 0;
+            color: #495057;
+            font-weight: 500;
+        }
+
+        .test-notes {
+            background: #fff3cd;
+            border: 2px solid #ffeaa7;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .test-notes h4 {
+            color: #856404;
+            font-size: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .test-notes ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .test-notes li {
+            padding: 8px 0;
+            color: #856404;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .test-notes li:before {
+            content: "⚠️";
+            position: absolute;
+            left: 0;
+            top: 8px;
+        }
+
+        /* 탭 네비게이션 스타일 */
+        .tab-navigation {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 10px;
+        }
+
+        .nav-tab {
+            padding: 10px 20px;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px 8px 0 0;
+            cursor: pointer;
+            font-weight: 500;
+            color: #495057;
+            transition: all 0.3s ease;
+            border-bottom: none;
+        }
+
+        .nav-tab:hover {
+            background: #e9ecef;
+            color: #495057;
+        }
+
+        .nav-tab.active {
+            background: #007bff;
+            color: white !important;
+            border-color: #007bff;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
+        }
+        
+        .nav-tab {
+            color: #495057 !important;
+            font-weight: 500;
+            text-shadow: none;
+        }
+        
+        .nav-tab:hover {
+            color: #212529 !important;
+        }
+
+        /* 탭 콘텐츠 스타일 */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* 복사 알림 스타일 */
+        .copy-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            z-index: 10000;
+            animation: slideInRight 0.3s ease-out;
+            max-width: 300px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .copy-notification.success {
+            background: linear-gradient(135deg, #28a745, #1e7e34);
+        }
+
+        .copy-notification.error {
+            background: linear-gradient(135deg, #dc3545, #c82333);
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
         @media (max-width: 768px) {
             .stats-grid {
                 grid-template-columns: 1fr;
@@ -1589,6 +2553,20 @@
             
             .admin-mode-badge {
                 display: none;
+            }
+
+            .test-categories {
+                grid-template-columns: 1fr;
+            }
+
+            .test-link-item {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+
+            .instruction-steps {
+                grid-template-columns: 1fr;
             }
         }
 
@@ -2807,6 +3785,152 @@
                                     <!-- 데이터가 여기에 동적으로 추가됩니다 -->
                                 </tbody>
                             </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 테스트 페이지 탭 콘텐츠 -->
+                <div id="test-tab" class="tab-content">
+                    <div class="test-content">
+                        <div class="test-header">
+                            <h2>부정접속경고 안내</h2>
+                        </div>
+                        
+                        <div class="info-section">
+                            <h3>부정접속 경고란?</h3>
+                            <p>광고주가 정한 조건에 따라, 부정클릭으로 의심되는 사용자가 홈페이지 접속시, 3단계에 걸친 경고창을 보여주어, 일반 사용자에게는 즐겨찾기를 유도하고, 악성 부정클릭 접속자에게는 법적조치 등의 경고를 할 수 있습니다. 단, 일반적인 사용자의 경우 불쾌감을 느낄 수 있으므로, 사용결정 및 기준설정에 유의하셔야 합니다.</p>
+                        </div>
+                        
+                        <div class="popup-preview-section">
+                            <h3>부정접속 경고팝업</h3>
+                            
+                            <div class="warning-stage stage-1">
+                                <div class="stage-header">
+                                    <span class="stage-number">1단계</span>
+                                    <button class="close-btn">×</button>
+                                </div>
+                                <div class="stage-content">
+                                    <div class="stage-icon">✅</div>
+                                    <div class="stage-text">
+                                        <h4>저희 사이트에 방문해 주셔서 감사합니다</h4>
+                                        <p>지금 클릭하신 링크는 저희 광고비가 지출되는 광고상품입니다. 즐겨찾기를 통한 방문으로 광고비가 절감되면, 더 좋은 서비스를 제공할 수 있습니다. 아래 [+즐겨찾기 바로추가]를 클릭하시면 다음 방문에 편하게 이용하실 수 있습니다.</p>
+                                        <button class="favorites-btn">+ 즐겨찾기 바로추가</button>
+                                    </div>
+                                </div>
+                                <div class="access-table">
+                                    <table>
+                                        <thead>
+                                            <tr><th>접속IP</th><th>클릭키워드 (광고매체)</th><th>접속시간</th></tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr><td>10.10.10.10</td><td>가나다 (네이버)</td><td>23-01-01 (08:08:08)</td></tr>
+                                            <tr><td>10.10.10.10</td><td>가나다 (네이버)</td><td>23-01-01 (08:08:08)</td></tr>
+                                            <tr><td>10.10.10.10</td><td>가나다 (네이버)</td><td>23-01-01 (08:08:08)</td></tr>
+                                            <tr><td>10.10.10.10</td><td>가나다 (네이버)</td><td>23-01-01 (08:08:08)</td></tr>
+                                            <tr><td>10.10.10.10</td><td>가나다 (네이버)</td><td>23-01-01 (08:08:08)</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            
+                            <div class="warning-stage stage-2">
+                                <div class="stage-header">
+                                    <span class="stage-number">2단계</span>
+                                    <button class="close-btn">×</button>
+                                </div>
+                                <div class="stage-content">
+                                    <div class="stage-icon">✅</div>
+                                    <div class="stage-text">
+                                        <h4>광고클릭을 통해 여러 번 방문하셨습니다</h4>
+                                        <p>지금 클릭하신 링크는 저희 광고비가 지출되는 광고상품으로, 많은 광고비가 지출됩니다. 즐겨찾기를 통한 방문으로 광고비가 절감되면, 더 좋은 서비스를 제공할 수 있습니다. 아래 [+즐겨찾기 바로추가]를 클릭하시면 다음 방문에 편하게 이용하실 수 있습니다.</p>
+                                        <div class="visit-count">방문횟수: 5회</div>
+                                        <button class="favorites-btn">+ 즐겨찾기 바로추가</button>
+                                    </div>
+                                </div>
+                                <div class="access-table">
+                                    <table>
+                                        <thead>
+                                            <tr><th>접속IP</th><th>클릭키워드 (광고매체)</th><th>접속시간</th></tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr><td>10.10.10.10</td><td>가나다 (네이버)</td><td>23-01-01 (08:08:08)</td></tr>
+                                            <tr><td>10.10.10.10</td><td>가나다 (네이버)</td><td>23-01-01 (08:08:08)</td></tr>
+                                            <tr><td>10.10.10.10</td><td>가나다 (네이버)</td><td>23-01-01 (08:08:08)</td></tr>
+                                            <tr><td>10.10.10.10</td><td>가나다 (네이버)</td><td>23-01-01 (08:08:08)</td></tr>
+                                            <tr><td>10.10.10.10</td><td>가나다 (네이버)</td><td>23-01-01 (08:08:08)</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            
+                            <div class="warning-stage stage-3">
+                                <div class="stage-header">
+                                    <span class="stage-number">3단계</span>
+                                    <button class="close-btn">×</button>
+                                </div>
+                                <div class="stage-content">
+                                    <div class="stage-icon">🛡️</div>
+                                    <div class="stage-text">
+                                        <h4>광고클릭을 중지해주십시오</h4>
+                                        <p>접속자는 지속적인 광고클릭으로 당사 광고비를 과도하게 지출하게 하였습니다. 모든 IP는 추적관리되며, 이를 근거로 하여 영업 방해에 대한 법적조치를 취할 수 있습니다. 아래 [+즐겨찾기 바로추가]를 클릭하시면 다음 방문에 편하게 이용하실 수 있습니다.</p>
+                                        <div class="visit-count">방문횟수: 5회</div>
+                                        <button class="favorites-btn">+ 즐겨찾기 바로추가</button>
+                                    </div>
+                                </div>
+                                <div class="access-table">
+                                    <table>
+                                        <thead>
+                                            <tr><th>접속IP</th><th>클릭키워드 (광고매체)</th><th>접속시간</th></tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr><td>10.10.10.10</td><td>가나다 (네이버)</td><td>23-01-01 (08:08:08)</td></tr>
+                                            <tr><td>10.10.10.10</td><td>가나다 (네이버)</td><td>23-01-01 (08:08:08)</td></tr>
+                                            <tr><td>10.10.10.10</td><td>가나다 (네이버)</td><td>23-01-01 (08:08:08)</td></tr>
+                                            <tr><td>10.10.10.10</td><td>가나다 (네이버)</td><td>23-01-01 (08:08:08)</td></tr>
+                                            <tr><td>10.10.10.10</td><td>가나다 (네이버)</td><td>23-01-01 (08:08:08)</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mobile-info">
+                            <h3>모바일 샘플보기</h3>
+                            <p>모바일은 '즐겨찾기 바로추가' 기능이 제공되지 않습니다.</p>
+                        </div>
+                        
+                        <div class="test-section">
+                            <h3>부정접속경고 사용동의 및 홈페이지 테스트</h3>
+                            <p>테스트 모드를 이용하여 부정접속 경고 적용상태를 미리 확인할 수 있습니다.</p>
+                            
+                                                            <div class="test-options">
+                                <label><input type="checkbox" id="test-check"> 테스트를 진행합니다.</label>
+                                
+                                
+                                
+                                <div class="test-instructions" id="test-instructions" style="display: none;">
+                                    <p>• 에스엔엠렌트카.kr 뒤에 ?test=duplicate_pc 를 붙이세요. <a href="https://에스엔엠렌트카.kr?test=duplicate_pc" target="_blank" class="test-link">[클릭]</a></p>
+                                    <p>• 모바일 확인을 위해서 <input type="text" value="01040503679" readonly> 로 테스트 모드 링크 보내기 <a href="https://에스엔엠렌트카.kr?test=duplicate_mobile" target="_blank" class="test-link">[전송]</a></p>
+                                    <p>• 테스트 모드가 작동하지 않을 경우 <a href="#" onclick="showTestModeHelp()">[클릭하세요]</a></p>
+                                </div>
+                                
+                                <div class="stage-selection" id="stage-selection" style="display: none;">
+                                    <label><input type="radio" name="stage" value="1" onchange="updateTestLinks()"> 1단계 경고창 테스트</label>
+                                    <label><input type="radio" name="stage" value="2" checked onchange="updateTestLinks()"> 2단계 경고창 테스트</label>
+                                    <label><input type="radio" name="stage" value="3" onchange="updateTestLinks()"> 3단계 경고창 테스트</label>
+                                </div>
+                                
+                                <div class="test-procedure" id="test-procedure" style="display: none;">
+                                    <p>테스트 진행 체크 > 단계 선택 > 인터넷창 열기 > 광고주님 홈페이지 접속 > 정상적으로 경고창이 뜨는지 확인합니다.</p>
+                                    <p><strong>반드시, 모든 단계를 이상없이 테스트 하신 뒤에 사용하셔야 합니다.</strong></p>
+                                    
+                                    <div class="test-actions">
+                                        <button class="btn btn-primary" onclick="openTestPage()">테스트 페이지 열기</button>
+                                        <button class="btn btn-info" onclick="copyTestLink()">테스트 링크 복사</button>
+                                        <button class="btn btn-warning" onclick="showTestPreview()">팝업 미리보기</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -4531,6 +5655,11 @@
             // 알림기록 탭인 경우 데이터 표시
             else if (tabName === 'notification') {
                 displayNotifications();
+            }
+            // 테스트 페이지 탭인 경우 초기화
+            else if (tabName === 'test') {
+                // 테스트 페이지 특별한 초기화가 필요한 경우 여기에 추가
+                console.log('테스트 페이지 탭이 활성화되었습니다.');
             }
         }
         
@@ -6421,6 +7550,418 @@
             });
         }
 
+        // 클립보드에 복사하는 함수
+        function copyToClipboard(text) {
+            if (navigator.clipboard && window.isSecureContext) {
+                // 최신 브라우저에서 지원하는 Clipboard API 사용
+                navigator.clipboard.writeText(text).then(() => {
+                    showCopyNotification('링크가 클립보드에 복사되었습니다!', 'success');
+                }).catch(err => {
+                    console.error('클립보드 복사 실패:', err);
+                    fallbackCopyToClipboard(text);
+                });
+            } else {
+                // 구형 브라우저를 위한 fallback 방법
+                fallbackCopyToClipboard(text);
+            }
+        }
+
+        // 구형 브라우저를 위한 클립보드 복사 fallback
+        function fallbackCopyToClipboard(text) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            textArea.style.top = '-999999px';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    showCopyNotification('링크가 클립보드에 복사되었습니다!', 'success');
+                } else {
+                    showCopyNotification('클립보드 복사에 실패했습니다.', 'error');
+                }
+            } catch (err) {
+                console.error('클립보드 복사 실패:', err);
+                showCopyNotification('클립보드 복사에 실패했습니다.', 'error');
+            }
+            
+            document.body.removeChild(textArea);
+        }
+
+        // 복사 알림 표시
+        function showCopyNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `copy-notification ${type}`;
+            notification.textContent = message;
+            
+            // 기존 알림 제거
+            const existingNotifications = document.querySelectorAll('.copy-notification');
+            existingNotifications.forEach(notif => notif.remove());
+            
+            document.body.appendChild(notification);
+            
+            // 3초 후 자동 제거
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 3000);
+        }
+
+        // 알림 새로고침 함수
+        function refreshNotifications() {
+            try {
+                // 알림 데이터 새로고침 로직
+                console.log('알림 데이터 새로고침 완료');
+            } catch (error) {
+                console.error('알림 새로고침 중 오류:', error);
+            }
+        }
+
+        // 탭 전환 함수
+        function switchTab(tabName) {
+            try {
+                // 모든 탭 콘텐츠 숨기기
+                const tabContents = document.querySelectorAll('.tab-content');
+                tabContents.forEach(content => {
+                    content.style.display = 'none';
+                });
+                
+                // 모든 탭 버튼 비활성화
+                const tabButtons = document.querySelectorAll('.nav-tab');
+                tabButtons.forEach(button => {
+                    button.classList.remove('active');
+                });
+                
+                // 선택된 탭 콘텐츠 표시
+                const selectedTab = document.getElementById(tabName + '-tab');
+                if (selectedTab) {
+                    selectedTab.style.display = 'block';
+                }
+                
+                // 선택된 탭 버튼 활성화
+                const selectedButton = document.querySelector(`[onclick="switchTab('${tabName}')"]`);
+                if (selectedButton) {
+                    selectedButton.classList.add('active');
+                }
+                
+                // 탭별 초기화 함수 호출
+                switch(tabName) {
+                    case 'notification':
+                        refreshNotifications();
+                        break;
+                    case 'refund':
+                        // 환불요청 탭 초기화
+                        break;
+                    case 'access':
+                        // 접속기록 탭 초기화
+                        break;
+                    case 'location':
+                        // 위치기록 탭 초기화
+                        break;
+                    case 'blocking':
+                        // 차단관리 탭 초기화
+                        displayBlockedIPs();
+                        break;
+                    case 'fraud-warning':
+                        // 부정접속경고 탭 초기화
+                        break;
+                    case 'test':
+                        // 테스트 페이지 탭 초기화
+                        break;
+                    case 'settings':
+                        // 환경설정 탭 초기화
+                        break;
+                }
+                
+                console.log(`탭 전환 완료: ${tabName}`);
+                
+            } catch (error) {
+                console.error('탭 전환 중 오류:', error);
+            }
+        }
+
+        // 테스트 경고 함수
+        function testWarning(testType) {
+            console.log(`🧪 테스트 경고 실행: ${testType}`);
+            
+            // ClickProtectionSystem 인스턴스 찾기
+            if (window.clickProtectionSystem) {
+                window.clickProtectionSystem.activateTestMode(testType);
+            } else {
+                // ClickProtectionSystem이 없으면 직접 테스트 모드 활성화
+                console.log('ClickProtectionSystem을 찾을 수 없습니다. 직접 테스트 모드를 활성화합니다.');
+                
+                // 테스트 모드 배너 표시
+                const banner = document.createElement('div');
+                banner.id = 'test-mode-banner';
+                banner.innerHTML = `
+                    <div class="test-banner-content">
+                        <span class="test-icon">🧪</span>
+                        <span class="test-text">테스트 모드: ${getTestTypeName(testType)}</span>
+                        <button class="test-close-btn" onclick="this.parentElement.parentElement.remove()">×</button>
+                    </div>
+                `;
+                
+                document.body.appendChild(banner);
+                
+                // 테스트 유형에 따른 경고 표시
+                setTimeout(() => {
+                    showTestWarning(testType);
+                }, 1000);
+            }
+        }
+        
+        // 테스트 유형 이름 반환
+        function getTestTypeName(testType) {
+            const typeNames = {
+                'duplicate_pc': '중복접속 경고 (PC)',
+                'duplicate_mobile': '중복접속 경고 (모바일)',
+                'excessive_pc': '과도한 클릭 경고 (PC)',
+                'excessive_mobile': '과도한 클릭 경고 (모바일)',
+                'suspicious_pc': '의심스러운 패턴 경고 (PC)',
+                'suspicious_mobile': '의심스러운 패턴 경고 (모바일)',
+                'bot_pc': '봇 행동 패턴 경고 (PC)',
+                'bot_mobile': '봇 행동 패턴 경고 (모바일)',
+                'all_pc': '복합 경고 (PC)',
+                'all_mobile': '복합 경고 (모바일)'
+            };
+            return typeNames[testType] || '테스트 모드';
+        }
+        
+        // 간단한 테스트 경고 표시
+        function showTestWarning(testType) {
+            const warningDiv = document.createElement('div');
+            warningDiv.id = 'test-warning-popup';
+            warningDiv.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: white;
+                border: 3px solid #ff6b35;
+                border-radius: 16px;
+                padding: 30px;
+                box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+                z-index: 10000;
+                max-width: 400px;
+                text-align: center;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            `;
+            
+            let level, message;
+            switch (testType) {
+                case 'duplicate_pc':
+                case 'duplicate_mobile':
+                    level = 1;
+                    message = '중복접속 경고 테스트입니다.';
+                    break;
+                case 'excessive_pc':
+                case 'excessive_mobile':
+                    level = 2;
+                    message = '과도한 클릭 경고 테스트입니다.';
+                    break;
+                case 'suspicious_pc':
+                case 'suspicious_mobile':
+                    level = 3;
+                    message = '의심스러운 패턴 경고 테스트입니다.';
+                    break;
+                case 'bot_pc':
+                case 'bot_mobile':
+                    level = 4;
+                    message = '봇 행동 패턴 경고 테스트입니다.';
+                    break;
+                case 'all_pc':
+                case 'all_mobile':
+                    level = 5;
+                    message = '복합 경고 테스트입니다.';
+                    break;
+                default:
+                    level = 1;
+                    message = '테스트 경고입니다.';
+            }
+            
+            warningDiv.innerHTML = `
+                <h3 style="color: #ff6b35; margin-bottom: 20px;">${level}단계 경고</h3>
+                <p style="color: #495057; margin-bottom: 20px;">${message}</p>
+                <p style="color: #6c757d; font-size: 14px;">이것은 테스트용 경고 팝업입니다.</p>
+                <button onclick="this.parentElement.remove()" style="
+                    background: #ff6b35;
+                    color: white;
+                    border: none;
+                    padding: 10px 20px;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    margin-top: 20px;
+                ">닫기</button>
+            `;
+            
+            document.body.appendChild(warningDiv);
+        }
+
+        // 테스트 경고 함수
+        function testWarning(testType) {
+            console.log(`🧪 테스트 경고 실행: ${testType}`);
+            
+            // 테스트 모드 배너 표시
+            const banner = document.createElement('div');
+            banner.id = 'test-mode-banner';
+            banner.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+                color: white;
+                z-index: 10000;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+                animation: slideDown 0.5s ease-out;
+            `;
+            
+            banner.innerHTML = `
+                <div style="display: flex; align-items: center; justify-content: center; padding: 15px 20px;">
+                    <span style="font-size: 20px; margin-right: 10px;">🧪</span>
+                    <span style="font-weight: bold;">테스트 모드: ${getTestTypeName(testType)}</span>
+                    <button onclick="this.parentElement.parentElement.remove()" style="
+                        background: rgba(255, 255, 255, 0.2);
+                        border: none;
+                        color: white;
+                        width: 30px;
+                        height: 30px;
+                        border-radius: 50%;
+                        cursor: pointer;
+                        font-size: 18px;
+                        font-weight: bold;
+                        margin-left: 20px;
+                    ">×</button>
+                </div>
+            `;
+            
+            document.body.appendChild(banner);
+            
+            // 테스트 유형에 따른 경고 표시
+            setTimeout(() => {
+                showTestWarning(testType);
+            }, 1000);
+        }
+        
+        // 테스트 유형 이름 반환
+        function getTestTypeName(testType) {
+            const typeNames = {
+                'duplicate_pc': '중복접속 경고 (PC)',
+                'duplicate_mobile': '중복접속 경고 (모바일)',
+                'excessive_pc': '과도한 클릭 경고 (PC)',
+                'excessive_mobile': '과도한 클릭 경고 (모바일)',
+                'suspicious_pc': '의심스러운 패턴 경고 (PC)',
+                'suspicious_mobile': '의심스러운 패턴 경고 (모바일)',
+                'bot_pc': '봇 행동 패턴 경고 (PC)',
+                'bot_mobile': '봇 행동 패턴 경고 (모바일)',
+                'all_pc': '복합 경고 (PC)',
+                'all_mobile': '복합 경고 (모바일)'
+            };
+            return typeNames[testType] || '테스트 모드';
+        }
+        
+        // 간단한 테스트 경고 표시
+        function showTestWarning(testType) {
+            const warningDiv = document.createElement('div');
+            warningDiv.id = 'test-warning-popup';
+            warningDiv.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: white;
+                border: 3px solid #ff6b35;
+                border-radius: 16px;
+                padding: 30px;
+                box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+                z-index: 10000;
+                max-width: 400px;
+                text-align: center;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                animation: fadeIn 0.3s ease-out;
+            `;
+            
+            let level, message, color;
+            switch (testType) {
+                case 'duplicate_pc':
+                case 'duplicate_mobile':
+                    level = 1;
+                    message = '중복접속 경고 테스트입니다.';
+                    color = '#ff6b35';
+                    break;
+                case 'excessive_pc':
+                case 'excessive_mobile':
+                    level = 2;
+                    message = '과도한 클릭 경고 테스트입니다.';
+                    color = '#ff5722';
+                    break;
+                case 'suspicious_pc':
+                case 'suspicious_mobile':
+                    level = 3;
+                    message = '의심스러운 패턴 경고 테스트입니다.';
+                    color = '#d32f2f';
+                    break;
+                case 'bot_pc':
+                case 'bot_mobile':
+                    level = 4;
+                    message = '봇 행동 패턴 경고 테스트입니다.';
+                    color = '#9c27b0';
+                    break;
+                case 'all_pc':
+                case 'all_mobile':
+                    level = 5;
+                    message = '복합 경고 테스트입니다.';
+                    color = '#212121';
+                    break;
+                default:
+                    level = 1;
+                    message = '테스트 경고입니다.';
+                    color = '#ff6b35';
+            }
+            
+            warningDiv.innerHTML = `
+                <h3 style="color: ${color}; margin-bottom: 20px; font-size: 24px;">${level}단계 경고</h3>
+                <p style="color: #495057; margin-bottom: 20px; font-size: 16px;">${message}</p>
+                <p style="color: #6c757d; font-size: 14px; margin-bottom: 25px;">이것은 테스트용 경고 팝업입니다.</p>
+                <button onclick="this.parentElement.remove()" style="
+                    background: ${color};
+                    color: white;
+                    border: none;
+                    padding: 12px 24px;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    font-size: 16px;
+                    font-weight: 600;
+                    transition: all 0.3s ease;
+                " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">닫기</button>
+            `;
+            
+            document.body.appendChild(warningDiv);
+            
+            // 애니메이션 스타일 추가
+            if (!document.getElementById('test-animations')) {
+                const style = document.createElement('style');
+                style.id = 'test-animations';
+                style.textContent = `
+                    @keyframes slideDown {
+                        from { transform: translateY(-100%); }
+                        to { transform: translateY(0); }
+                    }
+                    @keyframes fadeIn {
+                        from { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+                        to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+        }
+
         // 페이지 로드 시 초기화
         document.addEventListener('DOMContentLoaded', function() {
             // 차단IP 테이블 초기 표시
@@ -6431,7 +7972,189 @@
             if (itemsPerPageSelect) {
                 itemsPerPageSelect.addEventListener('change', changeBlockedItemsPerPage);
             }
+            
+                    // 기본 탭 설정 (알림기록 탭)
+        switchTab('notification');
+        
+        // 테스트 모드 초기화
+        initializeTestMode();
+    });
+    
+    // ===== 테스트 모드 관련 함수들 =====
+    
+    // 테스트 모드 초기화
+    function initializeTestMode() {
+        const testCheck = document.getElementById('test-check');
+        if (testCheck) {
+            testCheck.checked = false;
+            // 초기 상태에서는 모든 섹션을 숨김
+            const testInstructions = document.getElementById('test-instructions');
+            const stageSelection = document.getElementById('stage-selection');
+            const testProcedure = document.getElementById('test-procedure');
+            
+            if (testInstructions) testInstructions.classList.remove('show');
+            if (stageSelection) stageSelection.classList.remove('show');
+            if (testProcedure) testProcedure.classList.remove('show');
+        }
+    }
+    
+    // 테스트 모드 토글
+    function toggleTestMode() {
+        const testCheck = document.getElementById('test-check');
+        const testInstructions = document.getElementById('test-instructions');
+        const stageSelection = document.getElementById('stage-selection');
+        const testProcedure = document.getElementById('test-procedure');
+        
+        if (testCheck.checked) {
+            // CSS 클래스를 사용하여 표시
+            setTimeout(() => {
+                testInstructions.classList.add('show');
+            }, 100);
+            setTimeout(() => {
+                stageSelection.classList.add('show');
+            }, 200);
+            setTimeout(() => {
+                testProcedure.classList.add('show');
+            }, 300);
+            updateTestLinks();
+        } else {
+            // CSS 클래스를 사용하여 숨김
+            testInstructions.classList.remove('show');
+            stageSelection.classList.remove('show');
+            testProcedure.classList.remove('show');
+        }
+    }
+    
+    // 테스트 링크 업데이트
+    function updateTestLinks() {
+        const selectedStage = document.querySelector('input[name="stage"]:checked');
+        if (!selectedStage) return;
+        
+        const stage = selectedStage.value;
+        const testLinks = document.querySelectorAll('.test-link');
+        
+        testLinks.forEach(link => {
+            if (link.href.includes('duplicate_pc')) {
+                link.href = `https://에스엔엠렌트카.kr?test=duplicate_pc&stage=${stage}`;
+            } else if (link.href.includes('duplicate_mobile')) {
+                link.href = `https://에스엔엠렌트카.kr?test=duplicate_mobile&stage=${stage}`;
+            }
         });
+    }
+    
+    // 테스트 페이지 열기
+    function openTestPage() {
+        const selectedStage = document.querySelector('input[name="stage"]:checked');
+        if (!selectedStage) {
+            alert('먼저 테스트 단계를 선택해주세요.');
+            return;
+        }
+        
+        const stage = selectedStage.value;
+        const testUrl = `https://에스엔엠렌트카.kr?test=duplicate_pc&stage=${stage}`;
+        window.open(testUrl, '_blank');
+    }
+    
+    // 테스트 링크 복사
+    function copyTestLink() {
+        const selectedStage = document.querySelector('input[name="stage"]:checked');
+        if (!selectedStage) {
+            alert('먼저 테스트 단계를 선택해주세요.');
+            return;
+        }
+        
+        const stage = selectedStage.value;
+        const testUrl = `https://에스엔엠렌트카.kr?test=duplicate_pc&stage=${stage}`;
+        
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(testUrl).then(() => {
+                showNotification('테스트 링크가 클립보드에 복사되었습니다.', 'success');
+            }).catch(() => {
+                fallbackCopyTextToClipboard(testUrl);
+            });
+        } else {
+            fallbackCopyTextToClipboard(testUrl);
+        }
+    }
+    
+    // 클립보드 복사 폴백 함수
+    function fallbackCopyTextToClipboard(text) {
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-999999px';
+        textArea.style.top = '-999999px';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        
+        try {
+            document.execCommand('copy');
+            showNotification('테스트 링크가 클립보드에 복사되었습니다.', 'success');
+        } catch (err) {
+            showNotification('링크 복사에 실패했습니다. 수동으로 복사해주세요.', 'error');
+        }
+        
+        document.body.removeChild(textArea);
+    }
+    
+    // 팝업 미리보기 표시
+    function showTestPreview() {
+        const selectedStage = document.querySelector('input[name="stage"]:checked');
+        if (!selectedStage) {
+            alert('먼저 테스트 단계를 선택해주세요.');
+            return;
+        }
+        
+        const stage = selectedStage.value;
+        const stageElement = document.querySelector(`.warning-stage.stage-${stage}`);
+        
+        if (stageElement) {
+            // 스크롤을 해당 단계로 이동
+            stageElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            
+            // 하이라이트 효과
+            stageElement.style.transform = 'scale(1.02)';
+            stageElement.style.boxShadow = '0 12px 35px rgba(0,0,0,0.25)';
+            
+            setTimeout(() => {
+                stageElement.style.transform = 'scale(1)';
+                stageElement.style.boxShadow = '0 8px 25px rgba(0,0,0,0.15)';
+            }, 1000);
+            
+            showNotification(`${stage}단계 경고 팝업 미리보기를 확인하세요.`, 'info');
+        }
+    }
+    
+    // 테스트 모드 도움말 표시
+    function showTestModeHelp() {
+        const helpMessage = `
+테스트 모드 문제 해결 방법:
+
+1. 브라우저 새로고침 후 다시 시도
+2. 팝업 차단 설정 확인
+3. JavaScript 활성화 확인
+4. 쿠키 및 캐시 삭제
+5. 다른 브라우저로 테스트
+
+문제가 지속되면 관리자에게 문의하세요.
+        `;
+        
+        alert(helpMessage);
+    }
+    
+    // 알림 표시 함수
+    function showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.className = `notification notification-${type}`;
+        notification.textContent = message;
+        
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.remove();
+        }, 3000);
+    }
     </script>
     
     <!-- 중복접속 팝업 -->
@@ -6517,5 +8240,496 @@
 
     <!-- 알림 표시 영역 -->
     <div id="notificationArea"></div>
+    
+    <style>
+        /* 팝업 미리보기 스타일 */
+        .popup-preview-section {
+            margin: 30px 0;
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .popup-preview-section h3 {
+            color: #2c3e50;
+            font-size: 20px;
+            margin-bottom: 25px;
+            text-align: center;
+            width: 100%;
+        }
+        
+        .warning-stage {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            margin-bottom: 25px;
+            overflow: hidden;
+            border: 3px solid;
+            width: 380px;
+            flex-shrink: 0;
+        }
+        
+        .warning-stage.stage-1 {
+            border-color: #007bff;
+        }
+        
+        .warning-stage.stage-2 {
+            border-color: #ff8c00;
+        }
+        
+        .warning-stage.stage-3 {
+            border-color: #dc3545;
+        }
+        
+        .stage-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: #495057;
+            color: white;
+        }
+        
+        .stage-number {
+            font-weight: 600;
+            font-size: 16px;
+        }
+        
+        .stage-header .close-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .stage-content {
+            display: flex;
+            padding: 25px;
+            gap: 20px;
+            align-items: flex-start;
+        }
+        
+        .stage-icon {
+            font-size: 40px;
+            min-width: 60px;
+            text-align: center;
+        }
+        
+        .stage-text {
+            flex: 1;
+        }
+        
+        .stage-text h4 {
+            color: #2c3e50;
+            font-size: 18px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .stage-text p {
+            color: #495057;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        
+        .visit-count {
+            color: #495057;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .favorites-btn {
+            background: linear-gradient(135deg, #4caf50, #45a049);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .favorites-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+        
+        .access-table {
+            padding: 0 25px 25px;
+        }
+        
+        .access-table table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #f8f9fa;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .access-table th {
+            background: #495057;
+            color: white;
+            padding: 12px 8px;
+            font-size: 13px;
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        .access-table td {
+            padding: 10px 8px;
+            font-size: 12px;
+            text-align: center;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .access-table tbody tr:nth-child(even) {
+            background: #f1f3f4;
+        }
+        
+        /* 모바일 정보 스타일 */
+        .mobile-info {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 30px 0;
+            border-left: 4px solid #6c757d;
+        }
+        
+        .mobile-info h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .mobile-info p {
+            color: #6c757d;
+            margin: 0;
+        }
+        
+        /* 테스트 섹션 스타일 */
+        .test-section {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin: 30px 0;
+        }
+        
+        .test-section h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        
+        .test-options {
+            margin-top: 20px;
+        }
+        
+        .test-options label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .test-instructions {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .test-instructions p {
+            margin: 10px 0;
+            color: #495057;
+        }
+        
+        .test-instructions input[type="text"] {
+            background: #e9ecef;
+            border: 1px solid #ced4da;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            width: 120px;
+        }
+        
+        .test-instructions .test-link {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .test-instructions .test-link:hover {
+            text-decoration: underline;
+        }
+        
+        .stage-selection {
+            margin: 20px 0;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .stage-selection label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            color: #495057;
+        }
+        
+        .test-procedure {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .test-procedure p {
+            margin: 10px 0;
+            color: #856404;
+        }
+        
+        .test-procedure strong {
+            color: #d63031;
+        }
+        
+        /* 테스트 액션 버튼 스타일 */
+        .test-actions {
+            margin-top: 20px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .test-actions .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            min-width: 120px;
+        }
+        
+        .test-actions .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .test-actions .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+        
+        .test-actions .btn-primary:hover {
+            background: #0056b3;
+        }
+        
+        .test-actions .btn-info {
+            background: #17a2b8;
+            color: white;
+        }
+        
+        .test-actions .btn-info:hover {
+            background: #138496;
+        }
+        
+        .test-actions .btn-warning {
+            background: #ffc107;
+            color: #212529;
+        }
+        
+        .test-actions .btn-warning:hover {
+            background: #e0a800;
+        }
+        
+        /* 테스트 모드 활성화 애니메이션 */
+        .test-instructions,
+        .stage-selection,
+        .test-procedure {
+            transition: all 0.3s ease;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            max-height: 0;
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .test-instructions.show,
+        .stage-selection.show,
+        .test-procedure.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+            max-height: 1000px;
+            margin: 20px 0;
+            padding: 20px;
+        }
+        
+        /* 단계 선택이 표시될 때의 스타일 */
+        .stage-selection.show {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        /* 테스트 절차가 표시될 때의 스타일 */
+        .test-procedure.show {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+        }
+        
+        /* 단계 선택 하이라이트 */
+        .stage-selection label {
+            transition: all 0.2s ease;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        
+        .stage-selection label:hover {
+            background: #f8f9fa;
+            transform: translateY(-1px);
+        }
+        
+        .stage-selection input[type="radio"]:checked + span {
+            color: #007bff;
+            font-weight: 600;
+        }
+        
+        .test-links {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+        
+        .test-links h4 {
+            margin-bottom: 15px;
+            color: #495057;
+            font-size: 1.1em;
+        }
+        
+        .link-item {
+            margin-bottom: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .link-item strong {
+            display: block;
+            margin-bottom: 10px;
+            color: #495057;
+        }
+        
+        .link-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            font-family: monospace;
+            font-size: 0.9em;
+        }
+        
+        .copy-btn, .test-btn {
+            display: inline-block;
+            padding: 8px 16px;
+            margin-right: 10px;
+            border: none;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .copy-btn {
+            background: #007bff;
+            color: white;
+        }
+        
+        .copy-btn:hover {
+            background: #0056b3;
+        }
+        
+        .test-btn {
+            background: #28a745;
+            color: white;
+        }
+        
+        .test-btn:hover {
+            background: #1e7e34;
+        }
+        
+        .test-info {
+            margin-top: 20px;
+            padding: 15px;
+            background: #e7f3ff;
+            border-radius: 6px;
+            border-left: 4px solid #007bff;
+        }
+        
+        .test-info p {
+            margin-bottom: 10px;
+            color: #495057;
+        }
+        
+        .test-info ol {
+            margin-left: 20px;
+            color: #6c757d;
+        }
+        
+        .test-info li {
+            margin-bottom: 5px;
+        }
+        
+        .test-debug {
+            margin-top: 15px;
+            padding: 15px;
+            background: #fff3cd;
+            border-radius: 6px;
+            border-left: 4px solid #ffc107;
+        }
+        
+        .debug-btn {
+            display: inline-block;
+            padding: 8px 16px;
+            margin-right: 10px;
+            margin-top: 10px;
+            background: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background-color 0.2s;
+        }
+        
+        .debug-btn:hover {
+            background: #5a6268;
+        }
+    </style>
 </body>
 </html>

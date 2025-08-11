@@ -22,6 +22,9 @@ class ClickProtectionSystem {
             customerId: null // 고객 ID는 API 호출 시 설정
         };
         
+        // 테스트 모드 즉시 확인 및 설정
+        this.checkAndActivateTestMode();
+        
         // 실시간 동기화 및 성능 최적화 설정
         this.syncInterval = null;
         this.isMonitoring = false;
@@ -45,6 +48,9 @@ class ClickProtectionSystem {
         
         // 실시간 데이터 동기화 시작
         this.startRealTimeSync();
+        
+        // 테스트 모드 확인 및 활성화
+        this.checkTestMode();
         
         // 페이지 언로드 시 정리 이벤트 등록
         window.addEventListener('beforeunload', () => {
@@ -94,6 +100,189 @@ class ClickProtectionSystem {
             searchTerm: 'N/A',
             adProduct: 'N/A'
         };
+    }
+
+    // 테스트 모드 확인 및 활성화
+    checkTestMode() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const testMode = urlParams.get('test');
+        
+        if (testMode) {
+            console.log(`🧪 테스트 모드가 활성화되었습니다: ${testMode}`);
+            this.activateTestMode(testMode);
+        }
+    }
+
+    // 테스트 모드 활성화
+    activateTestMode(testType) {
+        // 테스트 모드 배너 표시
+        this.showTestModeBanner(testType);
+        
+        // 테스트 모드 플래그 설정
+        this.isTestMode = true;
+        this.testType = testType;
+        
+        // 테스트 팝업을 즉시 표시 (지연 없이)
+        console.log(`🧪 테스트 모드 활성화: ${testType}`);
+        switch (testType) {
+            case 'duplicate_pc':
+            case 'duplicate_mobile':
+                this.showTestWarning(1, 'duplicate'); // 중복접속 경고
+                break;
+            case 'excessive_pc':
+            case 'excessive_mobile':
+                this.showTestWarning(2, 'excessive'); // 과도한 클릭 경고
+                break;
+            case 'suspicious_pc':
+            case 'suspicious_mobile':
+                this.showTestWarning(3, 'suspicious'); // 의심스러운 패턴 경고
+                break;
+            case 'bot_pc':
+            case 'bot_mobile':
+                this.showTestWarning(4, 'bot'); // 봇 행동 패턴 경고
+                break;
+            case 'all_pc':
+            case 'all_mobile':
+                this.showTestWarning(5, 'all'); // 복합 경고
+                    break;
+                default:
+                    this.showTestWarning(1, 'default');
+        }
+    }
+
+    // 테스트 모드 배너 표시
+    showTestModeBanner(testType) {
+        const banner = document.createElement('div');
+        banner.id = 'test-mode-banner';
+        banner.innerHTML = `
+            <div class="test-banner-content">
+                <span class="test-icon">🧪</span>
+                <span class="test-text">테스트 모드: ${this.getTestTypeName(testType)}</span>
+                <button class="test-close-btn" onclick="this.parentElement.parentElement.remove()">×</button>
+            </div>
+        `;
+        
+        document.body.appendChild(banner);
+        
+        // 테스트 모드 배너 스타일 적용
+        this.applyTestModeStyles();
+    }
+
+    // 테스트 유형 이름 반환
+    getTestTypeName(testType) {
+        const typeNames = {
+            'duplicate_pc': '중복접속 경고 (PC)',
+            'duplicate_mobile': '중복접속 경고 (모바일)',
+            'excessive_pc': '과도한 클릭 경고 (PC)',
+            'excessive_mobile': '과도한 클릭 경고 (모바일)',
+            'suspicious_pc': '의심스러운 패턴 경고 (PC)',
+            'suspicious_mobile': '의심스러운 패턴 경고 (모바일)',
+            'bot_pc': '봇 행동 패턴 경고 (PC)',
+            'bot_mobile': '봇 행동 패턴 경고 (모바일)',
+            'all_pc': '복합 경고 (PC)',
+            'all_mobile': '복합 경고 (모바일)'
+        };
+        return typeNames[testType] || '테스트 모드';
+    }
+
+    // 테스트 모드 스타일 적용
+    applyTestModeStyles() {
+        const style = document.createElement('style');
+        style.textContent = `
+            #test-mode-banner {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+                color: white;
+                z-index: 10000;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+                animation: slideDown 0.5s ease-out;
+            }
+            
+            .test-banner-content {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 15px 20px;
+                gap: 15px;
+                max-width: 1200px;
+                margin: 0 auto;
+                position: relative;
+            }
+            
+            .test-icon {
+                font-size: 20px;
+                animation: pulse 2s infinite;
+            }
+            
+            .test-text {
+                font-weight: 600;
+                font-size: 16px;
+            }
+            
+            .test-close-btn {
+                position: absolute;
+                right: 20px;
+                background: rgba(255,255,255,0.2);
+                border: none;
+                color: white;
+                width: 30px;
+                height: 30px;
+                border-radius: 50%;
+                cursor: pointer;
+                font-size: 18px;
+                font-weight: bold;
+                transition: all 0.3s ease;
+            }
+            
+            .test-close-btn:hover {
+                background: rgba(255,255,255,0.3);
+                transform: scale(1.1);
+            }
+            
+            @keyframes slideDown {
+                from {
+                    transform: translateY(-100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateY(0);
+                    opacity: 1;
+                }
+            }
+            
+            @keyframes pulse {
+                0%, 100% {
+                    transform: scale(1);
+                }
+                50% {
+                    transform: scale(1.1);
+                }
+            }
+            
+            /* 모바일 반응형 */
+            @media (max-width: 768px) {
+                .test-banner-content {
+                    padding: 12px 15px;
+                    gap: 10px;
+                }
+                
+                .test-text {
+                    font-size: 14px;
+                }
+                
+                .test-close-btn {
+                    right: 15px;
+                    width: 25px;
+                    height: 25px;
+                    font-size: 16px;
+                }
+            }
+        `;
+        
+        document.head.appendChild(style);
     }
 
     // 세션 ID 생성
@@ -614,15 +803,11 @@ class ClickProtectionSystem {
         
         popup.innerHTML = `
             <div class="warning-header">
-                <div class="header-left">
-                    <span class="warning-icon" aria-label="경고 레벨 ${level}">${config.icon}</span>
-                    <div class="header-text">
-                        <span class="warning-title">${config.title}</span>
-                        <span class="warning-subtitle">광고 클릭 보안 시스템</span>
-                    </div>
+                <div class="header-text">
+                    <span class="warning-title">${config.title}</span>
                 </div>
                 <button class="close-btn" 
-                        onclick="clickProtection.closeWarningPopup()" 
+                        onclick="this.closest('.warning-popup').remove()" 
                         aria-label="경고 팝업 닫기">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -632,10 +817,8 @@ class ClickProtectionSystem {
             </div>
             
             <div class="warning-content">
-                ${progressBar}
-                
                 <div class="warning-message-section">
-                    <div class="message-icon">${this.getLevelIcon(level)}</div>
+                    <div class="message-icon">✅</div>
                     <div class="message-content">
                         <p class="warning-message">${config.message}</p>
                         ${config.detail ? `<p class="warning-detail">${config.detail}</p>` : ''}
@@ -644,37 +827,17 @@ class ClickProtectionSystem {
                 
                 <div class="warning-actions">
                     <button class="favorites-btn primary-btn" 
-                            onclick="clickProtection.addToFavorites()"
+                            onclick="alert('즐겨찾기에 추가되었습니다!')"
                             aria-label="즐겨찾기에 추가">
-                        <span class="btn-icon">⭐</span>
-                        <span class="btn-text">즐겨찾기 추가</span>
-                        <span class="btn-arrow">→</span>
-                    </button>
-                    
-                    <button class="info-btn secondary-btn" 
-                            onclick="clickProtection.showMoreInfo()"
-                            aria-label="자세한 정보 보기">
-                        <span class="btn-icon">ℹ️</span>
-                        <span class="btn-text">자세한 정보</span>
+                        <span class="btn-text">+ 즐겨찾기 바로추가</span>
                     </button>
                 </div>
                 
                 <div class="access-info-section">
                     <div class="section-header">
-                        <h4>📊 접속 정보</h4>
-                        <span class="section-badge">실시간</span>
+                        <span class="visit-count">방문횟수: ${clickCount}회</span>
                     </div>
                     ${accessTable}
-                </div>
-                
-                <div class="warning-footer">
-                    <div class="footer-content">
-                        <div class="footer-icon">💡</div>
-                        <div class="footer-text">
-                            <p class="footer-title">즐겨찾기 추가의 장점</p>
-                            <p class="footer-note">즐겨찾기를 통해 방문하시면 광고비가 절약되어 더 좋은 서비스를 제공할 수 있습니다.</p>
-                        </div>
-                    </div>
                 </div>
             </div>
         `;
@@ -1207,10 +1370,30 @@ class ClickProtectionSystem {
                 detail: `방문횟수: ${clickCount}회`,
                 color: '#d32f2f',
                 bgColor: 'linear-gradient(135deg, #ffebee, #ef9a9a)'
+            },
+            4: {
+                title: '4단계 경고',
+                headerClass: 'warning-purple',
+                contentClass: 'warning-purple-content',
+                icon: '🤖',
+                message: '봇 행동 패턴이 감지되었습니다. 자동화된 도구나 스크립트를 사용한 접속은 차단될 수 있습니다. 정상적인 사용자 접속을 권장합니다.',
+                detail: `봇 패턴 감지: ${clickCount}회`,
+                color: '#9c27b0',
+                bgColor: 'linear-gradient(135deg, #f3e5f5, #e1bee7)'
+            },
+            5: {
+                title: '5단계 경고',
+                headerClass: 'warning-black',
+                contentClass: 'warning-black-content',
+                icon: '⚫',
+                message: '복합적인 부정클릭 패턴이 감지되었습니다. 모든 IP는 즉시 차단되며, 법적 조치가 취해질 수 있습니다.',
+                detail: `복합 패턴: ${clickCount}회`,
+                color: '#212121',
+                bgColor: 'linear-gradient(135deg, #f5f5f5, #e0e0e0)'
             }
         };
         
-        return configs[level];
+        return configs[level] || configs[1]; // 기본값으로 1단계 경고 반환
     }
 
     // 기존 팝업 제거
@@ -1249,21 +1432,32 @@ class ClickProtectionSystem {
         const style = document.createElement('style');
         style.id = 'warning-styles';
         style.textContent = `
-            .warning-popup {
-                position: fixed;
-                top: 20px;
-                left: 20px;
-                max-width: 380px;
-                background: white;
-                border-radius: 16px;
-                box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.1);
-                z-index: 10000;
-                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-                animation: slideInLeft 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-                border: 3px solid;
-                backdrop-filter: blur(10px);
-                transform-origin: left center;
+                    .warning-popup {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            max-width: 380px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.1);
+            z-index: 10000;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            animation: slideInLeft 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            border: 3px solid;
+            backdrop-filter: blur(10px);
+            transform-origin: left center;
+        }
+        
+        @keyframes slideInLeft {
+            from {
+                transform: translateX(-100%) scale(0.8);
+                opacity: 0;
             }
+            to {
+                transform: translateX(0) scale(1);
+                opacity: 1;
+            }
+        }
             
             .warning-level-1 {
                 border-color: #ff6b35;
@@ -1283,29 +1477,33 @@ class ClickProtectionSystem {
                 box-shadow: 0 12px 40px rgba(211, 47, 47, 0.5), 0 0 0 1px rgba(211, 47, 47, 0.4);
             }
             
+            .warning-level-4 {
+                border-color: #9c27b0;
+                background: linear-gradient(135deg, #f3e5f5, #e1bee7);
+                box-shadow: 0 12px 40px rgba(156, 39, 176, 0.4), 0 0 0 1px rgba(156, 39, 176, 0.3);
+            }
+            
+            .warning-level-5 {
+                border-color: #212121;
+                background: linear-gradient(135deg, #f5f5f5, #e0e0e0);
+                box-shadow: 0 12px 40px rgba(33, 33, 33, 0.6), 0 0 0 1px rgba(33, 33, 33, 0.5);
+            }
+            
             .warning-header {
                 display: flex;
+                justify-content: space-between;
                 align-items: center;
-                padding: 18px 22px 12px;
-                border-bottom: 2px solid rgba(0, 0, 0, 0.08);
-                background: rgba(255, 255, 255, 0.1);
+                padding: 15px 20px;
+                background: #495057;
+                color: white;
                 border-radius: 16px 16px 0 0;
             }
             
-            .warning-icon {
-                font-size: 28px;
-                margin-right: 15px;
-                filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
-                animation: pulse 2s infinite;
-            }
-            
             .warning-title {
-                font-weight: 700;
-                font-size: 17px;
-                color: #1a1a1a;
+                font-weight: 600;
+                font-size: 16px;
+                color: white;
                 flex: 1;
-                text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-                letter-spacing: 0.5px;
             }
             
             .close-btn {
@@ -1334,16 +1532,56 @@ class ClickProtectionSystem {
             
             .warning-content {
                 padding: 18px 22px 22px;
-                background: rgba(255, 255, 255, 0.05);
+                background: #ff8c00;
             }
             
             .warning-content p {
                 margin: 0 0 18px 0;
-                color: #2c3e50;
+                color: white;
                 line-height: 1.6;
                 font-size: 15px;
                 font-weight: 500;
-                text-shadow: 0 1px 1px rgba(255, 255, 255, 0.8);
+                text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+            }
+            
+            .warning-message-section {
+                display: flex;
+                align-items: flex-start;
+                gap: 20px;
+                margin-bottom: 25px;
+                padding: 20px;
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 12px;
+                border: 1px solid rgba(255, 255, 255, 0.2);
+            }
+            
+            .message-icon {
+                font-size: 32px;
+                width: 50px;
+                height: 50px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.2);
+                color: white;
+                flex-shrink: 0;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            }
+            
+            .message-content {
+                flex: 1;
+            }
+            
+            .warning-message {
+                font-size: 16px;
+                font-weight: 600;
+                margin-bottom: 10px;
+            }
+            
+            .warning-detail {
+                font-size: 14px;
+                opacity: 0.9;
             }
             
             .warning-actions {
@@ -1352,7 +1590,7 @@ class ClickProtectionSystem {
             }
             
             .favorites-btn {
-                background: linear-gradient(135deg, #2196f3, #1976d2);
+                background: linear-gradient(135deg, #4caf50, #45a049);
                 color: white;
                 border: none;
                 padding: 12px 20px;
@@ -1363,20 +1601,20 @@ class ClickProtectionSystem {
                 flex: 1;
                 font-weight: 600;
                 text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-                box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);
+                box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
                 position: relative;
                 overflow: hidden;
             }
             
             .favorites-btn:hover {
-                background: linear-gradient(135deg, #1976d2, #1565c0);
+                background: linear-gradient(135deg, #45a049, #3d8b40);
                 transform: translateY(-2px);
-                box-shadow: 0 6px 20px rgba(33, 150, 243, 0.4);
+                box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
             }
             
             .favorites-btn:active {
                 transform: translateY(0);
-                box-shadow: 0 2px 10px rgba(33, 150, 243, 0.3);
+                box-shadow: 0 2px 10px rgba(76, 175, 80, 0.3);
             }
             
             @keyframes slideInLeft {
@@ -1423,15 +1661,30 @@ class ClickProtectionSystem {
             .access-info-section {
                 margin-top: 20px;
                 padding-top: 20px;
-                border-top: 1px solid rgba(0, 0, 0, 0.1);
+                border-top: 1px solid rgba(255, 255, 255, 0.2);
+            }
+            
+            .section-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 15px;
+            }
+            
+            .visit-count {
+                color: white;
+                font-size: 16px;
+                font-weight: 600;
+                text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
             }
             
             .access-info-section h4 {
                 margin: 0 0 15px 0;
-                color: #2c3e50;
+                color: white;
                 font-size: 16px;
                 font-weight: 600;
                 text-align: center;
+                text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
             }
             
             .access-table-container {
@@ -1450,8 +1703,8 @@ class ClickProtectionSystem {
             }
             
             .access-table th {
-                background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-                color: #495057;
+                background: linear-gradient(135deg, #495057, #343a40);
+                color: white;
                 font-weight: 600;
                 padding: 12px 8px;
                 text-align: center;
@@ -1571,8 +1824,36 @@ class ClickProtectionSystem {
     }
 
     // 테스트용: 수동으로 경고 팝업 표시
-    showTestWarning(level = 1) {
-        this.createWarningPopup(level, level === 1 ? 2 : level === 2 ? 5 : 8);
+    showTestWarning(level = 1, testType = 'default') {
+        console.log(`🧪 테스트 경고 표시: 레벨 ${level}, 유형 ${testType}`);
+        
+        // 테스트 유형에 따른 클릭 횟수 설정
+        let clickCount;
+        switch (testType) {
+            case 'duplicate':
+                clickCount = 3; // 중복접속
+                break;
+            case 'excessive':
+                clickCount = 8; // 과도한 클릭
+                break;
+            case 'suspicious':
+                clickCount = 12; // 의심스러운 패턴
+                break;
+            case 'bot':
+                clickCount = 15; // 봇 행동 패턴
+                break;
+            case 'all':
+                clickCount = 20; // 복합 경고
+                break;
+            default:
+                clickCount = level === 1 ? 2 : level === 2 ? 5 : level === 3 ? 8 : level === 4 ? 12 : 15;
+        }
+        
+        // 경고 팝업 생성
+        this.createWarningPopup(level, clickCount);
+        
+        // 테스트 모드임을 콘솔에 표시
+        console.log(`🧪 테스트 경고 팝업이 생성되었습니다. 레벨: ${level}, 클릭 횟수: ${clickCount}`);
     }
     
     // 테스트용: 네이버 광고 클릭 시뮬레이션
@@ -1679,6 +1960,11 @@ class ClickProtectionSystem {
     
     // 네이버 광고 API 호출
     async callNaverAdAPI(endpoint, method = 'GET', data = null) {
+        // 테스트 모드일 때는 API 호출을 하지 않음
+        if (this.isTestMode) {
+            console.log(`테스트 모드: ${endpoint} API 호출 차단됨`);
+            return { testMode: true, message: '테스트 모드에서는 API 호출이 차단됩니다.' };
+        }
         const timestamp = Date.now();
         const signature = this.generateSignature(endpoint, method, timestamp);
         
@@ -4475,6 +4761,164 @@ class TestDataManager {
             .map(row => row.map(field => `"${field}"`).join(','))
             .join('\n');
     }
+    
+    // 테스트 타입 이름 가져오기
+    getTestTypeName(testType) {
+        const typeNames = {
+            'duplicate_pc': 'PC 중복접속',
+            'duplicate_mobile': '모바일 중복접속',
+            'excessive_pc': 'PC 과도클릭',
+            'excessive_mobile': '모바일 과도클릭',
+            'suspicious_pc': 'PC 의심패턴',
+            'suspicious_mobile': '모바일 의심패턴',
+            'bot_pc': 'PC 봇행위',
+            'bot_mobile': '모바일 봇행위',
+            'all_pc': 'PC 전체테스트',
+            'all_mobile': '모바일 전체테스트'
+        };
+        return typeNames[testType] || '알 수 없음';
+    }
+    
+            // 테스트 모드 즉시 확인 및 설정 함수
+        checkAndActivateTestMode() {
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                const testMode = urlParams.get('test');
+                
+                if (testMode) {
+                    console.log(`🧪 생성자에서 테스트 모드 감지: ${testMode}`);
+                    this.isTestMode = true;
+                    this.testType = testMode;
+                    
+                    // 테스트 모드 배너 표시
+                    this.showTestModeBanner(testMode);
+                    
+                    // 즉시 테스트 팝업 표시
+                    switch (testMode) {
+                        case 'duplicate_pc':
+                        case 'duplicate_mobile':
+                            this.showTestWarning(1, 'duplicate');
+                            break;
+                        case 'excessive_pc':
+                        case 'excessive_mobile':
+                            this.showTestWarning(2, 'excessive');
+                            break;
+                        case 'suspicious_pc':
+                        case 'suspicious_mobile':
+                            this.showTestWarning(3, 'suspicious');
+                            break;
+                        case 'bot_pc':
+                        case 'bot_mobile':
+                            this.showTestWarning(4, 'bot');
+                            break;
+                        case 'all_pc':
+                        case 'all_mobile':
+                            this.showTestWarning(5, 'all');
+                            break;
+                        default:
+                            this.showTestWarning(1, 'default');
+                    }
+                } else {
+                    console.log('테스트 모드가 아닙니다');
+                    this.isTestMode = false;
+                }
+            } catch (error) {
+                console.error('테스트 모드 확인 중 오류:', error);
+                this.isTestMode = false;
+            }
+        }
+        
+        // 테스트 경고 팝업 표시 함수
+        showTestWarning(level, type) {
+            console.log(`테스트 경고 팝업 표시: 레벨 ${level}, 타입 ${type}`);
+            
+            // 테스트용 데이터 설정
+            const testData = {
+                ip: '192.168.1.100',
+                userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+                timestamp: new Date().toISOString(),
+                accessCount: 5,
+                riskLevel: level
+            };
+            
+            // 테스트 모드에서는 즉시 팝업 표시 (API 호출 없이)
+            try {
+                // 경고 팝업 표시
+                this.showWarningPopup(level, type, testData);
+                console.log('테스트 팝업 표시 성공');
+            } catch (error) {
+                console.error('테스트 팝업 표시 실패:', error);
+                // 폴백: 간단한 경고창 표시
+                this.showSimpleTestWarning(level, type);
+            }
+        }
+        
+        // 간단한 테스트 경고창 표시 (폴백)
+        showSimpleTestWarning(level, type) {
+            console.log('간단한 테스트 경고창 표시');
+            
+            const warningDiv = document.createElement('div');
+            warningDiv.id = 'simple-test-warning';
+            warningDiv.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                width: 350px;
+                background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+                color: white;
+                padding: 20px;
+                border-radius: 10px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                z-index: 10000;
+                font-family: 'Segoe UI', sans-serif;
+            `;
+            
+            const levelText = ['1단계', '2단계', '3단계', '4단계', '5단계'][level - 1] || '테스트';
+            const typeText = {
+                'duplicate': '중복접속',
+                'excessive': '과도클릭',
+                'suspicious': '의심패턴',
+                'bot': '봇행위'
+            }[type] || '테스트';
+            
+            warningDiv.innerHTML = `
+                <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                    <span style="font-size: 24px; margin-right: 10px;">⚠️</span>
+                    <h3 style="margin: 0; font-size: 18px;">${levelText} 경고</h3>
+                </div>
+                <p style="margin: 0 0 15px 0; line-height: 1.4;">
+                    <strong>${typeText} 경고</strong><br>
+                    테스트 모드에서 생성된 경고 팝업입니다.
+                </p>
+                <div style="display: flex; gap: 10px;">
+                    <button onclick="this.parentElement.parentElement.remove()" style="
+                        background: rgba(255,255,255,0.2);
+                        border: 1px solid rgba(255,255,255,0.3);
+                        color: white;
+                        padding: 8px 16px;
+                        border-radius: 5px;
+                        cursor: pointer;
+                    ">닫기</button>
+                    <button onclick="alert('즐겨찾기에 추가되었습니다!')" style="
+                        background: rgba(255,255,255,0.2);
+                        border: 1px solid rgba(255,255,255,0.3);
+                        color: white;
+                        padding: 8px 16px;
+                        border-radius: 5px;
+                        cursor: pointer;
+                    ">즐겨찾기 추가</button>
+                </div>
+            `;
+            
+            document.body.appendChild(warningDiv);
+            
+            // 10초 후 자동 제거
+            setTimeout(() => {
+                if (warningDiv.parentNode) {
+                    warningDiv.remove();
+                }
+            }, 10000);
+        }
 }
 
 // 테스트데이터 관리자 초기화
