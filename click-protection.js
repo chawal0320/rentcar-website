@@ -111,6 +111,14 @@ class ClickProtectionSystem {
             console.log(`🧪 테스트 모드가 활성화되었습니다: ${testMode}`);
             this.activateTestMode(testMode);
         }
+        
+        // 추가: URL에 네이버 관련 파라미터가 있으면 테스트 모드로 간주
+        if (urlParams.get('utm_source') === 'naver' || 
+            urlParams.get('naver') === 'true' ||
+            urlParams.get('ad') === 'true') {
+            console.log('🧪 네이버 광고 파라미터로 테스트 모드 활성화');
+            this.activateTestMode('naver_ad');
+        }
     }
 
     // 테스트 모드 활성화
@@ -144,9 +152,14 @@ class ClickProtectionSystem {
             case 'all_pc':
             case 'all_mobile':
                 this.showTestWarning(5, 'all'); // 복합 경고
-                    break;
-                default:
-                    this.showTestWarning(1, 'default');
+                break;
+            case 'naver_ad':
+                // 네이버 광고 테스트 모드: 모든 클릭을 광고 클릭으로 시뮬레이션
+                console.log('🧪 네이버 광고 테스트 모드: 모든 클릭을 광고 클릭으로 시뮬레이션');
+                this.simulateNaverAdClick();
+                break;
+            default:
+                this.showTestWarning(1, 'default');
         }
     }
 
@@ -180,7 +193,8 @@ class ClickProtectionSystem {
             'bot_pc': '봇 행동 패턴 경고 (PC)',
             'bot_mobile': '봇 행동 패턴 경고 (모바일)',
             'all_pc': '복합 경고 (PC)',
-            'all_mobile': '복합 경고 (모바일)'
+            'all_mobile': '복합 경고 (모바일)',
+            'naver_ad': '네이버 광고 시뮬레이션'
         };
         return typeNames[testType] || '테스트 모드';
     }
@@ -1118,7 +1132,7 @@ class ClickProtectionSystem {
         }, 3000);
     }
 
-    // 네이버 파워링크 광고 클릭인지 확인 (더 엄격한 검증)
+    // 네이버 파워링크 광고 클릭인지 확인 (완화된 검증)
     async isNaverAdClick(event) {
         // 1. UTM 파라미터 확인 (가장 정확한 방법)
         const urlParams = new URLSearchParams(window.location.search);
@@ -1127,9 +1141,9 @@ class ClickProtectionSystem {
         const utmCampaign = urlParams.get('utm_campaign');
         const utmTerm = urlParams.get('utm_term');
         
-        // UTM 파라미터로 정확한 네이버 파워링크 광고 확인
-        if (utmSource === 'naver' && utmMedium === 'powerlink') {
-            console.log('✅ UTM 파라미터로 네이버 파워링크 광고 클릭 확인됨:', {
+        // UTM 파라미터로 네이버 광고 확인 (powerlink, cpc, paid 등 모두 포함)
+        if (utmSource === 'naver' && (utmMedium === 'powerlink' || utmMedium === 'cpc' || utmMedium === 'paid')) {
+            console.log('✅ UTM 파라미터로 네이버 광고 클릭 확인됨:', {
                 utmSource,
                 utmMedium,
                 utmCampaign,
@@ -1138,37 +1152,46 @@ class ClickProtectionSystem {
             return true;
         }
         
-        // 2. 네이버 파워링크 전용 URL 패턴 확인
+        // 2. 네이버 광고 관련 URL 패턴 확인 (더 넓은 범위)
         const currentUrl = window.location.href;
-        if (this.isNaverPowerLinkUrl(currentUrl)) {
-            console.log('✅ 네이버 파워링크 URL 패턴으로 광고 클릭 확인됨:', currentUrl);
+        if (this.isNaverAdUrl(currentUrl)) {
+            console.log('✅ 네이버 광고 URL 패턴으로 광고 클릭 확인됨:', currentUrl);
             return true;
         }
         
-        // 3. 리퍼러가 네이버 파워링크인 경우만 확인 (일반 검색은 제외)
-        if (this.isNaverPowerLinkReferrer(document.referrer)) {
-            console.log('✅ 네이버 파워링크 리퍼러로부터 광고 클릭 확인됨:', document.referrer);
+        // 3. 리퍼러가 네이버에서 온 경우 확인 (더 넓은 범위)
+        if (this.isNaverReferrer(document.referrer)) {
+            console.log('✅ 네이버 리퍼러로부터 광고 클릭 확인됨:', document.referrer);
             return true;
         }
         
-        // 4. 네이버 파워링크 광고 특성만 확인 (더 엄격하게)
-        if (this.hasPowerLinkAdCharacteristics(event)) {
-            console.log('✅ 파워링크 광고 요소 특성으로 감지됨');
+        // 4. 네이버 광고 요소 특성 확인
+        if (this.hasNaverAdCharacteristics(event)) {
+            console.log('✅ 네이버 광고 요소 특성으로 감지됨');
             return true;
         }
         
-        // 5. 추가 검증: 세션 데이터와 리퍼러 정보 종합 확인
+        // 5. 추가 검증: 세션 데이터와 리퍼러 정보 종합 확인 (완화됨)
         if (document.referrer && 
             document.referrer.includes('naver') && 
-            (document.referrer.includes('powerlink') || 
+            (document.referrer.includes('search.naver') || 
              document.referrer.includes('ad.naver.com') ||
-             document.referrer.includes('ads.naver.com'))) {
-            console.log('✅ 세션 데이터와 리퍼러 정보로 네이버 파워링크 광고 클릭 확인됨');
+             document.referrer.includes('ads.naver.com') ||
+             document.referrer.includes('powerlink.naver.com') ||
+             document.referrer.includes('cafe.naver.com') ||
+             document.referrer.includes('blog.naver.com'))) {
+            console.log('✅ 세션 데이터와 리퍼러 정보로 네이버 광고 클릭 확인됨');
+            return true;
+        }
+        
+        // 6. 테스트 모드일 때는 모든 클릭을 광고로 간주
+        if (this.isTestMode) {
+            console.log('🧪 테스트 모드: 모든 클릭을 네이버 광고 클릭으로 간주');
             return true;
         }
         
         // 일반 클릭은 광고가 아님
-        console.log('❌ 일반 클릭 (네이버 파워링크 광고 아님):', {
+        console.log('❌ 일반 클릭 (네이버 광고 아님):', {
             target: event.target.tagName,
             text: event.target.textContent?.substring(0, 30) || '',
             referrer: document.referrer,
@@ -1180,7 +1203,25 @@ class ClickProtectionSystem {
         return false;
     }
     
-    // 네이버 파워링크 URL 패턴 확인
+    // 네이버 광고 URL 패턴 확인 (더 넓은 범위)
+    isNaverAdUrl(url) {
+        const adPatterns = [
+            /powerlink\.naver\.com/,
+            /ad\.naver\.com/,
+            /ads\.naver\.com/,
+            /search\.naver\.com\/search\.naver\?.*query=.*&where=(powerlink|ad|cpc)/,
+            /cafe\.naver\.com\/.*\?query=.*&where=(powerlink|ad|cpc)/,
+            /blog\.naver\.com\/.*\?query=.*&where=(powerlink|ad|cpc)/,
+            /news\.naver\.com\/.*\?query=.*&where=(powerlink|ad|cpc)/,
+            /search\.naver\.com\/search\.naver\?.*utm_source=naver/,
+            /cafe\.naver\.com\/.*\?utm_source=naver/,
+            /blog\.naver\.com\/.*\?utm_source=naver/
+        ];
+        
+        return adPatterns.some(pattern => pattern.test(url));
+    }
+    
+    // 네이버 파워링크 URL 패턴 확인 (기존 함수 - 호환성 유지)
     isNaverPowerLinkUrl(url) {
         const powerLinkPatterns = [
             /powerlink\.naver\.com/,
@@ -1195,7 +1236,28 @@ class ClickProtectionSystem {
         return powerLinkPatterns.some(pattern => pattern.test(url));
     }
     
-    // 네이버 파워링크 리퍼러 확인 (일반 검색 제외)
+    // 네이버 리퍼러 확인 (더 넓은 범위)
+    isNaverReferrer(referrer) {
+        if (!referrer) return false;
+        
+        // 네이버에서 온 모든 접속을 확인 (광고, 검색, 블로그, 카페 등)
+        const naverPatterns = [
+            /naver\.com/,
+            /search\.naver\.com/,
+            /cafe\.naver\.com/,
+            /blog\.naver\.com/,
+            /news\.naver\.com/,
+            /powerlink\.naver\.com/,
+            /ad\.naver\.com/,
+            /ads\.naver\.com/,
+            /map\.naver\.com/,
+            /shopping\.naver\.com/
+        ];
+        
+        return naverPatterns.some(pattern => pattern.test(referrer));
+    }
+    
+    // 네이버 파워링크 리퍼러 확인 (일반 검색 제외) - 기존 함수 유지
     isNaverPowerLinkReferrer(referrer) {
         if (!referrer) return false;
         
@@ -1231,7 +1293,58 @@ class ClickProtectionSystem {
         return powerLinkPatterns.some(pattern => pattern.test(referrer));
     }
     
-    // 파워링크 광고 요소 특성 확인 (일반 검색 제외)
+    // 네이버 광고 요소 특성 확인 (더 넓은 범위)
+    hasNaverAdCharacteristics(event) {
+        let element = event.target;
+        
+        while (element && element !== document.body) {
+            const className = element.className || '';
+            const id = element.id || '';
+            const href = element.href || '';
+            const textContent = element.textContent || '';
+            
+            // 네이버 광고 관련 모든 패턴 확인
+            if (
+                // 광고 관련 클래스 패턴
+                className.includes('powerlink') ||
+                className.includes('power-link') ||
+                className.includes('naver-powerlink') ||
+                className.includes('sponsored-powerlink') ||
+                className.includes('ad') ||
+                className.includes('sponsored') ||
+                className.includes('광고') ||
+                className.includes('spon') ||
+                
+                // 광고 관련 ID 패턴
+                id.includes('powerlink') ||
+                id.includes('naver-powerlink') ||
+                id.includes('ad') ||
+                id.includes('sponsored') ||
+                
+                // 광고 관련 링크 패턴
+                href.includes('powerlink.naver.com') ||
+                href.includes('ad.naver.com') ||
+                href.includes('ads.naver.com') ||
+                href.includes('search.naver.com') ||
+                
+                // 광고 관련 텍스트 패턴
+                textContent.includes('파워링크') ||
+                textContent.includes('powerlink') ||
+                textContent.includes('PowerLink') ||
+                textContent.includes('광고') ||
+                textContent.includes('sponsored') ||
+                textContent.includes('spon')
+            ) {
+                return true;
+            }
+            
+            element = element.parentElement;
+        }
+        
+        return false;
+    }
+    
+    // 파워링크 광고 요소 특성 확인 (일반 검색 제외) - 기존 함수 유지
     hasPowerLinkAdCharacteristics(event) {
         let element = event.target;
         
@@ -2631,11 +2744,11 @@ class ClickProtectionSystem {
         this.updateAccessRecordsTable();
     }
     
-    // 접근 기록 테이블 업데이트 (네이버 파워링크 광고 클릭일 때만)
+    // 접근 기록 테이블 업데이트 (네이버를 통한 모든 접속 기록)
     updateAccessRecordsTable() {
-        // 네이버 파워링크를 통해서 들어온 접속인지 확인 (더 엄격하게)
-        if (!this.isNaverPowerLinkAccess()) {
-            console.log('📝 네이버 파워링크를 통한 접속이 아니므로 접속기록에 추가하지 않습니다.');
+        // 네이버를 통해서 들어온 접속인지 확인 (더 넓은 범위)
+        if (!this.isNaverAccess()) {
+            console.log('📝 네이버를 통한 접속이 아니므로 접속기록에 추가하지 않습니다.');
             return;
         }
         
@@ -2645,10 +2758,10 @@ class ClickProtectionSystem {
             return;
         }
         
-        // 클릭 시간이 최근 5분 내인지 확인 (너무 오래된 클릭은 제외)
+        // 클릭 시간이 최근 10분 내인지 확인 (시간 제한 완화)
         const now = Date.now();
         const clickTime = this.sessionData.lastClickTime;
-        if (now - clickTime > 300000) { // 5분 = 300,000ms
+        if (now - clickTime > 600000) { // 10분 = 600,000ms
             console.log('📝 클릭 시간이 너무 오래되어 접속기록을 생성하지 않습니다.');
             return;
         }
@@ -2687,19 +2800,62 @@ class ClickProtectionSystem {
             this.updateAccessRecordsTableDisplay();
             
             // 접속기록 업데이트 완료 로그
-            console.log('✅ 네이버 파워링크 광고 클릭 접속기록이 업데이트되었습니다:', {
+            console.log('✅ 네이버를 통한 접속기록이 업데이트되었습니다:', {
                 time: new Date().toLocaleTimeString('ko-KR'),
                 clickCount: this.sessionData.clickCount,
                 ipAddress: this.sessionData.ipAddress,
                 referrer: this.sessionData.referrer,
-                clickTime: new Date(clickTime).toLocaleTimeString('ko-KR')
+                clickTime: new Date(clickTime).toLocaleTimeString('ko-KR'),
+                accessType: this.getAccessType()
             });
         } else {
             console.log('⚠️ 접속기록 생성에 실패했습니다.');
         }
     }
     
-    // 네이버 파워링크를 통한 접속인지 확인 (더 엄격한 검증)
+    // 네이버를 통한 접속인지 확인 (더 넓은 범위)
+    isNaverAccess() {
+        // 1. UTM 파라미터로 네이버 광고 확인 (powerlink, cpc, paid 등 모두 포함)
+        const urlParams = new URLSearchParams(window.location.search);
+        const utm_source = urlParams.get('utm_source');
+        const utm_medium = urlParams.get('utm_medium');
+        const utm_campaign = urlParams.get('utm_campaign');
+        
+        if (utm_source === 'naver' && (utm_medium === 'powerlink' || utm_medium === 'cpc' || utm_medium === 'paid')) {
+            console.log('✅ UTM 파라미터로 네이버 광고 접속 확인됨');
+            return true;
+        }
+        
+        // 2. 네이버 광고 관련 URL 패턴 확인
+        const currentUrl = window.location.href;
+        if (this.isNaverAdUrl(currentUrl)) {
+            console.log('✅ 네이버 광고 URL 패턴으로 접속 확인됨');
+            return true;
+        }
+        
+        // 3. 리퍼러가 네이버에서 온 경우 확인 (더 넓은 범위)
+        if (this.sessionData.referrer && this.isNaverReferrer(this.sessionData.referrer)) {
+            console.log('✅ 네이버 리퍼러로부터 접속 확인됨');
+            return true;
+        }
+        
+        // 4. 세션 데이터에 네이버 관련 정보가 있는지 확인 (완화됨)
+        if (this.sessionData.referrer && this.sessionData.referrer.includes('naver')) {
+            console.log('✅ 세션 데이터로 네이버 접속 확인됨');
+            return true;
+        }
+        
+        // 5. 테스트 모드일 때는 모든 접속을 네이버로 간주
+        if (this.isTestMode) {
+            console.log('🧪 테스트 모드: 모든 접속을 네이버 접속으로 간주');
+            return true;
+        }
+        
+        console.log('❌ 네이버를 통한 접속이 아님 - 접속기록 생성하지 않음');
+        return false;
+    }
+    
+    // 네이버 파워링크를 통한 접속인지 확인 (더 엄격한 검증) - 기존 함수 유지
     isNaverPowerLinkAccess() {
         // 1. UTM 파라미터로 정확한 파워링크 광고 확인 (가장 신뢰할 수 있는 방법)
         const urlParams = new URLSearchParams(window.location.search);
@@ -2760,8 +2916,48 @@ class ClickProtectionSystem {
             sessionId: this.sessionData.sessionId || 'N/A',
             userAgent: navigator.userAgent,
             screenResolution: `${screen.width}x${screen.height}`,
-            language: navigator.language || 'ko-KR'
+            language: navigator.language || 'ko-KR',
+            accessType: this.getAccessType()
         };
+    }
+    
+    // 접속 유형 확인
+    getAccessType() {
+        if (this.isTestMode) {
+            return '테스트 모드';
+        }
+        
+        const urlParams = new URLSearchParams(window.location.search);
+        const utm_source = urlParams.get('utm_source');
+        const utm_medium = urlParams.get('utm_medium');
+        
+        if (utm_source === 'naver') {
+            if (utm_medium === 'powerlink') {
+                return '네이버 파워링크';
+            } else if (utm_medium === 'cpc') {
+                return '네이버 CPC';
+            } else if (utm_medium === 'paid') {
+                return '네이버 유료광고';
+            } else {
+                return '네이버 광고';
+            }
+        }
+        
+        if (this.sessionData.referrer) {
+            if (this.sessionData.referrer.includes('powerlink.naver.com')) {
+                return '네이버 파워링크';
+            } else if (this.sessionData.referrer.includes('search.naver.com')) {
+                return '네이버 검색';
+            } else if (this.sessionData.referrer.includes('cafe.naver.com')) {
+                return '네이버 카페';
+            } else if (this.sessionData.referrer.includes('blog.naver.com')) {
+                return '네이버 블로그';
+            } else if (this.sessionData.referrer.includes('naver.com')) {
+                return '네이버 기타';
+            }
+        }
+        
+        return '직접 접속';
     }
     
     // 편집 모드 상태

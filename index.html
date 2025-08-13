@@ -580,11 +580,22 @@
         window.addEventListener('load', function() {
             const urlParams = new URLSearchParams(window.location.search);
             const testMode = urlParams.get('test');
+            const utmSource = urlParams.get('utm_source');
+            const naverParam = urlParams.get('naver');
+            const adParam = urlParams.get('ad');
             
-            if (testMode) {
-                console.log('🧪 URL 테스트 모드 감지:', testMode);
+            // 테스트 모드 또는 네이버 광고 파라미터가 있으면 테스트 활성화
+            if (testMode || utmSource === 'naver' || naverParam === 'true' || adParam === 'true') {
+                console.log('🧪 테스트 모드 또는 네이버 광고 파라미터 감지:', {
+                    testMode,
+                    utmSource,
+                    naverParam,
+                    adParam
+                });
+                
                 // 테스트 버튼 표시
                 document.querySelector('.test-popup-button').style.display = 'block';
+                
                 // 3초 후 테스트 팝업 표시
                 setTimeout(() => {
                     showTestPopup();

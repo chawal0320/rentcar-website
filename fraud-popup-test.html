@@ -261,6 +261,7 @@
             <button class="test-button" onclick="showTestPopup('excessive', 2)">2단계: 과도한 클릭 경고</button>
             <button class="test-button" onclick="showTestPopup('suspicious', 3)">3단계: 의심스러운 패턴 경고</button>
             <button class="test-button" onclick="showTestPopup('bot', 3)">봇 행동 패턴 경고</button>
+            <button class="test-button" onclick="simulateNaverAdClick()" style="background: #4CAF50;">🧪 네이버 광고 시뮬레이션</button>
         </div>
         
         <div class="info-box">
@@ -426,9 +427,39 @@
             }
         });
         
+        // 네이버 광고 시뮬레이션 함수
+        function simulateNaverAdClick() {
+            console.log('🧪 네이버 광고 시뮬레이션 시작');
+            
+            // URL에 네이버 광고 파라미터 추가
+            const currentUrl = new URL(window.location.href);
+            currentUrl.searchParams.set('utm_source', 'naver');
+            currentUrl.searchParams.set('utm_medium', 'powerlink');
+            currentUrl.searchParams.set('utm_campaign', 'test_campaign');
+            currentUrl.searchParams.set('utm_term', '렌트카');
+            
+            // URL 변경 (히스토리 API 사용)
+            window.history.pushState({}, '', currentUrl.toString());
+            
+            // 페이지 새로고침 없이 파라미터 적용
+            console.log('🔄 네이버 광고 파라미터가 적용되었습니다:', currentUrl.toString());
+            
+            // 3초 후 자동으로 테스트 팝업 표시
+            setTimeout(() => {
+                showTestPopup('duplicate', 1);
+            }, 3000);
+            
+            // 10초 후 원래 URL로 복원
+            setTimeout(() => {
+                window.history.back();
+                console.log('🔄 네이버 광고 파라미터가 제거되었습니다.');
+            }, 10000);
+        }
+        
         // 페이지 로드 완료 메시지
         console.log('🧪 부정클릭 팝업 테스트 페이지가 로드되었습니다.');
         console.log('📱 팝업 테스트를 위해 위의 버튼을 클릭하세요.');
+        console.log('🧪 네이버 광고 시뮬레이션을 위해 "네이버 광고 시뮬레이션" 버튼을 클릭하세요.');
     </script>
 </body>
 </html>

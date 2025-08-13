@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>데이터 확인 - 네이버 광고 접속 기록</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .data-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: #fafafa;
+        }
+        .data-section h2 {
+            color: #555;
+            margin-top: 0;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+        .data-item {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border-left: 4px solid #007bff;
+        }
+        .data-item h3 {
+            margin: 0 0 10px 0;
+            color: #333;
+        }
+        .data-item pre {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 3px;
+            overflow-x: auto;
+            font-size: 12px;
+        }
+        .no-data {
+            color: #666;
+            font-style: italic;
+            text-align: center;
+            padding: 20px;
+        }
+        .refresh-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        .refresh-btn:hover {
+            background: #0056b3;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .stat-label {
+            color: #666;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 네이버 광고 접속 기록 데이터 확인</h1>
+        
+        <button class="refresh-btn" onclick="refreshData()">🔄 데이터 새로고침</button>
+        
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number" id="totalClicks">0</div>
+                <div class="stat-label">총 클릭 수</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="suspiciousActivities">0</div>
+                <div class="stat-label">의심스러운 활동</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="blockedIPs">0</div>
+                <div class="stat-label">차단된 IP</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="naverAccess">0</div>
+                <div class="stat-label">네이버 접속</div>
+            </div>
+        </div>
+
+        <div class="data-section">
+            <h2>📊 클릭 데이터 (clickData)</h2>
+            <div id="clickDataContent">
+                <div class="no-data">데이터를 불러오는 중...</div>
+            </div>
+        </div>
+
+        <div class="data-section">
+            <h2>⚠️ 의심스러운 활동 (suspiciousActivities)</h2>
+            <div id="suspiciousActivitiesContent">
+                <div class="no-data">데이터를 불러오는 중...</div>
+            </div>
+        </div>
+
+        <div class="data-section">
+            <h2>🚫 차단된 IP (blockedIPs)</h2>
+            <div id="blockedIPsContent">
+                <div class="no-data">데이터를 불러오는 중...</div>
+            </div>
+        </div>
+
+        <div class="data-section">
+            <h2>🔗 네이버 광고 관련 데이터 분석</h2>
+            <div id="naverAnalysisContent">
+                <div class="no-data">데이터를 불러오는 중...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function refreshData() {
+            loadAllData();
+        }
+
+        function loadAllData() {
+            // 클릭 데이터 로드
+            const clickData = JSON.parse(localStorage.getItem('clickData') || '[]');
+            displayData('clickDataContent', clickData, '클릭 데이터가 없습니다.');
+
+            // 의심스러운 활동 로드
+            const suspiciousActivities = JSON.parse(localStorage.getItem('suspiciousActivities') || '[]');
+            displayData('suspiciousActivitiesContent', suspiciousActivities, '의심스러운 활동이 없습니다.');
+
+            // 차단된 IP 로드
+            const blockedIPs = JSON.parse(localStorage.getItem('blockedIPs') || '[]');
+            displayData('blockedIPsContent', blockedIPs, '차단된 IP가 없습니다.');
+
+            // 네이버 광고 관련 분석
+            analyzeNaverData(clickData, suspiciousActivities);
+
+            // 통계 업데이트
+            updateStats(clickData, suspiciousActivities, blockedIPs);
+        }
+
+        function displayData(containerId, data, noDataMessage) {
+            const container = document.getElementById(containerId);
+            
+            if (!data || data.length === 0) {
+                container.innerHTML = `<div class="no-data">${noDataMessage}</div>`;
+                return;
+            }
+
+            let html = '';
+            data.forEach((item, index) => {
+                html += `
+                    <div class="data-item">
+                        <h3>항목 ${index + 1}</h3>
+                        <pre>${JSON.stringify(item, null, 2)}</pre>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        function analyzeNaverData(clickData, suspiciousActivities) {
+            const container = document.getElementById('naverAnalysisContent');
+            
+            // 네이버 관련 데이터 필터링
+            const naverClicks = clickData.filter(item => 
+                item.referrer && item.referrer.includes('naver') ||
+                item.utm_source === 'naver' ||
+                item.utm_medium === 'powerlink' ||
+                item.utm_medium === 'cpc'
+            );
+
+            const naverSuspicious = suspiciousActivities.filter(item => 
+                item.referrerUrl && item.referrerUrl.includes('naver') ||
+                item.utm_source === 'naver' ||
+                item.utm_medium === 'powerlink' ||
+                item.utm_medium === 'cpc'
+            );
+
+            let html = '<div class="data-item">';
+            html += '<h3>네이버 광고 접속 분석</h3>';
+            html += `<p><strong>총 네이버 클릭 수:</strong> ${naverClicks.length}</p>`;
+            html += `<p><strong>네이버 의심 활동:</strong> ${naverSuspicious.length}</p>`;
+            
+            if (naverClicks.length > 0) {
+                html += '<h4>네이버 클릭 상세:</h4>';
+                naverClicks.forEach((click, index) => {
+                    html += `<div style="margin: 10px 0; padding: 10px; background: #e9ecef; border-radius: 3px;">`;
+                    html += `<strong>클릭 ${index + 1}:</strong><br>`;
+                    html += `시간: ${new Date(click.timestamp).toLocaleString('ko-KR')}<br>`;
+                    html += `IP: ${click.ipAddress || '알 수 없음'}<br>`;
+                    html += `UTM 소스: ${click.utm_source || '없음'}<br>`;
+                    html += `UTM 미디엄: ${click.utm_medium || '없음'}<br>`;
+                    html += `리퍼러: ${click.referrer || '없음'}`;
+                    html += '</div>';
+                });
+            }
+
+            if (naverSuspicious.length > 0) {
+                html += '<h4>네이버 의심 활동 상세:</h4>';
+                naverSuspicious.forEach((activity, index) => {
+                    html += `<div style="margin: 10px 0; padding: 10px; background: #fff3cd; border-radius: 3px;">`;
+                    html += `<strong>활동 ${index + 1}:</strong><br>`;
+                    html += `시간: ${new Date(activity.timestamp).toLocaleString('ko-KR')}<br>`;
+                    html += `IP: ${activity.ipAddress || '알 수 없음'}<br>`;
+                    html += `활동 유형: ${activity.type || '알 수 없음'}<br>`;
+                    html += `리퍼러 URL: ${activity.referrerUrl || '없음'}`;
+                    html += '</div>';
+                });
+            }
+
+            if (naverClicks.length === 0 && naverSuspicious.length === 0) {
+                html += '<p style="color: #dc3545;"><strong>⚠️ 경고:</strong> 네이버 광고로부터의 접속 기록이 없습니다!</p>';
+                html += '<p>이는 다음 중 하나의 이유일 수 있습니다:</p>';
+                html += '<ul>';
+                html += '<li>부정클릭 방지 시스템이 네이버 광고 접속을 제대로 감지하지 못함</li>';
+                html += '<li>네이버 광고가 실제로 클릭되지 않음</li>';
+                html += '<li>데이터가 다른 키로 저장됨</li>';
+                html += '</ul>';
+            }
+
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        function updateStats(clickData, suspiciousActivities, blockedIPs) {
+            // 네이버 관련 데이터 카운트
+            const naverAccess = clickData.filter(item => 
+                item.referrer && item.referrer.includes('naver') ||
+                item.utm_source === 'naver' ||
+                item.utm_medium === 'powerlink' ||
+                item.utm_medium === 'cpc'
+            ).length;
+
+            document.getElementById('totalClicks').textContent = clickData.length;
+            document.getElementById('suspiciousActivities').textContent = suspiciousActivities.length;
+            document.getElementById('blockedIPs').textContent = blockedIPs.length;
+            document.getElementById('naverAccess').textContent = naverAccess;
+        }
+
+        // 페이지 로드 시 데이터 로드
+        window.addEventListener('load', loadAllData);
+    </script>
+</body>
+</html>
