@@ -1,0 +1,5 @@
+[33m36d05ce[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Add comprehensive access tracking system for all website visits including bookmarks, link clicks, and direct access
+[33me439660[m 부정클릭 방지 시스템 개선: 네이버 광고 접속 감지 로직 강화 및 데이터 확인 페이지 추가
+[33mb5bc51a[m 카카오톡 공유 시 명함 이미지 표시 수정 및 부정클릭 팝업 테스트 페이지 추가
+[33m8122479[m Fix tab navigation and test mode functionality - Add switchTab function for proper tab switching - Implement test mode detection in constructor - Block API calls when in test mode to prevent CORS errors - Add debugging functions for popup testing - Improve tab styling and visibility
+[33m423d835[m Remove test data management section from main page
