@@ -70,9 +70,13 @@ class ClickProtectionSystem {
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', () => {
                 this.initializeAccessRecords();
+                // 모든 접속 기록 추적 시작
+                this.trackAllAccess();
             });
         } else {
             this.initializeAccessRecords();
+            // 모든 접속 기록 추적 시작
+            this.trackAllAccess();
         }
         
         console.log('🚀 클릭 보호 시스템이 초기화되었습니다. (네이버 파워링크 광고 클릭만 감지)');
@@ -4232,6 +4236,262 @@ class ClickProtectionSystem {
         } catch (error) {
             console.log('❌ 세션 데이터 로드 실패:', error.message);
         }
+    }
+
+    // 모든 접속 기록 추적 함수 (즐겨찾기, 링크 클릭, 직접 접속 등)
+    trackAllAccess() {
+        const accessData = {
+            timestamp: Date.now(),
+            sessionId: this.sessionData.sessionId,
+            ipAddress: this.sessionData.ipAddress || '확인 중',
+            userAgent: navigator.userAgent,
+            referrer: document.referrer,
+            currentUrl: window.location.href,
+            accessType: this.determineAccessType(),
+            source: this.determineSource(),
+            deviceType: this.getDeviceType(),
+            screenResolution: `${screen.width}x${screen.height}`,
+            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+            language: navigator.language,
+            cookiesEnabled: navigator.cookieEnabled,
+            doNotTrack: navigator.doNotTrack,
+            connection: this.getConnectionInfo(),
+            pageLoadTime: this.getPageLoadTime(),
+            clickCount: 0,
+            scrollDepth: 0,
+            timeOnPage: 0,
+            lastActivity: Date.now()
+        };
+
+        // 접속 기록 저장
+        this.saveAccessRecord(accessData);
+        
+        // 실시간 모니터링 시작
+        this.startAccessMonitoring(accessData);
+        
+        console.log('🔍 모든 접속 기록 추적이 시작되었습니다:', accessData);
+    }
+
+    // 접속 유형 판별
+    determineAccessType() {
+        if (document.referrer === '') {
+            return '직접 접속';
+        } else if (document.referrer.includes('google.com')) {
+            return '구글 검색';
+        } else if (document.referrer.includes('naver.com')) {
+            return '네이버 검색/광고';
+        } else if (document.referrer.includes('daum.net')) {
+            return '다음 검색';
+        } else if (document.referrer.includes('facebook.com')) {
+            return '페이스북';
+        } else if (document.referrer.includes('instagram.com')) {
+            return '인스타그램';
+        } else if (document.referrer.includes('kakao.com')) {
+            return '카카오';
+        } else if (document.referrer.includes('youtube.com')) {
+            return '유튜브';
+        } else if (document.referrer.includes('twitter.com')) {
+            return '트위터';
+        } else if (document.referrer.includes('bookmark') || document.referrer.includes('favorite')) {
+            return '즐겨찾기';
+        } else {
+            return '기타 링크';
+        }
+    }
+
+    // 접속 소스 판별
+    determineSource() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const utmSource = urlParams.get('utm_source');
+        const utmMedium = urlParams.get('utm_medium');
+        const utmCampaign = urlParams.get('utm_campaign');
+        
+        if (utmSource && utmMedium && utmCampaign) {
+            return `UTM: ${utmSource}/${utmMedium}/${utmCampaign}`;
+        } else if (document.referrer.includes('naver.com')) {
+            return '네이버 파워링크';
+        } else if (document.referrer.includes('google.com')) {
+            return '구글 애드워즈';
+        } else {
+            return '직접/기타';
+        }
+    }
+
+    // 디바이스 타입 판별
+    getDeviceType() {
+        const userAgent = navigator.userAgent.toLowerCase();
+        if (/mobile|android|iphone|ipad|ipod|blackberry|windows phone/.test(userAgent)) {
+            return '모바일';
+        } else if (/tablet|ipad/.test(userAgent)) {
+            return '태블릿';
+        } else {
+            return '데스크톱';
+        }
+    }
+
+    // 연결 정보 가져오기
+    getConnectionInfo() {
+        if ('connection' in navigator) {
+            const conn = navigator.connection;
+            return {
+                effectiveType: conn.effectiveType || '알 수 없음',
+                downlink: conn.downlink || '알 수 없음',
+                rtt: conn.rtt || '알 수 없음',
+                saveData: conn.saveData || false
+            };
+        }
+        return '지원하지 않음';
+    }
+
+    // 페이지 로드 시간 측정
+    getPageLoadTime() {
+        if (window.performance && window.performance.timing) {
+            const timing = window.performance.timing;
+            return timing.loadEventEnd - timing.navigationStart;
+        }
+        return '측정 불가';
+    }
+
+    // 접속 기록 저장
+    saveAccessRecord(accessData) {
+        try {
+            const existingRecords = JSON.parse(localStorage.getItem('allAccessRecords') || '[]');
+            existingRecords.push(accessData);
+            
+            // 최근 1000개만 유지
+            if (existingRecords.length > 1000) {
+                existingRecords.splice(0, existingRecords.length - 1000);
+            }
+            
+            localStorage.setItem('allAccessRecords', JSON.stringify(existingRecords));
+            console.log('💾 접속 기록이 저장되었습니다:', accessData);
+        } catch (error) {
+            console.error('접속 기록 저장 중 오류:', error);
+        }
+    }
+
+    // 접속 모니터링 시작
+    startAccessMonitoring(accessData) {
+        // 클릭 이벤트 모니터링
+        document.addEventListener('click', (e) => {
+            accessData.clickCount++;
+            accessData.lastActivity = Date.now();
+            this.updateAccessRecord(accessData.sessionId, accessData);
+        });
+
+        // 스크롤 깊이 모니터링
+        let maxScrollDepth = 0;
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const scrollPercent = Math.round((scrollTop / scrollHeight) * 100);
+            
+            if (scrollPercent > maxScrollDepth) {
+                maxScrollDepth = scrollPercent;
+                accessData.scrollDepth = maxScrollDepth;
+                this.updateAccessRecord(accessData.sessionId, accessData);
+            }
+        });
+
+        // 페이지 가시성 변경 감지
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                accessData.timeOnPage = Date.now() - accessData.timestamp;
+                this.updateAccessRecord(accessData.sessionId, accessData);
+            }
+        });
+
+        // 페이지 언로드 시 최종 기록
+        window.addEventListener('beforeunload', () => {
+            accessData.timeOnPage = Date.now() - accessData.timestamp;
+            this.updateAccessRecord(accessData.sessionId, accessData);
+        });
+    }
+
+    // 접속 기록 업데이트
+    updateAccessRecord(sessionId, updatedData) {
+        try {
+            const existingRecords = JSON.parse(localStorage.getItem('allAccessRecords') || '[]');
+            const recordIndex = existingRecords.findIndex(record => record.sessionId === sessionId);
+            
+            if (recordIndex !== -1) {
+                existingRecords[recordIndex] = { ...existingRecords[recordIndex], ...updatedData };
+                localStorage.setItem('allAccessRecords', JSON.stringify(existingRecords));
+            }
+        } catch (error) {
+            console.error('접속 기록 업데이트 중 오류:', error);
+        }
+    }
+
+    // 모든 접속 기록 표시
+    displayAllAccessRecords() {
+        try {
+            const records = JSON.parse(localStorage.getItem('allAccessRecords') || '[]');
+            const tableBody = document.getElementById('access-records-tbody');
+            
+            if (!tableBody) {
+                console.error('접속 기록 테이블을 찾을 수 없습니다.');
+                return;
+            }
+
+            tableBody.innerHTML = '';
+
+            if (records.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="15" class="no-data">접속 기록이 없습니다.</td></tr>';
+                return;
+            }
+
+            // 최신 순으로 정렬
+            records.sort((a, b) => b.timestamp - a.timestamp);
+
+            records.forEach((record, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="edit-column">
+                        <input type="checkbox" class="record-checkbox" data-record-id="${record.sessionId}">
+                    </td>
+                    <td>${new Date(record.timestamp).toLocaleString('ko-KR')}</td>
+                    <td>${record.ipAddress}</td>
+                    <td>${this.getLocationFromIP(record.ipAddress)}</td>
+                    <td>${this.getDuplicateCount(record.ipAddress)}</td>
+                    <td>${this.getNotificationCount(record.ipAddress)}</td>
+                    <td>${record.deviceType}</td>
+                    <td>${Math.round(record.timeOnPage / 1000)}초</td>
+                    <td>${record.clickCount}회</td>
+                    <td>${record.source}</td>
+                    <td>${record.accessType}</td>
+                    <td>${record.connection.effectiveType || '알 수 없음'}</td>
+                    <td>${record.scrollDepth}%</td>
+                    <td>${record.screenResolution}</td>
+                    <td class="action-column">
+                        <button class="btn-detail" onclick="showAccessDetail('${record.sessionId}')">상세</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+            console.log(`📊 ${records.length}개의 접속 기록이 표시되었습니다.`);
+        } catch (error) {
+            console.error('접속 기록 표시 중 오류:', error);
+        }
+    }
+
+    // IP 기반 위치 정보 (간단한 버전)
+    getLocationFromIP(ip) {
+        // 실제로는 IP Geolocation API를 사용해야 함
+        return '확인 중';
+    }
+
+    // 중복 접속 횟수
+    getDuplicateCount(ip) {
+        const records = JSON.parse(localStorage.getItem('allAccessRecords') || '[]');
+        return records.filter(record => record.ipAddress === ip).length;
+    }
+
+    // 알림 횟수
+    getNotificationCount(ip) {
+        const suspiciousActivities = JSON.parse(localStorage.getItem('suspiciousActivities') || '[]');
+        return suspiciousActivities.filter(activity => activity.ipAddress === ip).length;
     }
 }
 
