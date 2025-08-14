@@ -4240,14 +4240,28 @@ class ClickProtectionSystem {
 
     // 모든 접속 기록 추적 함수 (즐겨찾기, 링크 클릭, 직접 접속 등)
     trackAllAccess() {
+        // 디버깅을 위한 접속 정보 로깅
+        const referrer = document.referrer;
+        const historyLength = window.history.length;
+        const accessType = this.determineAccessType();
+        
+        console.log('🔍 접속 정보 분석:', {
+            referrer: referrer || '(없음)',
+            historyLength: historyLength,
+            accessType: accessType,
+            isDirectUrl: this.isDirectUrlAccess(),
+            performanceType: 'performance' in window && 'navigation' in performance ? 
+                performance.navigation.type : '지원 안됨'
+        });
+        
         const accessData = {
             timestamp: Date.now(),
             sessionId: this.sessionData.sessionId,
             ipAddress: this.sessionData.ipAddress || '확인 중',
             userAgent: navigator.userAgent,
-            referrer: document.referrer,
+            referrer: referrer,
             currentUrl: window.location.href,
-            accessType: this.determineAccessType(),
+            accessType: accessType,
             source: this.determineSource(),
             deviceType: this.getDeviceType(),
             screenResolution: `${screen.width}x${screen.height}`,
@@ -4274,7 +4288,10 @@ class ClickProtectionSystem {
 
     // 접속 유형 판별
     determineAccessType() {
-        if (document.referrer === '') {
+        // 즄겨찾기 접속 감지 (referrer가 없고, 직접 URL 입력이 아닌 경우)
+        if (document.referrer === '' && !this.isDirectUrlAccess()) {
+            return '즐겨찾기';
+        } else if (document.referrer === '') {
             return '직접 접속';
         } else if (document.referrer.includes('google.com')) {
             return '구글 검색';
@@ -4297,6 +4314,40 @@ class ClickProtectionSystem {
         } else {
             return '기타 링크';
         }
+    }
+
+    // 직접 URL 입력 여부 확인 (즄겨찾기와 구분)
+    isDirectUrlAccess() {
+        // Performance Navigation API를 사용한 더 정확한 감지
+        if ('performance' in window && 'navigation' in performance) {
+            const nav = performance.navigation;
+            
+            // TYPE_NAVIGATE: 링크 클릭, 즄겨찾기, 직접 입력
+            // TYPE_RELOAD: 새로고침
+            // TYPE_BACK_FORWARD: 뒤로가기/앞으로가기
+            if (nav.type === nav.TYPE_NAVIGATE) {
+                // 즄겨찾기 접속은 보통 TYPE_NAVIGATE로 분류됨
+                // 추가로 referrer가 없고 히스토리가 1인 경우 즄겨찾기로 판단
+                if (document.referrer === '' && window.history.length <= 1) {
+                    return false; // 즄겨찾기로 판단
+                }
+            }
+        }
+        
+        // 브라우저 히스토리에서 이전 페이지가 있는지 확인
+        if (window.history.length > 1) {
+            return false; // 이전 페이지가 있으면 직접 입력이 아님
+        }
+        
+        // 세션 스토리지에 이전 방문 기록이 있는지 확인
+        const hasVisitedBefore = sessionStorage.getItem('hasVisitedBefore');
+        if (hasVisitedBefore) {
+            return false; // 이전에 방문한 적이 있으면 직접 입력이 아님
+        }
+        
+        // 첫 방문으로 표시
+        sessionStorage.setItem('hasVisitedBefore', 'true');
+        return true;
     }
 
     // 접속 소스 판별
